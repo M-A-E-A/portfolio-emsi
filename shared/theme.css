@@ -2,6 +2,15 @@
 
 /* Valeurs par défaut (thème clair) — réinitialisées en mode sombre ci-dessous */
 :root {
+  /* Papier / encre — repris par les démos qui n'ont pas leur propre socle
+     (tailwind-demo). Les autres démos redéfinissent ces jetons dans leur
+     css/style.css, chargé APRÈS ce fichier : elles gardent la main. */
+  --papier: #eceef1;
+  --surface: #ffffff;
+  --encre: #12161c;
+  --texte: #2b3138;
+  --sourdine: #59626e;
+  --trait: #d2d7de;
   --ciel-haut: #eef2fb;
   --ciel-bas: #e7edf9;
   --blob-1: #2a22ab;
