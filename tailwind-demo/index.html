@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Tailwind CSS</title>
-  <meta name="description" content="Démonstration Tailwind CSS : approche utility-first, mise en page responsive, composants.">
+  <title>Tailwind CSS — Démo utility-first et responsive</title>
+  <meta name="description" content="Démonstration Tailwind CSS : approche utility-first, mise en page responsive, composants, mode sombre et feuille de style générée par build.">
   <meta name="author" content="Abderrahmane El ADNANI">
   <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
@@ -17,7 +17,7 @@
   <script src="../shared/theme.js" defer></script>
   <link rel="stylesheet" href="../shared/themes.css">
 </head>
-<body data-projet="tailwind-demo" data-fond="aurore">
+<body class="bg-slate-50 dark:bg-slate-900" data-projet="tailwind-demo" data-fond="aurore">
 
   <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 
@@ -30,7 +30,7 @@
         <a href="#stats" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Statistiques</a>
         <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
       </div>
-      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition" aria-label="Activer le thème sombre" aria-pressed="false" title="Mode sombre">
+      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 dark:bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-500 transition" aria-label="Activer le thème sombre" aria-pressed="false" title="Mode sombre">
         <svg class="ico-lune" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
         <svg class="ico-soleil" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
       </button>
@@ -50,7 +50,7 @@
       Le CSS final ne contient que ce qui est utilisé.
     </p>
     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a href="#features" class="px-6 py-3 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg shadow-indigo-200 dark:shadow-none">Découvrir</a>
+      <a href="#features" class="px-6 py-3 rounded-lg bg-indigo-600 dark:bg-indigo-600 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-500 transition shadow-lg shadow-indigo-200 dark:shadow-none">Découvrir</a>
       <a href="#contact" class="px-6 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium border border-slate-300 dark:border-slate-600 hover:border-indigo-400 transition">Contact</a>
     </div>
   </section>
@@ -106,18 +106,18 @@
       <p class="text-slate-600 dark:text-slate-400 text-sm mb-6">Formulaire de démonstration (rien n'est envoyé).</p>
       <form id="form" class="space-y-4">
         <div>
-          <label for="nom" class="block text-sm font-medium mb-1">Nom</label>
-          <input id="nom" type="text" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre nom">
+          <label for="nom" class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-200">Nom</label>
+          <input id="nom" type="text" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre nom">
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium mb-1">E-mail</label>
-          <input id="email" type="email" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="vous@exemple.com">
+          <label for="email" class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-200">E-mail</label>
+          <input id="email" type="email" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="vous@exemple.com">
         </div>
         <div>
-          <label for="message" class="block text-sm font-medium mb-1">Message</label>
-          <textarea id="message" rows="4" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre message"></textarea>
+          <label for="message" class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-200">Message</label>
+          <textarea id="message" rows="4" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre message"></textarea>
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition">Envoyer</button>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-600 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-500 transition">Envoyer</button>
       </form>
       <p id="confirmation" class="hidden mt-4 text-sm text-green-600 dark:text-green-400 font-medium">Message envoyé (démo, rien n'est transmis).</p>
     </div>

@@ -1,13 +1,18 @@
 {
   "name": "tailwind-demo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Démonstration Tailwind CSS — approche utility-first, mise en page responsive et mode sombre.",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tailwindcss -c tailwind.config.js -i src/input.css -o css/output.css --minify",
+    "watch": "tailwindcss -c tailwind.config.js -i src/input.css -o css/output.css --watch"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "tailwind",
+    "css",
+    "demo"
+  ],
+  "author": "Abderrahmane El ADNANI",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {

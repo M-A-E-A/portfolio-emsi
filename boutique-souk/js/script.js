@@ -243,6 +243,7 @@
   function appliquerTheme(sombre, enregistrer) {
     document.body.classList.toggle('sombre', sombre);
     if (boutonTheme) {
+      boutonTheme.setAttribute('aria-pressed', String(sombre));
       boutonTheme.setAttribute('aria-label', sombre ? 'Basculer en mode clair' : 'Basculer en mode sombre');
       boutonTheme.title = sombre ? 'Mode clair' : 'Mode sombre';
     }

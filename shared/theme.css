@@ -23,9 +23,27 @@
   --halo-a: rgba(27, 77, 228, .16);
   --halo-b: rgba(61, 129, 174, .12);
   --ruban-opacite: .24;
+  /* Couleur de texte posée SUR un aplat d'accent (boutons, badges, pastilles).
+     En mode clair l'accent est sombre -> texte blanc ; en mode sombre l'accent
+     est clair -> texte sombre, sinon le contraste passe sous 4.5:1. */
+  --sur-accent: #ffffff;
 }
 
-/* Conteneur fixe derrière tout le contenu */
+/* ---- Lien d'évitement : une seule implémentation pour les 11 démos ----
+   Masqué hors focus, révélé au clavier. Le contraste du texte suit
+   --sur-accent (blanc sur accent sombre en clair, encre sur accent clair
+   en sombre), sinon le lien échoue aux audits de contraste. */
+.lien-evitement {
+  position: absolute; left: .75rem; top: -5rem; z-index: 100;
+  padding: .65rem 1.1rem; border-radius: 10px;
+  background: var(--accent); color: var(--sur-accent);
+  font-weight: 600; text-decoration: none;
+  box-shadow: 0 12px 30px -14px rgba(0, 0, 0, .55);
+  transition: top .18s ease;
+}
+.lien-evitement:focus { top: .75rem; }
+
+/* ---- Conteneur fixe derrière tout le contenu */
 .fond-anime {
   position: fixed;
   inset: 0;
@@ -165,6 +183,22 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
+/* ---- Mouvement réduit : politique unique pour le fond animé partagé ----
+   Le fond est décoratif : il s'arrête quand le visiteur demande moins
+   d'animation. La règle est écrite ici (et non dans chaque démo) pour que
+   les 11 projets se comportent exactement de la même façon, et pour qu'un
+   « *{animation:none} » posé par une démo n'éteigne pas le fond des autres. */
+@media (prefers-reduced-motion: reduce) {
+  .fond-anime,
+  .fond-anime *,
+  .blob,
+  .ruban,
+  .grain {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* ========== Thème sombre / clair ========= */
 body.sombre {
   --papier: #0f1319;
@@ -189,4 +223,5 @@ body.sombre {
   --halo-a: rgba(90, 130, 255, .22);
   --halo-b: rgba(61, 129, 174, .20);
   --ruban-opacite: .5;
+  --sur-accent: #0e1116;
 }

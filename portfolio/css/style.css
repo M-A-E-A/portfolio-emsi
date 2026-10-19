@@ -888,11 +888,11 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
 }
 
 /* Accessibilité : mouvement réduit.
-   Note : le fond animé (.blob) est volontairement exclu de cette remise à
-   zéro — il fait partie de l'identité de la page. Son mouvement reste très
-   lent et sans à-coup, donc discret même pour qui préfère moins d'animation. */
+   Le fond animé (.blob) est lui aussi neutralisé : c'est du décor, et la
+   politique est désormais identique à celle de shared/theme.css pour les
+   11 démos. Le rendu reste visible (les éléments restent à opacité 1). */
 @media (prefers-reduced-motion: reduce) {
-  *:not(.blob), *:not(.blob)::before, *:not(.blob)::after {
+  *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
@@ -900,6 +900,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   }
   .js .hero-texte > *, .js .hero-portrait { opacity: 1 !important; transform: none !important; }
   .point-vif { animation: none; }
+  .fond-anime, .fond-anime *, .blob { animation: none !important; transition: none !important; }
 }
 
 /* ===== 12. Fond animé — variantes =====
