@@ -151,6 +151,9 @@ h1, h2, h3, h4, h5, h6 { color: var(--encre); font-family: var(--display); lette
 
 /* ---- Thème bouton cohérent ---- */
 #theme { font-family: var(--display); transition: all .2s ease; }
+.ico-soleil { display: none; }
+body.sombre .ico-lune { display: none; }
+body.sombre .ico-soleil { display: inline; }
 
 /* ---- Fond animé cohérent (déjà injecté par shared/theme.js, mais on s'assure) ---- */
 /* .fond-anime est déjà positionné par shared/theme.css ; rien à ajouter ici sauf compatibilité */

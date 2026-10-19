@@ -19,7 +19,6 @@
     document.body.classList.toggle('sombre', sombre);
     const btn = $('#theme');
     if (btn) {
-      btn.textContent = sombre ? '☀️' : '🌙';
       btn.setAttribute('aria-label', sombre ? 'Activer le thème clair' : 'Activer le thème sombre');
       btn.setAttribute('aria-pressed', String(sombre));
       btn.title = sombre ? 'Mode clair' : 'Mode sombre';

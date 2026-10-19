@@ -30,7 +30,10 @@
         <a href="#stats" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Statistiques</a>
         <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
       </div>
-      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition" aria-label="Activer le thème sombre" aria-pressed="false">🌙</button>
+      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition" aria-label="Activer le thème sombre" aria-pressed="false" title="Mode sombre">
+        <svg class="ico-lune" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="ico-soleil" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      </button>
     </div>
   </nav>
 
@@ -79,17 +82,17 @@
     <h2 class="font-display text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">Ce que Tailwind permet</h2>
     <div class="grid md:grid-cols-3 gap-6">
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">⚡</div>
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
         <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Rapide</h3>
         <p class="text-slate-600 dark:text-slate-400 text-sm">Pas de CSS à écrire à la main : on compose directement dans le HTML.</p>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">📱</div>
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg></div>
         <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Responsive</h3>
         <p class="text-slate-600 dark:text-slate-400 text-sm">Préfixes <code class="bg-slate-100 dark:bg-slate-700 dark:text-slate-200 px-1 rounded">md:</code>, <code class="bg-slate-100 dark:bg-slate-700 dark:text-slate-200 px-1 rounded">lg:</code> pour adapter à chaque écran.</p>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">🎨</div>
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="13.5" cy="6.5" r="5.5"/><path d="M20 20a9 9 0 1 1-17-3"/></svg></div>
         <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Cohérent</h3>
         <p class="text-slate-600 dark:text-slate-400 text-sm">Une palette et des espacements partagés, sans divergence entre composants.</p>
       </div>
@@ -143,7 +146,6 @@
         btn.setAttribute('aria-pressed', String(sombre));
         btn.setAttribute('aria-label', sombre ? 'Activer le thème clair' : 'Activer le thème sombre');
         btn.title = sombre ? 'Mode clair' : 'Mode sombre';
-        btn.textContent = sombre ? '☀️' : '🌙';
         try { localStorage.setItem(CLE, sombre ? 'sombre' : 'clair'); } catch (e) { /* indisponible */ }
       }
       let prefere = null;

@@ -701,7 +701,20 @@ body.sombre #theme .icone-soleil{display:block}
   line-height:1.35;
   color:var(--sourdine);
 }
-.message__vu::before{content:"✓ ";color:var(--accent)}
+/* Pastille « vu » : coche dessinée en CSS (aucun emoji, aucun caractère
+   Unicode décoratif — l'icône est une image SVG encodée en data-URI). */
+.message__vu::before{
+  content:"";
+  display:inline-block;
+  width:.62em;
+  height:.62em;
+  margin-right:.3em;
+  vertical-align:-.04em;
+  background-color:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  color:var(--accent);
+}
 
 /* ------------------------------ Pied de page ------------------------------ */
 .pied{

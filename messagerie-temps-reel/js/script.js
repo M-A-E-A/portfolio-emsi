@@ -75,7 +75,18 @@
     '<path d="M9 4h6l-1 6 3 3H7l3-3-1-6z"/><path d="M12 13v7"/></svg>';
 
   // Jeu fixe de réactions proposées.
-  const EMOJIS = ['👍', '❤️', '😂', '😮'];
+  // La clé reste un court identifiant textuel (utilisé comme index de stockage),
+  // l'affichage est assuré par des icônes SVG — aucun emoji dans l'interface.
+  const EMOJIS = ['pouce', 'coeur', 'rire', 'surprise'];
+  const ICONES = {
+    pouce: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9.5V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+    coeur: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+    rire: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9.5h.01M15 9.5h.01"/></svg>',
+    surprise: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M9.5 16.5h.01M14.5 16.5h.01"/></svg>'
+  };
+  const NOMS_REACTION = {
+    pouce: 'Pouce levé', coeur: 'Cœur', rire: 'Rire', surprise: 'Surprise'
+  };
   const LONGUEUR_EXTRAIT = 90;
 
   /* ------------------------------ État ------------------------------ */
@@ -732,8 +743,8 @@
   function elementReactions(message) {
     if (!message.reactions || typeof message.reactions !== 'object') return null;
 
-    const presents = EMOJIS.filter(function (emoji) {
-      return Array.isArray(message.reactions[emoji]) && message.reactions[emoji].length > 0;
+    const presents = EMOJIS.filter(function (cle) {
+      return Array.isArray(message.reactions[cle]) && message.reactions[cle].length > 0;
     });
     if (presents.length === 0) return null;
 
@@ -741,22 +752,23 @@
     rang.className = 'message__reactions';
 
     const nom = nomCourant();
-    presents.forEach(function (emoji) {
-      const noms = message.reactions[emoji];
+    presents.forEach(function (cle) {
+      const noms = message.reactions[cle];
       const aMoi = nom !== '' && noms.indexOf(nom) !== -1;
+      const libelle = NOMS_REACTION[cle] || cle;
 
       const bouton = document.createElement('button');
       bouton.type = 'button';
       bouton.className = 'reaction' + (aMoi ? ' reaction--actif' : '');
       bouton.title = noms.join(', ');
       bouton.setAttribute('aria-pressed', aMoi ? 'true' : 'false');
-      bouton.setAttribute('aria-label', emoji + ' — ' + noms.length + ' réaction' + (noms.length > 1 ? 's' : '') +
+      bouton.setAttribute('aria-label', libelle + ' — ' + noms.length + ' réaction' + (noms.length > 1 ? 's' : '') +
         (aMoi ? ' (vous avez réagi, cliquez pour retirer)' : ' (cliquez pour réagir)'));
-      bouton.addEventListener('click', function () { basculerReaction(message.id, emoji); });
+      bouton.addEventListener('click', function () { basculerReaction(message.id, cle); });
 
       const face = document.createElement('span');
       face.className = 'reaction__emoji';
-      face.textContent = emoji;
+      face.innerHTML = ICONES[cle] || cle;
 
       const nombre = document.createElement('span');
       nombre.className = 'reaction__nombre';
@@ -788,7 +800,7 @@
       bouton.textContent = emoji;
       bouton.setAttribute('aria-pressed', actif ? 'true' : 'false');
       bouton.setAttribute('aria-label', 'Réagir ' + emoji + ' à ce message');
-      bouton.addEventListener('click', function () { basculerReaction(message.id, emoji); });
+      bouton.addEventListener('click', function () { basculerReaction(message.id, cle); });
       boite.appendChild(bouton);
     });
 
