@@ -1,6 +1,61 @@
-/* Surcharges légères par-dessus Bootstrap 5. */
-body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-.navbar-brand { letter-spacing: -0.01em; }
-.card { border-radius: 0.75rem; }
-.table thead th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
-#toast { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 1080; min-width: 16rem; }
+/* =========================================================
+   Tableau de bord Bootstrap — feuille de style
+   Démonstration Bootstrap 5 avec le système de design du portfolio.
+   ========================================================= */
+
+/* ---- Jetons du portfolio (mode clair) ---- */
+:root {
+  --papier: #eceef1; --surface: #ffffff; --encre: #12161c; --texte: #2b3138;
+  --sourdine: #59626e; --trait: #d2d7de; --accent: #1b4de4; --accent-fonce: #123399;
+  --accent-doux: #e7ecfc; --ombre: 0 1px 2px rgba(18, 22, 28, .05), 0 12px 28px -18px rgba(18, 22, 28, .35);
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --texte-ff: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Consolas", monospace;
+  --ciel-haut: #eef2fb; --ciel-bas: #e7edf9;
+  --blob-1: #2a22ab; --blob-2: #3d81ae; --blob-3: #6d7fd0; --blob-4: #8badb9;
+  --blob-opacite: .17; --grille-point: rgba(18, 22, 28, .17); --contour: rgba(18, 22, 28, .10);
+  --halo-a: rgba(27, 77, 228, .16); --halo-b: rgba(61, 129, 174, .12); --ruban-opacite: .24;
+  --r-s: 6px; --r-m: 12px; --largeur: 72rem;
+}
+
+/* ---- Dark mode (corpore avec shared/theme.css) ---- */
+body.sombre {
+  --papier: #0f1319; --surface: #171c24; --encre: #eef1f5; --texte: #c6ccd4;
+  --sourdine: #8b95a3; --trait: #2a313b; --accent: #7da0ff; --accent-fonce: #a9c0ff;
+  --accent-doux: #1b2540; --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 40px -24px rgba(0, 0, 0, .8);
+  --ciel-haut: #090621; --ciel-bas: #05031b; --blob-1: #3039b0; --blob-2: #261798;
+  --blob-3: #3d81ae; --blob-4: #8badb9; --blob-opacite: .45;
+  --grille-point: rgba(255, 255, 255, .11); --contour: rgba(255, 255, 255, .075);
+  --halo-a: rgba(90, 130, 255, .22); --halo-b: rgba(61, 129, 174, .20); --ruban-opacite: .5;
+}
+
+/* ---- Base ---- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: var(--texte-ff); font-size: 1rem; line-height: 1.65;
+  color: var(--texte); background: var(--papier);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { font-family: var(--display); color: var(--encre); line-height: 1.15; margin: 0; }
+p { margin: 0 0 1rem; }
+button, input, textarea, select { font: inherit; color: inherit; }
+img, svg { display: block; max-width: 100%; height: auto; }
+
+/* Accessibilité */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- Surcouches Bootstrap légères ---- */
+.navbar-brand { letter-spacing: -.01em; font-family: var(--display); }
+.card { border-radius: 0.75rem; border-color: var(--trait); background: var(--surface); }
+.card:hover { box-shadow: var(--ombre); }
+.table thead th { font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; color: var(--sourdine); border-bottom-color: var(--trait); }
+.table tbody td { color: var(--texte); }
+.form-control, .form-select { background: var(--surface); border-color: var(--trait); color: var(--texte); font-family: var(--texte-ff); }
+.form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .25rem rgba(27,77,228,.15); }
+
+/* ---- Thème bouton cohérent ---- */
+#theme { font-family: var(--display); transition: all .2s ease; }
+
+/* ---- Fond animé cohérent (déjà injecté par shared/theme.js, mais on s'assure) ---- */
+/* .fond-anime est déjà positionné par shared/theme.css ; rien à ajouter ici sauf compatibilité */
