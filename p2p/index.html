@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messagerie P2P chiffrée — WebRTC et WebCrypto, sans serveur</title>
+  <meta name="description" content="Messagerie de pair à pair chiffrée de bout en bout : WebRTC DataChannel, échange de clés ECDH P-256, chiffrement AES-GCM 256 bits et empreintes de clés vérifiables.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/p2p.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="p2p" data-fond="ruban">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('p2p-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-bouclier" viewBox="0 0 24 24">
+        <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z"/>
+        <path d="M9.5 12l1.8 1.8 3.4-3.6"/>
+      </symbol>
+      <symbol id="i-envoyer" viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4-6Z"/><path d="m12 14 8-10"/></symbol>
+      <symbol id="i-copier" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-bouclier"></use></svg>
+        <span class="marque-nom">P2P chiffré</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">WebRTC · WebCrypto</p>
+      <h1>Deux navigateurs, un canal direct, aucun serveur</h1>
+      <p class="intro-texte">
+        L’appairage se fait à la main, par copié-collé : c’est ce qui permet de
+        garantir qu’aucun tiers ne s’intercale. Ensuite, la clé de session est
+        dérivée par ECDH et chaque message est chiffré en AES-GCM.
+      </p>
+    </section>
+
+    <section class="barre-etat">
+      <span class="pastille pastille--nouveau" id="pastille">nouveau</span>
+      <p class="barre-etat-texte">
+        Le canal WebRTC est déjà protégé par DTLS. Nous ajoutons une seconde
+        couche applicative : chiffrement AES-GCM de bout en bout, indépendante
+        du transport.
+      </p>
+    </section>
+
+    <div class="grille">
+
+      <!-- ------------------------ Appairage ------------------------ -->
+      <section class="carte" aria-labelledby="titre-appairage">
+        <h2 class="carte-titre" id="titre-appairage">Appairage</h2>
+
+        <div class="etape" id="etape-1">
+          <h3 class="etape-titre"><span class="etape-num" aria-hidden="true">1</span>Créer une offre</h3>
+          <p class="note">
+            Le premier pair génère une offre de connexion et la code en base64.
+            Transmettez ce code à votre correspondant, par n’importe quel canal.
+          </p>
+          <button type="button" class="bouton bouton--primaire" id="bouton-offre">Générer une offre</button>
+        </div>
+
+        <div class="etape" id="etape-2" hidden>
+          <h3 class="etape-titre"><span class="etape-num" aria-hidden="true">2</span>Accepter l’offre reçue</h3>
+          <p class="note">
+            Collez l’offre reçue : une réponse sera générée, à renvoyer à l’autre pair.
+          </p>
+          <button type="button" class="bouton bouton--primaire" id="bouton-accepter-offre">Accepter l’offre</button>
+        </div>
+
+        <div class="etape" id="etape-3" hidden>
+          <h3 class="etape-titre"><span class="etape-num" aria-hidden="true">3</span>Coller la réponse</h3>
+          <p class="note">
+            Dernière étape : collez la réponse envoyée par votre correspondant.
+            Le canal direct s’ouvre alors.
+          </p>
+          <button type="button" class="bouton bouton--primaire" id="bouton-accepter-reponse">Accepter la réponse</button>
+        </div>
+
+        <div class="sortie-code" id="sortie-code" hidden>
+          <label class="code-lbl" for="code-a-envoyer">Code à transmettre</label>
+          <textarea id="code-a-envoyer" class="code" readonly rows="4" spellcheck="false"></textarea>
+          <button type="button" class="bouton" id="bouton-copier">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-copier"></use></svg>
+            <span>Copier</span>
+          </button>
+        </div>
+
+        <div class="etape">
+          <h3 class="etape-titre"><span class="etape-num" aria-hidden="true">↕</span>Code reçu</h3>
+          <label class="code-lbl" for="code-recu">Collez ici le code reçu</label>
+          <textarea id="code-recu" class="code" rows="4" spellcheck="false" placeholder="Collez ici le code transmis par l’autre pair…"></textarea>
+        </div>
+
+        <button type="button" class="bouton bouton--discret" id="bouton-reinitialiser">Réinitialiser la session</button>
+      </section>
+
+      <!-- ----------------------- Conversation ----------------------- -->
+      <section class="carte" aria-labelledby="titre-conversation">
+        <h2 class="carte-titre" id="titre-conversation">Conversation</h2>
+
+        <div class="bloc-empreinte" id="bloc-empreinte" hidden>
+          <span class="pf-lbl">Empreinte de la clé de session</span>
+          <code id="empreinte"></code>
+          <p class="note">
+            Les deux pairs doivent voir exactement la même chaîne. Si elle
+            diffère, quelqu’un s’est interposé.
+          </p>
+        </div>
+
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Messages échangés"></div>
+
+        <form class="envoi" id="form-message">
+          <label class="sr-only" for="champ-message">Votre message</label>
+          <input type="text" id="champ-message" placeholder="Écrivez votre message…" autocomplete="off" disabled>
+          <button type="submit" class="bouton bouton--primaire" id="bouton-envoyer" disabled>
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-envoyer"></use></svg>
+            <span class="sr-only">Envoyer</span>
+          </button>
+        </form>
+
+        <div class="journal" id="journal" role="log" aria-live="polite" aria-label="Journal de la session"></div>
+      </section>
+    </div>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Pourquoi c’est plus compliqué qu’un serveur</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>La signalisation</h3>
+          <p>
+            WebRTC ne sait pas trouver tout seul son interlocuteur : il faut
+            échanger une offre, une réponse et les candidats ICE. Ici, cet
+            échange est manuel et visible — aucun serveur ne le voit.
+          </p>
+        </article>
+        <article>
+          <h3>La clé de session</h3>
+          <p>
+            Chaque pair tire une paire de clés ECDH P-256 et transmet sa clé
+            <em>publique</em>. La clé secrète se dérive des deux côtés :
+            elle n’est jamais transmise, et personne ne peut la retrouver.
+          </p>
+        </article>
+        <article>
+          <h3>Le chiffrement</h3>
+          <p>
+            Chaque message est scellé en AES-GCM 256 avec un nonce unique.
+            Le GCM garantit en plus l’authenticité : un message modifié est
+            rejeté au déchiffrement.
+          </p>
+        </article>
+        <article>
+          <h3>La vérification</h3>
+          <p>
+            L’empreinte SHA-256 de la clé de session, affichée des deux côtés,
+            permet de confirmer d’un coup d’œil qu’on parle bien à la bonne
+            personne — et non à un intermédiaire.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — pair à pair chiffré, WebRTC et WebCrypto, sans serveur de messages.</p>
+  </footer>
+
+</body>
+</html>

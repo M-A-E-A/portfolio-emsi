@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messagerie P2P chiffrée — WebRTC et WebCrypto, sans serveur — Abderrahmane El ADNANI</title>
+  <meta name="description" content="Messagerie de pair à pair chiffrée de bout en bout : WebRTC DataChannel, échange de clés ECDH P-256, chiffrement AES-GCM et empreintes de clés. Projet d'Abderrahmane El ADNANI.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="projet.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="../js/script.js" defer></script>
+  <script src="projet.js" defer></script>
+</head>
+<body>
+
+  <div class="fond-anime" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+    <span class="grain"></span>
+  </div>
+
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
+      <symbol id="i-projet" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z"/><path d="M9.5 12l1.8 1.8 3.4-3.6"/></symbol>
+    </defs>
+  </svg>
+
+  <header id="entete">
+    <div class="entete-contenu">
+      <a href="../index.html" class="logo">
+        <img class="logo-marque" src="../img/m3.png" alt="" width="402" height="159">
+        <span class="logo-nom">Abderrahmane<b>El&nbsp;ADNANI</b></span>
+      </a>
+
+      <div class="entete-actions">
+        <button id="menu" type="button" class="bouton-icone" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu">
+          <span class="burger" aria-hidden="true"></span>
+        </button>
+        <button id="theme" type="button" class="bouton-icone" aria-label="Basculer en mode sombre" title="Mode sombre">
+          <span class="ico ico-sombre" aria-hidden="true"><svg><use href="#i-moon"/></svg></span>
+          <span class="ico ico-clair" aria-hidden="true"><svg><use href="#i-sun"/></svg></span>
+        </button>
+      </div>
+
+      <nav id="navigation" aria-label="Navigation principale">
+        <a href="../index.html#accueil">Accueil</a>
+        <a href="../index.html#projets">Projets</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu" class="page-projet">
+
+    <p class="fil"><a href="../index.html#projets">← Tous les projets</a></p>
+
+    <div class="projet-titre">
+      <span class="projet-icone" aria-hidden="true"><svg><use href="#i-projet"/></svg></span>
+      <div>
+        <h1>Messagerie P2P chiffrée</h1>
+        <p class="projet-meta">2026 · Projet personnel</p>
+      </div>
+    </div>
+
+    <p class="chapeau">
+      Deux navigateurs, un canal direct, aucun serveur : la signalisation s'échange à la main, la clé est dérivée par ECDH, et chaque message est chiffré en AES-GCM.
+    </p>
+
+    <p class="projet-demo">
+      <a class="bouton" href="../../p2p/index.html" target="_blank" rel="noopener">
+        Voir la démo
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+      </a>
+      <span class="projet-demo-note">Application complète et fonctionnelle, chiffrement de bout en bout.</span>
+    </p>
+
+    <dl class="projet-fiche">
+      <div><dt>Rôle</dt><dd>Conception et développement</dd></div>
+      <div><dt>Contexte</dt><dd>Projet personnel</dd></div>
+      <div><dt>Statut</dt><dd>Terminé — démo jouable</dd></div>
+    </dl>
+
+    <p class="stack-titre">Technologies</p>
+    <ul class="stack">
+            <li>HTML</li>
+      <li>CSS</li>
+      <li>JavaScript</li>
+      <li>WebRTC</li>
+      <li>WebCrypto</li>
+    </ul>
+
+    <section class="bloc">
+      <h2>Le point de départ</h2>
+      La messagerie du portfolio synchronise les onglets d'un même navigateur avec BroadcastChannel. C'est élégant, mais ce n'est pas du pair à pair : tout transite par le même espace de stockage du navigateur.<p>Le vrai pair à pair demande un canal réseau entre deux machines. WebRTC fait exactement cela, et WebCrypto permet de chiffrer le contenu. Encore faut-il que le canal s'établisse — et là, le problème n'est pas technique mais humain.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>L'objectif</h2>
+      Faire communiquer deux navigateurs sur deux machines différentes, sans serveur, et garantir que ce qui circule est illisible pour quiconque écoute le canal.
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'ai construit</h2>
+      <ul class="liste-puces">
+                <li>DataChannel WebRTC entre deux pairs, sans passer par un serveur de messages</li>
+        <li>Échange de clés ECDH sur P-256 : la clé de session n'est jamais transmise</li>
+        <li>Chiffrement AES-GCM 256 bits de chaque message, avec nonce unique</li>
+        <li>Empreinte de clé (SHA-256) affichée des deux côtés pour vérifier la connexion</li>
+        <li>Canal de contrôle en clair pour la signalisation, jamais pour les messages</li>
+        <li>Historique limité, effacement de la session et destruction des clés</li>
+        <li>État de la connexion en direct : appairage, canal, chiffrement, clés</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>Les étapes</h2>
+      <ol class="etapes">
+                <li><span class="etape-num" aria-hidden="true">1</span>Offre et réponse WebRTC échangées à la main</li>
+        <li><span class="etape-num" aria-hidden="true">2</span>DataChannel et protocole de signalisation</li>
+        <li><span class="etape-num" aria-hidden="true">3</span>Dérivation de la clé de session par ECDH</li>
+        <li><span class="etape-num" aria-hidden="true">4</span>Chiffrement AES-GCM et empaquetage des messages</li>
+        <li><span class="etape-num" aria-hidden="true">5</span>Empreintes de clés, état de connexion et nettoyage</li>
+      </ol>
+    </section>
+
+    <section class="bloc">
+      <h2>Les difficultés</h2>
+      Le vrai obstacle de WebRTC, ce n'est pas le chiffrement : c'est la signalisation. Pour que deux pairs se trouvent, il faut échanger une offre, une réponse et des candidats ICE — un échange que WebRTC ne fait pas tout seul.<p>J'ai résolu en rendant cet échange manuel et visible : un code court à copier-coller. C'est moins magique qu'un serveur, mais c'est compréhensible, et cela évite d'introduire un tiers dans une démonstration de confidentialité.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'en retiens</h2>
+      La cryptographie se vérifie, elle ne se présume pas. Afficher l'empreinte de la clé de session des deux côtés, c'est donner à l'utilisateur le moyen de vérifier lui-même qu'il parle à la bonne personne — un détail de dix lignes qui change la nature de la démonstration.
+    </section>
+
+    <p class="retour"><a class="bouton" href="../index.html#projets">← Retour au portfolio</a></p>
+  </main>
+
+  <footer>
+    <div class="footer-contenu">
+      <p class="footer-logo">Abderrahmane El ADNANI</p>
+      <nav class="footer-liens" aria-label="Liens externes">
+        <a href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn
+        </a>
+        <a href="mailto:m.a.eladnani1@gmail.com">
+          <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>E-mail
+        </a>
+      </nav>
+      <p class="footer-copie">
+        © <span id="annee">2026</span> Abderrahmane El ADNANI — fait en HTML, CSS et JavaScript.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -144,3 +144,13 @@ body[data-projet="chain"].sombre {
   --ciel-haut: #1a1105; --ciel-bas: #0b0702; --blob-1: #b45309; --blob-2: #9a6a24; --blob-3: #7d4a13; --blob-4: #c9955a; --blob-opacite: .42; --halo-a: rgba(240,169,76,.20); --halo-b: rgba(201,149,90,.18);
 }
 
+/* ---------- 15. p2p (messagerie pair à pair chiffrée) ---------- */
+body[data-projet="p2p"]:not(.sombre) {
+  --accent: #0369a1; --accent-fonce: #02496f; --accent-doux: #e2eff7;
+  --ciel-haut: #eef5fa; --ciel-bas: #e4eff7; --blob-1: #0369a1; --blob-2: #2596c7; --blob-3: #075985; --blob-4: #82b6d4; --blob-opacite: .17; --halo-a: rgba(3,105,161,.15); --halo-b: rgba(130,182,212,.12);
+}
+body[data-projet="p2p"].sombre {
+  --accent: #6cc0f2; --accent-fonce: #a3d9f7; --accent-doux: #11303f;
+  --ciel-haut: #04141f; --ciel-bas: #020a10; --blob-1: #0e7bb5; --blob-2: #1a7fa8; --blob-3: #0a5f86; --blob-4: #57a2c6; --blob-opacite: .42; --halo-a: rgba(108,192,242,.20); --halo-b: rgba(87,162,198,.18);
+}
+
