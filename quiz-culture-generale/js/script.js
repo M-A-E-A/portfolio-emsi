@@ -298,10 +298,12 @@
   /* ---------- Thème (clair / sombre) ---------- */
   function appliquerTheme(sombre) {
     document.body.classList.toggle("sombre", sombre);
+    btnTheme.setAttribute("aria-pressed", String(sombre));
     btnTheme.setAttribute(
       "aria-label",
       sombre ? "Activer le thème clair" : "Activer le thème sombre"
     );
+    btnTheme.title = sombre ? "Mode clair" : "Mode sombre";
   }
 
   function initialiserTheme() {
