@@ -123,6 +123,30 @@
     radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%);
 }
 
+/* Variante « ruban » : nappes indigo qui tournent lentement.
+   Le sélecteur manquait : les classes .ruban-* étaient écrites mais
+   inaccessibles, et l'animation « soie » n'était pas déclarée ici. */
+.fond-anime[data-fond="ruban"] {
+  background: var(--ciel-haut);
+  background-image: radial-gradient(120% 80% at 50% 122%, var(--halo-b), transparent 60%);
+}
+
+/* ========== Animations des variantes ========== */
+/* Ces keyframes sont indispensables : sans elles, « grille », « contours »
+   et « ruban » ne bougent pas (le navigateur ignore l'animation inconnue). */
+@keyframes respire {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: 0 0, 0 0, -4% 3%; }
+}
+@keyframes soie {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(7%, 5%, 0) scale(1.14); }
+}
+@keyframes contours {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: 360px 180px, -360px 180px, 0 0; }
+}
+
 /* Grain subtil */
 .grain {
   position: absolute;
