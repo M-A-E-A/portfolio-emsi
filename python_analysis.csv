@@ -1,3 +1,0 @@
-# Project Analysis CSV - Python Analyse
-Project Name,Type,Description,Key Features,Technologies Used,Status
-Python Analyse,Command-line tool,CLI tool for analyzing CSV files with column statistics and grouping,Reads CSV files, calculates statistics per column, supports grouping, generates reports, handles large files efficiently,CLI interface, Python, Pandas, Numpy, CSV module, Active
