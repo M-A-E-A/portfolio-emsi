@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Portrait d'Abderrahmane El ADNANI">
+  <defs>
+    <clipPath id="cadre"><rect width="320" height="320" rx="12"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#cadre)">
+    <!-- Papier froid + trame discrète de « dessin technique » -->
+    <rect width="320" height="320" fill="#eceef1"/>
+    <g stroke="#d2d7de" stroke-width="1">
+      <path d="M0 80h320M0 160h320M0 240h320M80 0v320M160 0v320M240 0v320"/>
+    </g>
+
+    <!-- Silhouette : buste et tête, encre + accent -->
+    <circle cx="160" cy="132" r="54" fill="#12161c"/>
+    <path d="M60 320c0-58 45-100 100-100s100 42 100 100z" fill="#12161c"/>
+    <path d="M160 32a54 54 0 0 1 0 108" fill="#1b4de4" opacity=".18"/>
+
+    <!-- Repère d'angle -->
+    <path d="M16 44V16h28M276 16h28v28" fill="none" stroke="#1b4de4" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <rect x="0.5" y="0.5" width="319" height="319" rx="12" fill="none" stroke="#d2d7de"/>
+</svg>

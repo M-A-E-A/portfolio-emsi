@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carte des points d'intérêt — Marrakech</title>
+<meta name="description" content="Carte interactive des points d'intérêt de Marrakech : monuments, jardins, restaurants et shopping. Plan schématique dessiné en SVG, recherche, filtres, ajout et suppression de lieux — sans aucune librairie externe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared/theme.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+<!-- ============================================================
+     Bibliothèque d'icônes : symboles SVG écrits en ligne.
+     Aucun attribut fill/stroke ici : le style vient du CSS (.ico).
+     ============================================================ -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="ico-marque" viewBox="0 0 24 24">
+    <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/>
+    <circle cx="12" cy="10" r="2.6"/>
+  </symbol>
+  <symbol id="ico-monuments" viewBox="0 0 24 24">
+    <path d="M3 22h18"/>
+    <path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/>
+    <path d="M12 2 20 7H4Z"/>
+  </symbol>
+  <symbol id="ico-jardins" viewBox="0 0 24 24">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/>
+    <path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/>
+  </symbol>
+  <symbol id="ico-restaurants" viewBox="0 0 24 24">
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+    <path d="M7 2v20"/>
+    <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+  </symbol>
+  <symbol id="ico-shopping" viewBox="0 0 24 24">
+    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+    <path d="M3 6h18"/>
+    <path d="M16 10a4 4 0 0 1-8 0"/>
+  </symbol>
+  <symbol id="ico-toutes" viewBox="0 0 24 24">
+    <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>
+  </symbol>
+  <symbol id="ico-recherche" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="7"/>
+    <path d="m20.5 20.5-4-4"/>
+  </symbol>
+  <symbol id="ico-plus" viewBox="0 0 24 24">
+    <path d="M12 5v14M5 12h14"/>
+  </symbol>
+  <symbol id="ico-cible" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.5"/>
+    <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+  </symbol>
+  <symbol id="ico-poubelle" viewBox="0 0 24 24">
+    <path d="M3.5 6.5h17"/>
+    <path d="M9 6.5V4h6v2.5"/>
+    <path d="M6 6.5 7 20.5h10L18 6.5"/>
+    <path d="M10 11v6M14 11v6"/>
+  </symbol>
+  <symbol id="ico-lune" viewBox="0 0 24 24">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+  </symbol>
+  <symbol id="ico-soleil" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+  </symbol>
+  <symbol id="ico-export" viewBox="0 0 24 24">
+    <path d="M12 3v11"/>
+    <path d="m7.5 9.5 4.5 4.5 4.5-4.5"/>
+    <path d="M4 20h16"/>
+  </symbol>
+  <symbol id="ico-import" viewBox="0 0 24 24">
+    <path d="M12 15V4"/>
+    <path d="m7.5 8.5 4.5-4.5 4.5 4.5"/>
+    <path d="M4 20h16"/>
+  </symbol>
+  <symbol id="ico-mesure" viewBox="0 0 24 24">
+    <path d="M5.6 18.4 18.4 5.6"/>
+    <circle cx="6" cy="18" r="2.4"/>
+    <circle cx="18" cy="6" r="2.4"/>
+  </symbol>
+  <symbol id="ico-effacer" viewBox="0 0 24 24">
+    <path d="M6 6l12 12M18 6 6 18"/>
+  </symbol>
+</svg>
+
+<!-- ============================ En-tête ============================ -->
+<header class="entete">
+  <div class="entete-int">
+    <p class="marque">
+      <span class="marque-ico">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-marque"></use></svg>
+      </span>
+      <span>Points d'intérêt</span>
+    </p>
+    <button type="button" class="btn-icone" id="theme" aria-label="Activer le thème sombre" aria-pressed="false">
+      <svg class="ico ico-lune" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-lune"></use></svg>
+      <svg class="ico ico-soleil" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-soleil"></use></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================ Contenu ============================ -->
+<main class="atelier" id="contenu">
+
+  <!-- Titre de la page (masqué visuellement : la marque de l'en-tête fait office de titre visible) -->
+  <h1 class="sr-only">Carte des points d'intérêt de Marrakech</h1>
+
+  <!-- Annonces polies pour les lecteurs d'écran (déplacements, résultats d'import) -->
+  <p class="sr-only" id="annonce" role="status" aria-live="polite"></p>
+  <p class="sr-only" id="aide-deplacement">Utilisez les flèches du clavier pour déplacer ce point d'intérêt, avec la touche Maj pour un pas de 5 %.</p>
+
+  <!-- Outils : recherche + filtres + ajout -->
+  <aside class="panneau panneau-outils" aria-label="Recherche et filtres">
+    <div class="champ">
+      <label class="etiquette" for="recherche">Rechercher</label>
+      <span class="champ-saisie">
+        <svg class="ico champ-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-recherche"></use></svg>
+        <input type="search" id="recherche" placeholder="Nom ou description…" autocomplete="off" spellcheck="false">
+      </span>
+    </div>
+
+    <div class="champ">
+      <p class="etiquette" id="etiquette-categories">Catégories</p>
+      <div class="puces" id="puces" role="group" aria-labelledby="etiquette-categories"></div>
+    </div>
+
+    <button type="button" class="btn btn-primaire btn-large" id="bouton-ajouter" aria-pressed="false">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-plus"></use></svg>
+      <span>Ajouter un lieu</span>
+    </button>
+
+    <!-- Mesure d'une distance entre deux points (estimation, voir l'échelle) -->
+    <div class="champ">
+      <p class="etiquette" id="etiquette-mesure">Mesure</p>
+      <div class="outils-mesure" role="group" aria-labelledby="etiquette-mesure">
+        <button type="button" class="btn btn-secondaire btn-large" id="bouton-mesure" aria-pressed="false" aria-describedby="aide-mesure">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-mesure"></use></svg>
+          <span>Mesurer une distance</span>
+        </button>
+        <button type="button" class="btn btn-secondaire btn-large" id="bouton-effacer-mesure" hidden>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-effacer"></use></svg>
+          <span>Effacer la mesure</span>
+        </button>
+        <p class="mesure-sortie" id="mesure-sortie" role="status" aria-live="polite" hidden></p>
+        <p class="mesure-echelle">Échelle indicative déclarée : le plan représente ≈ 8 km × 6 km (1 % de la largeur ≈ 0,08 km). Distance approximative.</p>
+      </div>
+      <p class="sr-only" id="aide-mesure">Mesure d'une distance approximative sur un plan schématique : cliquez deux points du plan ou deux lieux. Un troisième clic démarre une nouvelle mesure. Déplacer une punaise (glisser ou flèches) met la mesure à jour. Échap efface la mesure, puis quitte le mode.</p>
+    </div>
+
+    <!-- Import / export de la liste des lieux (fichier JSON local, aucune requête réseau) -->
+    <div class="champ">
+      <p class="etiquette" id="etiquette-donnees">Données</p>
+      <div class="outils-donnees" role="group" aria-labelledby="etiquette-donnees">
+        <button type="button" class="btn btn-secondaire btn-large" id="bouton-export">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-export"></use></svg>
+          <span>Exporter en JSON</span>
+        </button>
+        <button type="button" class="btn btn-secondaire btn-large" id="bouton-import">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-import"></use></svg>
+          <span>Importer un JSON</span>
+        </button>
+        <input type="file" id="fichier-import" class="sr-only" tabindex="-1" accept=".json,application/json" aria-label="Fichier JSON des lieux à importer">
+        <p class="message-donnees" id="message-donnees" role="status" aria-live="polite" hidden></p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Le plan -->
+  <section class="panneau panneau-plan" aria-label="Plan schématique de la ville">
+    <div class="plan-tete">
+      <h2 class="plan-titre">Plan de la ville</h2>
+      <p class="plan-note" id="note-plan">Cliquez un marqueur pour ouvrir sa fiche ; glissez-le pour le déplacer.</p>
+    </div>
+
+    <p class="bandeau-placement" id="bandeau-placement" role="status" hidden>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ico-cible"></use></svg>
+      <span>Mode placement : cliquez sur le plan pour situer le nouveau point.</span>
+      <button type="button" class="btn btn-secondaire btn-petit" id="bouton-quitter-mode">Annuler</button>
+    </p>
+
+    <div class="conteneur-plan" id="conteneur-plan">
+      <!-- Plan décoratif dessiné à la main (aucune tuile téléchargée) -->
+      <svg class="plan" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <pattern id="plan-hachures" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line class="plan-hachure" x1="0" y1="0" x2="0" y2="9"></line>
+          </pattern>
+        </defs>
+
+        <!-- Fond -->
+        <rect class="plan-fond" x="0" y="0" width="800" height="600"></rect>
+
+        <!-- Blocs de bâtiments (dessinés avant les routes) -->
+        <g class="plan-blocs">
+          <rect x="32" y="44" width="120" height="88" rx="3"></rect>
+          <rect x="212" y="44" width="76" height="42" rx="3"></rect>
+          <rect x="212" y="96" width="76" height="36" rx="3"></rect>
+          <rect x="304" y="44" width="78" height="88" rx="3"></rect>
+          <rect x="412" y="44" width="62" height="88" rx="3"></rect>
+          <rect x="30" y="166" width="120" height="56" rx="3"></rect>
+          <rect x="30" y="232" width="120" height="52" rx="3"></rect>
+          <rect x="206" y="166" width="84" height="54" rx="3"></rect>
+          <rect x="302" y="166" width="80" height="54" rx="3"></rect>
+          <rect x="206" y="232" width="176" height="54" rx="3"></rect>
+          <rect x="412" y="166" width="62" height="54" rx="3"></rect>
+          <rect x="500" y="262" width="180" height="26" rx="3"></rect>
+          <rect x="30" y="318" width="120" height="48" rx="3"></rect>
+          <rect x="30" y="378" width="120" height="46" rx="3"></rect>
+          <rect x="206" y="318" width="84" height="48" rx="3"></rect>
+          <rect x="302" y="318" width="80" height="48" rx="3"></rect>
+          <rect x="206" y="378" width="176" height="46" rx="3"></rect>
+          <rect x="412" y="318" width="62" height="48" rx="3"></rect>
+          <rect x="412" y="378" width="62" height="46" rx="3"></rect>
+          <rect x="500" y="318" width="96" height="48" rx="3"></rect>
+          <rect x="500" y="378" width="96" height="46" rx="3"></rect>
+          <rect x="636" y="318" width="60" height="48" rx="3"></rect>
+          <rect x="636" y="378" width="60" height="46" rx="3"></rect>
+          <rect x="724" y="318" width="56" height="48" rx="3"></rect>
+          <rect x="724" y="378" width="56" height="46" rx="3"></rect>
+          <rect x="30" y="458" width="120" height="58" rx="3"></rect>
+          <rect x="206" y="458" width="84" height="58" rx="3"></rect>
+          <rect x="302" y="458" width="80" height="58" rx="3"></rect>
+          <rect x="412" y="458" width="62" height="58" rx="3"></rect>
+          <rect x="500" y="458" width="96" height="58" rx="3"></rect>
+          <rect x="636" y="458" width="60" height="58" rx="3"></rect>
+          <rect x="724" y="458" width="56" height="58" rx="3"></rect>
+        </g>
+
+        <!-- Nom de la ville en filigrane -->
+        <text class="plan-filigrane" x="400" y="302" text-anchor="middle" dominant-baseline="middle">MARRAKECH</text>
+
+        <!-- Grand espace vert -->
+        <rect class="plan-vert" x="490" y="42" width="300" height="210" rx="16"></rect>
+        <rect class="plan-vert-hachures" x="490" y="42" width="300" height="210" rx="16"></rect>
+
+        <!-- Voirie -->
+        <g class="plan-routes">
+          <path class="plan-route plan-route-principale" d="M-10 300 H 810"></path>
+          <path class="plan-route plan-route-principale" d="M398 -10 V 610"></path>
+          <path class="plan-route" d="M-10 148 H 478"></path>
+          <path class="plan-route" d="M-10 440 H 810"></path>
+          <path class="plan-route" d="M178 -10 V 610"></path>
+          <path class="plan-route" d="M620 262 V 610"></path>
+          <path class="plan-route" d="M712 262 V 610"></path>
+        </g>
+
+        <!-- Cours d'eau -->
+        <path class="plan-eau" d="M-20 540 C 90 500 176 590 300 576 C 400 564 470 500 560 522 C 646 544 706 600 820 578"></path>
+        <path class="plan-eau-fil" d="M-20 540 C 90 500 176 590 300 576 C 400 564 470 500 560 522 C 646 544 706 600 820 578"></path>
+
+        <!-- Détails : allée, arbres, bassin, rond-point -->
+        <path class="plan-allee" d="M512 234 C 566 176 640 130 776 62"></path>
+        <g class="plan-arbres">
+          <circle cx="540" cy="90" r="9"></circle>
+          <circle cx="600" cy="150" r="9"></circle>
+          <circle cx="672" cy="96" r="9"></circle>
+          <circle cx="742" cy="168" r="9"></circle>
+          <circle cx="636" cy="222" r="9"></circle>
+        </g>
+        <ellipse class="plan-bassin" cx="700" cy="200" rx="34" ry="20"></ellipse>
+        <circle class="plan-rond" cx="178" cy="300" r="24"></circle>
+        <circle class="plan-rond-coeur" cx="178" cy="300" r="8"></circle>
+      </svg>
+
+      <!-- Calque de la règle de mesure : tracé SVG, sous les marqueurs -->
+      <svg class="regle" id="regle" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true" focusable="false"></svg>
+
+      <!-- Valeur affichée au milieu de la règle (une estimation, jamais un relevé réel) -->
+      <p class="etiquette-distance" id="etiquette-distance" hidden></p>
+
+      <!-- Calque des marqueurs (générés en JS) -->
+      <div class="calque-marqueurs" id="marqueurs"></div>
+
+      <!-- Formulaire d'ajout, ancré près du point cliqué -->
+      <form class="form-ajout" id="form-ajout" hidden novalidate>
+        <p class="form-titre">Nouveau point d'intérêt</p>
+        <p class="form-coords mono" id="ajout-coords">x 0,0 · y 0,0</p>
+        <div class="form-champ">
+          <label for="ajout-nom">Nom <span class="obligatoire">(obligatoire)</span></label>
+          <input type="text" id="ajout-nom" maxlength="60" autocomplete="off">
+        </div>
+        <div class="form-champ">
+          <label for="ajout-categorie">Catégorie</label>
+          <select id="ajout-categorie"></select>
+        </div>
+        <div class="form-champ">
+          <label for="ajout-description">Description</label>
+          <textarea id="ajout-description" rows="2" maxlength="180"></textarea>
+        </div>
+        <p class="form-erreur" id="ajout-erreur" role="alert" hidden>Le nom est obligatoire.</p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primaire">Ajouter</button>
+          <button type="button" class="btn btn-secondaire" id="bouton-annuler-ajout">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Fiche + liste -->
+  <aside class="panneau panneau-details" aria-label="Fiche et liste des lieux">
+    <section class="fiche" id="fiche" aria-live="polite" aria-label="Fiche du lieu"></section>
+
+    <section class="liste-bloc" aria-label="Liste des lieux">
+      <div class="liste-tete">
+        <p class="etiquette">Lieux</p>
+        <p class="compteur mono" id="compteur">0 / 0</p>
+      </div>
+      <ul class="liste" id="liste"></ul>
+    </section>
+  </aside>
+
+</main>
+
+<!-- ============================ Pied ============================ -->
+<footer class="pied">
+  <p>Abderrahmane El ADNANI — Carte des points d'intérêt · <span class="mono" id="annee">2026</span></p>
+</footer>
+
+<script src="../shared/theme.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

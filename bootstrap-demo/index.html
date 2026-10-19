@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord — Bootstrap 5</title>
+  <meta name="description" content="Démonstration de Bootstrap 5 : grille, cartes, tableau, formulaire, alertes, modale et mode sombre.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/bootstrap.bundle.min.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <!-- Barre de navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">Tableau de bord</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Clients</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Commandes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Rapports</a></li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Rechercher…" aria-label="Rechercher">
+          <button class="btn btn-outline-light" type="submit">OK</button>
+        </form>
+        <button id="theme" class="btn btn-outline-light ms-2" type="button" aria-label="Basculer le thème">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid py-4">
+    <div class="row g-3">
+
+      <!-- Colonne latérale -->
+      <aside class="col-12 col-lg-3 col-xl-2">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="text-uppercase text-muted small mb-3">Navigation</h6>
+            <div class="list-group list-group-flush">
+              <a href="#" class="list-group-item list-group-item-action active">Vue d'ensemble</a>
+              <a href="#" class="list-group-item list-group-item-action">Clients</a>
+              <a href="#" class="list-group-item list-group-item-action">Commandes</a>
+              <a href="#" class="list-group-item list-group-item-action">Produits</a>
+              <a href="#" class="list-group-item list-group-item-action">Paramètres</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mt-3">
+          <div class="card-body">
+            <h6 class="text-uppercase text-muted small mb-2">Progression</h6>
+            <p class="small mb-1">Objectif mensuel</p>
+            <div class="progress" role="progressbar" aria-label="Objectif mensuel" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar bg-success" style="width: 72%">72 %</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Contenu principal -->
+      <main class="col-12 col-lg-9 col-xl-10">
+
+        <!-- Alertes -->
+        <div id="alerte" class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>Bienvenue !</strong> Les données ci-dessous sont un exemple.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+
+        <!-- Cartes de statistiques -->
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Clients</p>
+                <h3 class="mb-0">1 284</h3>
+                <span class="badge text-bg-success">+ 12 %</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Commandes</p>
+                <h3 class="mb-0">342</h3>
+                <span class="badge text-bg-primary">ce mois</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Chiffre d'affaires</p>
+                <h3 class="mb-0">48 920 €</h3>
+                <span class="badge text-bg-warning">en attente</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Tickets ouverts</p>
+                <h3 class="mb-0">7</h3>
+                <span class="badge text-bg-danger">urgent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau -->
+        <div class="card shadow-sm mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dernières commandes</h5>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalAjout">+ Ajouter</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="tableau">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Client</th>
+                  <th scope="col">Produit</th>
+                  <th scope="col">Montant</th>
+                  <th scope="col">Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1042</th>
+                  <td>Sarah L.</td>
+                  <td>Abonnement annuel</td>
+                  <td>240,00 €</td>
+                  <td><span class="badge text-bg-success">Payé</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">1041</th>
+                  <td>Karim B.</td>
+                  <td>Formation</td>
+                  <td>89,00 €</td>
+                  <td><span class="badge text-bg-warning">En attente</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">1040</th>
+                  <td>Nadia M.</td>
+                  <td>Support premium</td>
+                  <td>45,00 €</td>
+                  <td><span class="badge text-bg-secondary">Brouillon</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Nouveau client</h5>
+            <form id="formClient" class="row g-3" novalidate>
+              <div class="col-md-6">
+                <label for="prenom" class="form-label">Prénom</label>
+                <input type="text" class="form-control" id="prenom" required>
+                <div class="invalid-feedback">Prénom requis.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="email" required>
+                <div class="invalid-feedback">E-mail valide requis.</div>
+              </div>
+              <div class="col-12">
+                <label for="ville" class="form-label">Ville</label>
+                <select id="ville" class="form-select">
+                  <option selected>Marrakech</option>
+                  <option>Casablanca</option>
+                  <option>Rabat</option>
+                  <option>Fès</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="consent" required>
+                  <label class="form-check-label" for="consent">J'accepte les conditions.</label>
+                  <div class="invalid-feedback">Consentement requis.</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+                <button class="btn btn-outline-secondary ms-2" type="reset">Réinitialiser</button>
+              </div>
+            </form>
+            <div id="toast" class="toast align-items-center text-bg-success border-0 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body">Client enregistré (démo, rien n'est envoyé).</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modale -->
+  <div class="modal fade" id="modalAjout" tabindex="-1" aria-labelledby="modalAjoutTitre" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAjoutTitre">Nouvelle commande</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <p>Formulaire de commande (démo). En production, il enverrait les données à un serveur.</p>
+          <div class="mb-3">
+            <label for="produit" class="form-label">Produit</label>
+            <input type="text" class="form-control" id="produit" placeholder="Nom du produit">
+          </div>
+          <div class="mb-3">
+            <label for="montant" class="form-label">Montant (€)</label>
+            <input type="number" class="form-control" id="montant" placeholder="0,00">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-body-tertiary border-top py-3 mt-4">
+    <div class="container-fluid text-center small text-muted">
+      © <span id="annee">2026</span> Abderrahmane El ADNANI — démo Bootstrap 5 (CSS vendu localement, sans CDN).
+    </div>
+  </footer>
+
+</body>
+</html>

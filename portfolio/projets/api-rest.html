@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API REST « Contacts » — Abderrahmane El ADNANI</title>
+  <meta name="description" content="API REST « Contacts » : une API simulée dans le navigateur, avec recherche, tri, pagination et console de test. Projet d'Abderrahmane El ADNANI.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="projet.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="../js/script.js" defer></script>
+  <script src="projet.js" defer></script>
+</head>
+<body>
+
+  <div class="fond-anime" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+    <span class="grain"></span>
+  </div>
+
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
+      <symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+    </defs>
+  </svg>
+
+  <header id="entete">
+    <div class="entete-contenu">
+      <a href="../index.html" class="logo">
+        <img class="logo-marque" src="../img/m3.png" alt="" width="402" height="159">
+        <span class="logo-nom">Abderrahmane<b>El&nbsp;ADNANI</b></span>
+      </a>
+
+      <div class="entete-actions">
+        <button id="menu" type="button" class="bouton-icone" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu">
+          <span class="burger" aria-hidden="true"></span>
+        </button>
+        <button id="theme" type="button" class="bouton-icone" aria-label="Basculer en mode sombre" title="Mode sombre">
+          <span class="ico ico-sombre" aria-hidden="true"><svg><use href="#i-moon"/></svg></span>
+          <span class="ico ico-clair" aria-hidden="true"><svg><use href="#i-sun"/></svg></span>
+        </button>
+      </div>
+
+      <nav id="navigation" aria-label="Navigation principale">
+        <a href="../index.html#accueil">Accueil</a>
+        <a href="../index.html#projets">Projets</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu" class="page-projet">
+
+    <p class="fil"><a href="../index.html#projets">← Tous les projets</a></p>
+
+    <div class="projet-titre">
+      <span class="projet-icone" aria-hidden="true"><svg><use href="#i-server"/></svg></span>
+      <div>
+        <h1>API REST « Contacts »</h1>
+        <p class="projet-meta">2026 · Projet personnel</p>
+      </div>
+    </div>
+
+    <p class="chapeau">
+      Une API « Contacts » complète — lister, créer, modifier, supprimer, rechercher et
+      paginer — avec sa console de test.
+    </p>
+
+    <p class="projet-demo">
+      <a class="bouton" href="../../api-contacts/index.html" target="_blank" rel="noopener">
+        Voir la démo
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+      </a>
+      <span class="projet-demo-note">Application complète et fonctionnelle.</span>
+    </p>
+
+    <dl class="projet-fiche">
+      <div><dt>Rôle</dt><dd>Conception et développement</dd></div>
+      <div><dt>Contexte</dt><dd>Projet personnel</dd></div>
+      <div><dt>Statut</dt><dd>Terminé — démo jouable</dd></div>
+    </dl>
+
+    <p class="stack-titre">Technologies</p>
+    <ul class="stack">
+      <li>HTML</li><li>CSS</li><li>JavaScript</li>
+    </ul>
+
+    <section class="bloc">
+      <h2>Le point de départ</h2>
+      <p>
+        Je voulais comprendre ce qui se passe « derrière » une application : les données,
+        leurs règles, et la façon dont une interface vient s'y brancher. Pour rendre la
+        chose observable sans installer de serveur, j'ai écrit l'API en JavaScript et
+        simulé les requêtes HTTP dans la page.
+      </p>
+      <p>
+        Le but était d'avoir une couche de données propre et testable, indépendante de
+        l'affichage — et d'y accoler une petite console pour voir les réponses arriver.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>L'objectif</h2>
+      <p>
+        Exposer des opérations claires et prévisibles sur des contacts — lister, lire,
+        créer, modifier, supprimer — avec des réponses JSON homogènes et des codes de
+        statut qui disent vraiment ce qui s'est passé.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'ai construit</h2>
+      <ul class="liste-puces">
+        <li>Routes <code>GET</code>, <code>POST</code>, <code>PUT</code> et <code>DELETE</code></li>
+        <li>Codes de statut réels : 200, 201, 204, 400, 404</li>
+        <li>Validation des champs (nom et e-mail obligatoires) avant écriture</li>
+        <li>Délai réseau simulé pour rendre l'attente réaliste</li>
+        <li>Console de test : choix de la route, corps JSON, statut et durée de la réponse</li>
+        <li>Tableau des contacts avec création, modification et suppression en deux temps</li>
+        <li>Retour au jeu de données d'origine en un clic</li>
+        <li>Recherche insensible aux accents (nom, e-mail, ville, téléphone)</li>
+        <li>Tri par identifiant, nom ou ville, dans les deux sens</li>
+        <li>Pagination avec taille de page réglable (<code>page</code> et <code>limit</code>)</li>
+        <li>Enveloppe de réponse avec les métadonnées : page, total, nombre de pages</li>
+        <li>Paramètres invalides refusés avec une erreur 400 et le détail des champs</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>Les étapes</h2>
+      <ol class="etapes">
+        <li><span class="etape-num" aria-hidden="true">1</span>Modèle de données et jeu de contacts d'exemple</li>
+        <li><span class="etape-num" aria-hidden="true">2</span>Les cinq routes et leurs codes de statut</li>
+        <li><span class="etape-num" aria-hidden="true">3</span>Validation des champs et réponses d'erreur</li>
+        <li><span class="etape-num" aria-hidden="true">4</span>Console de test et affichage des réponses JSON</li>
+        <li><span class="etape-num" aria-hidden="true">5</span>Tableau des contacts relié aux mêmes routes</li>
+      </ol>
+    </section>
+
+    <section class="bloc">
+      <h2>Aperçu</h2>
+      <p>Le format des réponses, tel qu'il apparaît dans un navigateur ou un outil de test.</p>
+      <button class="apercu-bouton" type="button" data-ouvrir="apercu-api" aria-haspopup="dialog">
+        <div class="maquette" aria-hidden="true">
+          <div class="maquette-barre"><span></span><span></span><span></span><i class="maquette-adresse"></i></div>
+          <div class="maquette-corps">
+            <div class="maquette-titre"></div>
+            <div class="maquette-texte"></div>
+            <div class="maquette-texte court"></div>
+            <div class="maquette-grille">
+              <div class="maquette-carte"></div>
+              <div class="maquette-carte"></div>
+              <div class="maquette-carte"></div>
+            </div>
+          </div>
+        </div>
+        <span class="apercu-legende">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          Cliquer pour agrandir
+        </span>
+      </button>
+
+      <div class="visionneuse" id="apercu-api" role="dialog" aria-modal="true" aria-label="Aperçu — API REST « Contacts »" hidden>
+        <div class="visionneuse-boite">
+          <button class="visionneuse-fermer" type="button" aria-label="Fermer l'aperçu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <div class="visionneuse-tete">
+            <h2>API REST « Contacts »</h2>
+            <p>Routes CRUD et réponses JSON</p>
+          </div>
+          <div class="prev">
+            <div class="prev-barre">
+              <span class="prev-dots"><span></span><span></span><span></span></span>
+              <span class="prev-url">api-contacts/index.html</span>
+            </div>
+            <div class="prev-deux prev-deux--api">
+              <div class="prev-cote">
+                <span class="prev-cote-titre">Routes</span>
+                <button class="prev-route actif" type="button" data-cible="liste">
+                  <span class="prev-methode">GET</span><span class="prev-chemin">/contacts</span>
+                </button>
+                <button class="prev-route" type="button" data-cible="creation">
+                  <span class="prev-methode prev-methode--post">POST</span><span class="prev-chemin">/contacts</span>
+                </button>
+                <button class="prev-route" type="button" data-cible="modif">
+                  <span class="prev-methode prev-methode--put">PUT</span><span class="prev-chemin">/contacts/:id</span>
+                </button>
+                <button class="prev-route" type="button" data-cible="suppr">
+                  <span class="prev-methode prev-methode--del">DELETE</span><span class="prev-chemin">/contacts/:id</span>
+                </button>
+              </div>
+              <div class="prev-detail">
+                <div class="prev-panneau actif" data-panneau="liste">
+                  <div class="prev-entete-route">
+                    <span class="prev-methode">GET</span><span class="prev-chemin">/contacts</span><span class="prev-statut">200 OK</span>
+                  </div>
+                  <pre class="prev-json">[
+  { <span class="cle">"id"</span>: <span class="txt">1</span>, <span class="cle">"nom"</span>: <span class="txt">"Yasmine El Amrani"</span>, <span class="cle">"ville"</span>: <span class="txt">"Marrakech"</span> },
+  { <span class="cle">"id"</span>: <span class="txt">2</span>, <span class="cle">"nom"</span>: <span class="txt">"Omar Benjelloun"</span>, <span class="cle">"ville"</span>: <span class="txt">"Casablanca"</span> }
+]</pre>
+                </div>
+                <div class="prev-panneau" data-panneau="creation">
+                  <div class="prev-entete-route">
+                    <span class="prev-methode prev-methode--post">POST</span><span class="prev-chemin">/contacts</span><span class="prev-statut">201 Created</span>
+                  </div>
+                  <pre class="prev-json">{
+  <span class="cle">"id"</span>: <span class="txt">3</span>,
+  <span class="cle">"nom"</span>: <span class="txt">"Abderrahmane El ADNANI"</span>,
+  <span class="cle">"email"</span>: <span class="txt">"contact@exemple.ma"</span>
+}</pre>
+                </div>
+                <div class="prev-panneau" data-panneau="modif">
+                  <div class="prev-entete-route">
+                    <span class="prev-methode prev-methode--put">PUT</span><span class="prev-chemin">/contacts/3</span><span class="prev-statut">200 OK</span>
+                  </div>
+                  <pre class="prev-json">{
+  <span class="cle">"id"</span>: <span class="txt">3</span>,
+  <span class="cle">"ville"</span>: <span class="txt">"Marrakech"</span>,
+  <span class="cle">"modifie"</span>: <span class="txt">true</span>
+}</pre>
+                </div>
+                <div class="prev-panneau" data-panneau="suppr">
+                  <div class="prev-entete-route">
+                    <span class="prev-methode prev-methode--del">DELETE</span><span class="prev-chemin">/contacts/3</span><span class="prev-statut">204 No Content</span>
+                  </div>
+                  <pre class="prev-json"><span class="txt">Aucun contenu renvoyé.</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Les difficultés</h2>
+      <p>
+        Au début, je renvoyais toujours le même code de statut, ce qui rendait le débogage
+        pénible : impossible de savoir pourquoi un appel échouait. En distinguant les cas —
+        donnée invalide (400), ressource absente (404), création réussie (201) — les erreurs
+        ont cessé d'être silencieuses.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'en retiens</h2>
+      <p>
+        J'ai découvert le confort d'une API propre : chaque route se teste indépendamment,
+        et l'interface devient beaucoup plus simple à écrire, puisqu'elle n'a plus qu'à
+        envoyer une requête et lire une réponse.
+      </p>
+    </section>
+
+<p class="retour"><a class="bouton" href="../index.html#projets">← Retour au portfolio</a></p>
+  </main>
+
+  <footer>
+    <div class="footer-contenu">
+      <p class="footer-logo">Abderrahmane El ADNANI</p>
+      <nav class="footer-liens" aria-label="Liens externes">
+        <a href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn
+        </a>
+        <a href="mailto:m.a.eladnani1@gmail.com">
+          <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>E-mail
+        </a>
+      </nav>
+      <p class="footer-copie">
+        © <span id="annee">2026</span> Abderrahmane El ADNANI — fait en HTML, CSS et JavaScript.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

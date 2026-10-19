@@ -1,0 +1,159 @@
+/* ========== Fond animé partagé (toutes les pages) ========= */
+
+/* Valeurs par défaut (thème clair) — réinitialisées en mode sombre ci-dessous */
+:root {
+  --ciel-haut: #eef2fb;
+  --ciel-bas: #e7edf9;
+  --blob-1: #2a22ab;
+  --blob-2: #3d81ae;
+  --blob-3: #6d7fd0;
+  --blob-4: #8badb9;
+  --blob-opacite: .17;
+  --grille-point: rgba(18, 22, 28, .17);
+  --contour: rgba(18, 22, 28, .10);
+  --halo-a: rgba(27, 77, 228, .16);
+  --halo-b: rgba(61, 129, 174, .12);
+  --ruban-opacite: .24;
+}
+
+/* Conteneur fixe derrière tout le contenu */
+.fond-anime {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--ciel-haut), var(--ciel-bas));
+}
+
+/* Variante « aurore » : les quatre taches qui dérivent (d'origine) */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: var(--blob-opacite);
+  will-change: transform;
+  animation: derive 34s ease-in-out infinite;
+}
+.blob-1 {
+  width: 62vmax; height: 62vmax;
+  top: -24vmax; left: -20vmax;
+  background: radial-gradient(circle at center, var(--blob-1) 0%, transparent 68%);
+  animation-duration: 30s;
+}
+.blob-2 {
+  width: 54vmax; height: 54vmax;
+  top: 6vmax; right: -18vmax;
+  background: radial-gradient(circle at center, var(--blob-3) 0%, transparent 66%);
+  animation-duration: 38s;
+  animation-delay: -14s;
+}
+.blob-3 {
+  width: 50vmax; height: 50vmax;
+  bottom: -22vmax; left: 4vmax;
+  background: radial-gradient(circle at center, var(--blob-2) 0%, transparent 70%);
+  animation-duration: 34s;
+  animation-delay: -26s;
+}
+.blob-4 {
+  width: 40vmax; height: 40vmax;
+  right: 2vmax; bottom: 4vmax;
+  background: radial-gradient(circle at center, var(--blob-4) 0%, transparent 62%);
+  animation-duration: 44s;
+  animation-delay: -8s;
+}
+@keyframes derive {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(11%, -8%, 0) scale(1.22); }
+  66%  { transform: translate3d(-9%, 10%, 0) scale(.88); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* Variante « grille » : quadrillage fin + lueur qui respire */
+.fond-anime[data-fond="grille"] {
+  background: var(--ciel-haut);
+  background-image:
+    radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px),
+    radial-gradient(110% 90% at 82% -20%, var(--halo-a), transparent 62%),
+    radial-gradient(60% 70% at 12% 112%, var(--halo-b), transparent 65%);
+  background-size: 22px 22px, 100% 100%, 100% 100%;
+  animation: respire 24s ease-in-out infinite alternate;
+}
+.fond-anime[data-fond="soie"] {
+  background: var(--ciel-haut);
+  background-image: radial-gradient(120% 80% at 50% 122%, var(--halo-b), transparent 60%);
+}
+.ruban {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  opacity: var(--ruban-opacite);
+  will-change: transform;
+  animation: soie 30s ease-in-out infinite alternate;
+}
+.ruban-1 {
+  width: 70vmax; height: 70vmax; left: -22vmax; top: -34vmax;
+  background: radial-gradient(circle at center, var(--blob-1) 0%, transparent 66%);
+}
+.ruban-2 {
+  width: 64vmax; height: 64vmax; right: -20vmax; top: 4vmax;
+  background: radial-gradient(circle at center, var(--blob-3) 0%, transparent 66%);
+  animation-delay: -11s;
+}
+.ruban-3 {
+  width: 58vmax; height: 58vmax; left: 18vmax; bottom: -38vmax;
+  background: radial-gradient(circle at center, var(--blob-2) 0%, transparent 70%);
+  animation-delay: -19s;
+}
+
+/* Variante « contours » : cartes topographiques */
+.fond-anime[data-fond="contours"] {
+  background: var(--ciel-haut);
+  background-image:
+    repeating-radial-gradient(circle at 26% 34%, transparent 0 17px, var(--contour) 17px 18px),
+    repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px),
+    radial-gradient(90% 80% at 70% -12%, var(--halo-a), transparent 65%);
+  animation: contours 60s linear infinite;
+}
+
+/* Variante « plat » : deux halos fixes */
+.fond-anime[data-fond="plat"] {
+  background: var(--ciel-haut);
+  background-image:
+    radial-gradient(95% 75% at 88% -18%, var(--halo-a), transparent 58%),
+    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%);
+}
+
+/* Grain subtil */
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: .05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ========== Thème sombre / clair ========= */
+body.sombre {
+  --papier: #0f1319;
+  --surface: #171c24;
+  --encre: #eef1f5;
+  --texte: #c6ccd4;
+  --sourdine: #8b95a3;
+  --trait: #2a313b;
+  --accent: #7da0ff;
+  --accent-fonce: #a9c0ff;
+  --accent-doux: #1b2540;
+  --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 40px -24px rgba(0, 0, 0, .8);
+  --ciel-haut: #090621;
+  --ciel-bas: #05031b;
+  --blob-1: #3039b0;
+  --blob-2: #261798;
+  --blob-3: #3d81ae;
+  --blob-4: #8badb9;
+  --blob-opacite: .45;
+  --grille-point: rgba(255, 255, 255, .11);
+  --contour: rgba(255, 255, 255, .075);
+  --halo-a: rgba(90, 130, 255, .22);
+  --halo-b: rgba(61, 129, 174, .20);
+  --ruban-opacite: .5;
+}

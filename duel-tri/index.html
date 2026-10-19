@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duel de tris — Deux algorithmes, un même tableau</title>
+  <meta name="description" content="Duel de tris : deux algorithmes de tri s'affrontent sur une copie du même tableau, opération par opération. Comparez le nombre de comparaisons, d'écritures et le moment où chacun termine.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+
+  <!-- Polices Google (Space Grotesk pour les titres, Inter pour le texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <!-- Sprite d'icônes : tous les SVG sont dessinés en ligne (aucune image) -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Marque : deux colonnes opposées -->
+      <symbol id="i-marque" viewBox="0 0 24 24">
+        <path d="M3.5 20.5h17"/>
+        <path d="M6 20.5V13M10 20.5V8.5"/>
+        <path d="M14 20.5V16M18 20.5V5.5"/>
+      </symbol>
+      <!-- Thème -->
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <!-- Lecture -->
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.8 19 12 7.5 19.2Z"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+      <symbol id="i-pas" viewBox="0 0 24 24">
+        <path d="M5 5.5 13 12l-8 6.5Z"/><path d="M18 5v14"/>
+      </symbol>
+      <!-- Données -->
+      <symbol id="i-nouveau" viewBox="0 0 24 24">
+        <path d="M20 11.5a8 8 0 1 0-2.4 5.7"/><path d="M20 4.5v6h-6"/>
+      </symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24">
+        <path d="M4 12.5a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5v6h6"/>
+      </symbol>
+      <!-- Duel -->
+      <symbol id="i-duel" viewBox="0 0 24 24">
+        <path d="M4 4l7 7M20 4l-7 7"/><path d="M12 11v4"/><circle cx="12" cy="17.5" r="3"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================ En-tête ============================ -->
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-marque"></use></svg>
+        <span class="marque-nom">Duel de tris</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================= Contenu ============================= -->
+  <main id="contenu">
+
+    <p class="sr-only" id="statut" aria-live="polite"></p>
+
+    <section class="intro">
+      <p class="sur-titre">Algorithmes de tri</p>
+      <h1>Duel de tris</h1>
+      <p class="intro-texte">
+        Deux algorithmes, une seule et même table de départ : chacun reçoit sa propre copie,
+        puis les deux avancent au même rythme, opération par opération. Comparez les
+        comparaisons, les écritures et le moment où chacun arrive à terme.
+        Tout est calculé dans le navigateur.
+      </p>
+    </section>
+
+    <!-- ---------------------- Commandes ---------------------- -->
+    <section class="carte carte-commandes" aria-labelledby="titre-commandes">
+      <header class="carte-tete">
+        <h2 id="titre-commandes">Règlages</h2>
+        <p class="carte-note" id="reglages-note">-</p>
+      </header>
+
+      <div class="commandes">
+        <div class="champ">
+          <label for="algo-a">Candidat à gauche</label>
+          <select id="algo-a">
+            <option value="bulles">Tri à bulles</option>
+            <option value="selection">Tri par sélection</option>
+            <option value="insertion">Tri par insertion</option>
+            <option value="fusion" selected>Tri fusion</option>
+            <option value="rapide">Tri rapide</option>
+            <option value="tas">Tri par tas</option>
+          </select>
+        </div>
+
+        <div class="versus" aria-hidden="true">VS</div>
+
+        <div class="champ">
+          <label for="algo-b">Candidat à droite</label>
+          <select id="algo-b">
+            <option value="bulles">Tri à bulles</option>
+            <option value="selection">Tri par sélection</option>
+            <option value="insertion">Tri par insertion</option>
+            <option value="fusion">Tri fusion</option>
+            <option value="rapide" selected>Tri rapide</option>
+            <option value="tas">Tri par tas</option>
+          </select>
+        </div>
+
+        <div class="champ">
+          <label for="forme">Forme des données</label>
+          <select id="forme">
+            <option value="aleatoire" selected>Aléatoire</option>
+            <option value="presque">Presque trié</option>
+            <option value="inverse">Inverse</option>
+            <option value="doublons">Beaucoup de doublons</option>
+          </select>
+        </div>
+
+        <div class="champ champ-curseur">
+          <label for="taille">Taille du tableau <span class="valeur" id="taille-valeur">32</span></label>
+          <input type="range" id="taille" min="8" max="60" step="1" value="32"
+                 aria-describedby="taille-aide">
+          <p class="aide" id="taille-aide">De 8 à 60 valeurs, identiques pour les deux candidats.</p>
+        </div>
+
+        <div class="champ champ-curseur">
+          <label for="vitesse">Vitesse <span class="valeur" id="vitesse-valeur">6</span></label>
+          <input type="range" id="vitesse" min="1" max="10" step="1" value="6"
+                 aria-describedby="vitesse-aide">
+          <p class="aide" id="vitesse-aide">Une image = une opération, pour les deux côtés.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primaire" id="btn-lancer">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play" id="ico-lancer"></use></svg>
+          <span id="libelle-lancer">Lancer le duel</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-pas">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-pas"></use></svg>
+          <span>Opération suivante</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-nouveau">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-nouveau"></use></svg>
+          <span>Nouveau tableau</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-reset">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+          <span>Réinitialiser</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------------------- Le duel ---------------------- -->
+    <section class="carte carte-duel" aria-labelledby="titre-duel">
+      <header class="carte-tete">
+        <h2 id="titre-duel">Sur le même tableau</h2>
+        <p class="carte-note" id="duel-note">-</p>
+      </header>
+
+      <div class="duel">
+
+        <!-- --------- Candidat A --------- -->
+        <article class="candidat" id="candidat-a" aria-labelledby="nom-a">
+          <header class="candidat-tete">
+            <span class="candidat-camp">Candidat A</span>
+            <h3 id="nom-a">Tri fusion</h3>
+            <span class="badge" id="badge-a" data-etat="attente">En attente</span>
+          </header>
+
+          <div class="barres" id="barres-a" role="img" aria-label="Tableau du candidat A"></div>
+
+          <p class="etapes" id="etage-a">Prêt à partir.</p>
+
+          <div class="compteurs">
+            <div class="compteur">
+              <span class="compteur-n" id="cmp-a">0</span>
+              <span class="compteur-l">comparaisons</span>
+            </div>
+            <div class="compteur">
+              <span class="compteur-n" id="ecr-a">0</span>
+              <span class="compteur-l">écritures</span>
+            </div>
+            <div class="compteur">
+              <span class="compteur-n" id="etape-a">0</span>
+              <span class="compteur-l">opérations</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- --------- Candidat B --------- -->
+        <article class="candidat" id="candidat-b" aria-labelledby="nom-b">
+          <header class="candidat-tete">
+            <span class="candidat-camp">Candidat B</span>
+            <h3 id="nom-b">Tri rapide</h3>
+            <span class="badge" id="badge-b" data-etat="attente">En attente</span>
+          </header>
+
+          <div class="barres" id="barres-b" role="img" aria-label="Tableau du candidat B"></div>
+
+          <p class="etapes" id="etage-b">Prêt à partir.</p>
+
+          <div class="compteurs">
+            <div class="compteur">
+              <span class="compteur-n" id="cmp-b">0</span>
+              <span class="compteur-l">comparaisons</span>
+            </div>
+            <div class="compteur">
+              <span class="compteur-n" id="ecr-b">0</span>
+              <span class="compteur-l">écritures</span>
+            </div>
+            <div class="compteur">
+              <span class="compteur-n" id="etape-b">0</span>
+              <span class="compteur-l">opérations</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <ul class="legende">
+        <li><span class="pastille pastille-cmp"></span>Comparaison</li>
+        <li><span class="pastille pastille-ecr"></span>Écriture ou permutation</li>
+        <li><span class="pastille pastille-place"></span>Position définitive</li>
+      </ul>
+    </section>
+
+    <!-- ---------------------- Verdict ---------------------- -->
+    <section class="carte carte-verdict" aria-labelledby="titre-verdict">
+      <header class="carte-tete">
+        <h2 id="titre-verdict">Bilan du duel</h2>
+        <p class="carte-note" id="verdict-note">Le duel n'a pas encore commencé.</p>
+      </header>
+
+      <div class="defilement">
+      <table class="bilan">
+        <caption class="sr-only">Comparaison des deux candidats sur les mêmes données</caption>
+        <thead>
+          <tr>
+            <th scope="col">Mesure</th>
+            <th scope="col" id="col-a">Candidat A</th>
+            <th scope="col" id="col-b">Candidat B</th>
+            <th scope="col">Avantage</th>
+          </tr>
+        </thead>
+        <tbody id="bilan-corps">
+          <tr><th scope="row">Comparaisons</th><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+          <tr><th scope="row">Écritures</th><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+          <tr><th scope="row">Opérations au total</th><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+          <tr><th scope="row">A terminé</th><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p class="note-honnete">
+        Les <strong>comparaisons</strong> et les <strong>écritures</strong> se comptent de la
+        même façon des deux côtés, ce qui les rend directement comparables. Le nombre
+        d'<strong>opérations</strong> l'est moins : une image ne montre qu'une seule opération,
+        et une permutation de tri rapide compte pour une écriture alors qu'une insertion
+        peut en coûter plusieurs. À complexité égale, c'est donc le détail des compteurs
+        qui fait la différence, pas le chronomètre.
+      </p>
+    </section>
+
+    <!-- ---------------------- Explication ---------------------- -->
+    <section class="carte" aria-labelledby="titre-methode">
+      <header class="carte-tete">
+        <h2 id="titre-methode">Comment le duel est mené</h2>
+      </header>
+
+      <ol class="methode">
+        <li>
+          <strong>Une table, deux copies.</strong> Le tableau est généré une seule fois,
+          puis dupliqué : les deux candidats reçoivent strictement les mêmes valeurs,
+          dans le même ordre.
+        </li>
+        <li>
+          <strong>Des générateurs, pas du clignotant.</strong> Chaque algorithme est écrit
+          comme une fonction génératrice qui rend une opération à la fois — une comparaison
+          ou une écriture. Le rendu n'a donc rien à deviner : il n'affiche que ce que
+          l'algorithme lui donne.
+        </li>
+        <li>
+          <strong>À tour de rôle.</strong> À chaque image, le candidat A avance d'une
+          opération puis le candidat B d'une opération. Celui qui a fini continue de
+          s'afficher sans bouger, l'autre termine sa course.
+        </li>
+        <li>
+          <strong>Deux chiffres, deux histoires.</strong> Un algorithme qui compare peu
+          peut beaucoup écrire, et l'inverse. Le tableau du bilan sépare les deux mesures
+          au lieu d'annoncer un vainqueur unique.
+        </li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- ============================ Pied de page ============================ -->
+  <footer class="pied">
+    <div class="pied-interieur">
+      <p>Abderrahmane El ADNANI — Duel de tris</p>
+      <p>© <span id="annee">2026</span></p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Contacts — API REST simulée : recherche, tri et pagination</title>
+  <meta name="description" content="Mini-projet web autonome en HTML, CSS et JavaScript vanilla : une API REST « Contacts » simulée dans le navigateur, avec recherche, tri et pagination, une console de test et un annuaire complet.">
+
+  <!-- Polices -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <!-- ================= En-tête ================= -->
+  <header class="entete">
+    <div class="entete__int">
+      <a class="marque" href="#haut">
+        <span class="marque__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2.5"></rect>
+            <circle cx="9" cy="10.5" r="2.2"></circle>
+            <path d="M5.4 16.3a4.3 4.3 0 0 1 7.2 0"></path>
+            <path d="M15 9.6h3.6M15 13.2h3.6"></path>
+          </svg>
+        </span>
+        <span class="marque__nom">API Contacts</span>
+      </a>
+
+      <button id="theme" class="btn btn--icone" type="button" aria-label="Activer le thème sombre">
+        <svg class="ico ico--lune" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"></path>
+        </svg>
+        <svg class="ico ico--soleil" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <!-- ================= Introduction ================= -->
+    <section class="intro" id="haut">
+      <p class="etiquette">Projet · API REST simulée</p>
+      <h1>Une API « Contacts » qui tourne entièrement dans votre navigateur.</h1>
+      <p class="intro__txt">
+        Aucun serveur, aucune dépendance : le « backend » est reconstitué en JavaScript et persiste
+        ses données localement. La console sert à interroger chaque route, l'annuaire à manipuler
+        les mêmes contacts par formulaire. Les deux vues restent synchronisées.
+      </p>
+      <ul class="chips">
+        <li class="chip">ressource <b>/contacts</b></li>
+        <li class="chip"><b>6</b> routes REST</li>
+        <li class="chip">stockage <b>localStorage</b></li>
+        <li class="chip"><b>0</b> dépendance</li>
+      </ul>
+    </section>
+
+    <!-- ================= 1. Console d'API ================= -->
+    <section class="section" id="console" aria-labelledby="t-console">
+      <div class="section__tete">
+        <span class="section__num" aria-hidden="true">01</span>
+        <div>
+          <h2 id="t-console">Console d'API</h2>
+          <p class="section__desc">
+            Choisissez une route, ajustez l'URL, l'identifiant et le corps JSON, puis envoyez la
+            requête. Le délai réseau est simulé, les codes de statut sont réels.
+          </p>
+        </div>
+      </div>
+
+      <div class="console">
+        <!-- Colonne requête -->
+        <form class="panneau" id="form-requete" novalidate>
+          <div class="panneau__tete">
+            <h3 class="panneau__titre">Requête</h3>
+          </div>
+
+          <div class="champ">
+            <span class="champ__label" id="l-routes">Route</span>
+            <div class="routes" id="routes" role="group" aria-labelledby="l-routes"></div>
+          </div>
+
+          <div class="champ">
+            <label class="champ__label" for="req-url">URL</label>
+            <input class="saisie saisie--mono" type="text" id="req-url" value="/contacts"
+                   spellcheck="false" autocomplete="off" autocapitalize="off">
+          </div>
+
+          <div class="champ" id="champ-id" hidden>
+            <label class="champ__label" for="req-id">Identifiant <code>:id</code></label>
+            <input class="saisie saisie--mono" type="text" id="req-id" value="1"
+                   inputmode="numeric" spellcheck="false" autocomplete="off">
+          </div>
+
+          <div class="champ" id="champ-params">
+            <label class="champ__label" for="req-params">Paramètres de requête</label>
+            <input class="saisie saisie--mono" type="text" id="req-params" value="page=1&amp;limit=5"
+                   spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="req-params-aide">
+            <p class="aide" id="req-params-aide">Sans le « ? ». Ex. <span class="mono">q=omar</span>, <span class="mono">tri=ville&amp;sens=desc</span>, <span class="mono">page=2</span>.</p>
+          </div>
+
+          <div class="champ">
+            <label class="champ__label" for="req-corps">Corps de la requête (JSON)</label>
+            <textarea class="saisie saisie--mono" id="req-corps" rows="9" spellcheck="false"
+                      disabled aria-describedby="req-aide"></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn--primaire" type="submit" id="btn-envoyer">
+              <span class="btn__txt">Envoyer</span>
+              <span class="methode" id="btn-methode">GET</span>
+            </button>
+            <span class="aide" id="req-aide">Choisissez une route pour composer la requête.</span>
+          </div>
+        </form>
+
+        <!-- Colonne réponse -->
+        <div class="panneau panneau--reponse" role="region" aria-labelledby="t-reponse" aria-live="polite">
+          <div class="panneau__tete">
+            <h3 class="panneau__titre" id="t-reponse">Réponse</h3>
+            <div class="meta-reponse">
+              <span class="statut statut--vide" id="rep-statut">En attente</span>
+              <span class="duree" id="rep-duree">—</span>
+            </div>
+          </div>
+          <div class="json" id="rep-json">
+            <p class="vide">Aucune requête envoyée pour le moment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. Gestion des contacts ================= -->
+    <section class="section" id="gestion" aria-labelledby="t-gestion">
+      <div class="section__tete">
+        <span class="section__num" aria-hidden="true">02</span>
+        <div>
+          <h2 id="t-gestion">Gestion des contacts</h2>
+          <p class="section__desc">
+            Le même serveur simulé, piloté cette fois par un formulaire. Chaque action passe par la
+            couche <span class="mono">api</span> : le tableau et la console restent cohérents.
+          </p>
+        </div>
+      </div>
+
+      <div class="gestion">
+        <!-- Formulaire -->
+        <div class="panneau">
+          <div class="panneau__tete">
+            <h3 class="panneau__titre" id="t-form">Nouveau contact</h3>
+            <span class="compteur" id="compteur"></span>
+          </div>
+
+          <form id="form-contact" novalidate>
+            <div class="grille-champs">
+              <div class="champ">
+                <label class="champ__label" for="c-nom">Nom <span class="requis" aria-hidden="true">*</span></label>
+                <input class="saisie" type="text" id="c-nom" name="nom" autocomplete="name" aria-describedby="err-nom">
+                <p class="erreur" id="err-nom" hidden></p>
+              </div>
+
+              <div class="champ">
+                <label class="champ__label" for="c-email">E-mail <span class="requis" aria-hidden="true">*</span></label>
+                <input class="saisie" type="email" id="c-email" name="email" autocomplete="email" aria-describedby="err-email">
+                <p class="erreur" id="err-email" hidden></p>
+              </div>
+
+              <div class="champ">
+                <label class="champ__label" for="c-ville">Ville</label>
+                <input class="saisie" type="text" id="c-ville" name="ville" autocomplete="address-level2" aria-describedby="err-ville">
+                <p class="erreur" id="err-ville" hidden></p>
+              </div>
+
+              <div class="champ">
+                <label class="champ__label" for="c-telephone">Téléphone</label>
+                <input class="saisie" type="tel" id="c-telephone" name="telephone" autocomplete="tel" aria-describedby="err-telephone">
+                <p class="erreur" id="err-telephone" hidden></p>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn--primaire" type="submit" id="btn-enregistrer">Créer le contact</button>
+              <button class="btn btn--secondaire" type="button" id="btn-annuler" hidden>Annuler la modification</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Annuaire -->
+        <div class="panneau">
+          <div class="panneau__tete">
+            <h3 class="panneau__titre">Annuaire</h3>
+            <button class="btn btn--secondaire btn--petit" type="button" id="btn-reset">Réinitialiser les données</button>
+          </div>
+
+          <div class="barre-outils">
+            <form class="recherche" id="form-recherche" novalidate>
+              <label class="champ__label" for="f-q">Recherche</label>
+              <div class="recherche__ligne">
+                <input class="saisie" type="search" id="f-q" name="q"
+                       placeholder="Nom, e-mail, ville ou téléphone" autocomplete="off">
+                <button class="btn btn--secondaire" type="submit">Rechercher</button>
+              </div>
+            </form>
+
+            <div class="filtre">
+              <label class="champ__label" for="f-tri">Trier par</label>
+              <select class="saisie" id="f-tri">
+                <option value="id">Identifiant</option>
+                <option value="nom">Nom</option>
+                <option value="ville">Ville</option>
+              </select>
+            </div>
+
+            <div class="filtre">
+              <span class="champ__label">Sens</span>
+              <button class="btn btn--secondaire" type="button" id="btn-sens" aria-label="Changer le sens du tri">
+                <span id="sens-texte">↑ Croissant</span>
+              </button>
+            </div>
+
+            <div class="filtre">
+              <label class="champ__label" for="f-limit">Par page</label>
+              <select class="saisie" id="f-limit">
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+
+            <button class="btn btn--secondaire btn--petit barre-outils__reset" type="button" id="btn-reset-filtres">Réinitialiser</button>
+          </div>
+
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <caption class="sr-only">Liste des contacts enregistrés</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Nom</th>
+                  <th scope="col">E-mail</th>
+                  <th scope="col">Ville</th>
+                  <th scope="col">Téléphone</th>
+                  <th scope="col"><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="corps-tableau"></tbody>
+            </table>
+          </div>
+          <p class="vide" id="tableau-vide" hidden>Aucun contact pour l'instant. Ajoutez-en un.</p>
+
+          <div class="pagination">
+            <button class="btn btn--secondaire btn--petit" type="button" id="btn-prec">← Précédent</button>
+            <p class="pagination__etat" id="pagination-etat" role="status" aria-live="polite"></p>
+            <button class="btn btn--secondaire btn--petit" type="button" id="btn-suiv">Suivant →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. Journal des requêtes ================= -->
+    <section class="section" id="journal" aria-labelledby="t-journal">
+      <div class="section__tete">
+        <span class="section__num" aria-hidden="true">03</span>
+        <div>
+          <h2 id="t-journal">Journal des requêtes</h2>
+          <p class="section__desc">
+            Les <span class="mono">50</span> dernières requêtes reçues par le serveur simulé, de la
+            plus récente à la plus ancienne. La console et l'annuaire écrivent au même endroit :
+            le journal reflète exactement ce que l'API a traité.
+          </p>
+        </div>
+      </div>
+
+      <div class="panneau">
+        <div class="panneau__tete">
+          <h3 class="panneau__titre">Dernières requêtes</h3>
+          <div class="journal__outils">
+            <span class="compteur" id="journal-compteur">0 requête</span>
+            <button class="btn btn--secondaire btn--petit" type="button" id="btn-vider-journal">Vider le journal</button>
+          </div>
+        </div>
+        <ul class="journal" id="journal-liste" aria-live="polite"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= Pied de page ================= -->
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — API Contacts · <span id="annee"></span></p>
+  </footer>
+
+  <!-- Région de notifications (messages d'action) -->
+  <div class="notifs" id="notifs" role="status" aria-live="polite"></div>
+
+  <script src="../shared/theme.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

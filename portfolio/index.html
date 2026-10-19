@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abderrahmane El ADNANI — Portfolio</title>
+  <meta name="description" content="Portfolio d'Abderrahmane El ADNANI, élève-ingénieur en informatique à l'EMSI Marrakech. Projets, compétences et contact.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+
+  <!-- Typographies : display technique + texte lisible, avec repli système -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <!-- Fond animé : ambiance « nuit indigo » (décoratif, non interactif) -->
+  <div class="fond-anime" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+    <span class="grain"></span>
+  </div>
+
+  <a class="skip-link" href="#accueil">Aller au contenu</a>
+
+  <!-- Jeu d'icônes SVG (sprite) : évite les émojis et reste vectoriel -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+      <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2Z"/><path d="M8 3v18"/></symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1 .6-8 5.5 5.5 0 0 1 10.5 1.6A3.5 3.5 0 0 1 17.5 18Z"/></symbol>
+      <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 20.5h17"/><path d="M6.5 20.5V15M10.5 20.5V11M14.5 20.5V7.5M18.5 20.5V4.5"/></symbol>
+      <symbol id="i-database" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5.6" rx="7.4" ry="2.9"/>
+        <path d="M4.6 5.6v12.8c0 1.6 3.31 2.9 7.4 2.9s7.4-1.3 7.4-2.9V5.6"/>
+        <path d="M4.6 12c0 1.6 3.31 2.9 7.4 2.9s7.4-1.3 7.4-2.9"/>
+      </symbol>
+      <symbol id="i-frame" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></symbol>
+      <!-- Réseaux & outils -->
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
+      <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></symbol>
+      <symbol id="i-figma" viewBox="0 0 24 24"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/><path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"/><path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"/><path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z"/><path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+      <symbol id="i-pen" viewBox="0 0 24 24"><path d="m18 13-.654-4.736a4 4 0 0 0-2.756-3.266l-9.163-2.9a2 2 0 0 0-2.017.493l-.82.819a2 2 0 0 0-.492 2.017l2.9 9.163a4 4 0 0 0 3.266 2.756L13 18"/><path d="M18.648 12.352a1.205 1.205 0 0 1 1.704 0l1.296 1.296a1.205 1.205 0 0 1 0 1.704l-6.296 6.296a1.205 1.205 0 0 1-1.704 0l-1.296-1.296a1.205 1.205 0 0 1 0-1.704z"/><path d="m3 3 6.586 6.586"/><circle cx="11" cy="11" r="2"/></symbol>
+      <!-- Icônes de projets -->
+      <symbol id="i-cart" viewBox="0 0 24 24"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></symbol>
+      <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
+      <symbol id="i-duel" viewBox="0 0 24 24"><path d="M3 8h12M12 5l3 3-3 3"/><path d="M21 16H9M12 13l-3 3 3 3"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/></symbol>
+      <symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ===================== EN-TÊTE ===================== -->
+  <header id="entete">
+    <div class="entete-contenu">
+      <a href="#accueil" class="logo">
+        <img class="logo-marque" src="img/m3.png" alt="" width="402" height="159">
+        <span class="logo-nom">Abderrahmane<b>El&nbsp;ADNANI</b></span>
+      </a>
+
+      <div class="entete-actions">
+        <button id="menu" type="button" class="bouton-icone" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu">
+          <span class="burger" aria-hidden="true"></span>
+        </button>
+
+        <button id="theme" type="button" class="bouton-icone" aria-label="Basculer en mode sombre" title="Mode sombre">
+          <span class="ico ico-sombre" aria-hidden="true"><svg><use href="#i-moon"/></svg></span>
+          <span class="ico ico-clair" aria-hidden="true"><svg><use href="#i-sun"/></svg></span>
+        </button>
+      </div>
+
+      <nav id="navigation" aria-label="Navigation principale">
+        <a href="#accueil">Accueil</a>
+        <a href="#apropos">À propos</a>
+        <a href="#parcours">Parcours</a>
+        <a href="#competences">Compétences</a>
+        <a href="#projets">Projets</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== ACCUEIL ===================== -->
+    <section id="accueil" class="hero">
+      <div class="hero-texte">
+        <p class="statut"><span class="point-vif" aria-hidden="true"></span>Disponible pour un stage en 2026</p>
+        <p id="salutation" class="salutation">Bonjour</p>
+        <h1 class="hero-nom">Abderrahmane<br>El ADNANI</h1>
+        <p class="hero-role">Élève-ingénieur en informatique à l'EMSI de Marrakech.</p>
+        <p class="hero-desc">
+          Je construis des interfaces claires et rapides. J'aime transformer une idée
+          en une page que l'on comprend du premier coup d'œil.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#projets" class="bouton">Voir mes projets</a>
+          <a href="#contact" class="bouton bouton-ligne">Me contacter</a>
+        </div>
+
+        <ul class="hero-liens">
+          <li>
+            <a href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+              <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>
+              GitHub<svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+              <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>
+              LinkedIn<svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:m.a.eladnani1@gmail.com">
+              <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>
+              E-mail
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <figure class="hero-portrait">
+        <img src="img/photo.svg" alt="Portrait d'Abderrahmane El ADNANI" width="320" height="320">
+      </figure>
+    </section>
+
+    <!-- ===================== À PROPOS ===================== -->
+    <section id="apropos" class="section">
+      <h2>À propos</h2>
+      <div class="mesure-large">
+        <p class="lead">
+          Je suis <strong>Abderrahmane El ADNANI</strong>, élève-ingénieur en informatique
+          à l'EMSI de Marrakech. Je m'intéresse au développement web et au design
+          d'interfaces&nbsp;: transformer une idée en une page claire et agréable à utiliser,
+          c'est ce que j'aime le plus.
+        </p>
+        <p>
+          J'apprends surtout en construisant. Chaque projet m'a fait progresser en front-end et back-end ou bien apprendre une nouvelle competence. Je cherche aujourd'hui une choose de creative où mettre mes compétences
+          au service d'une équipe et au challenge.
+        </p>
+      </div>
+
+      <ul class="qualites" aria-label="Qualités">
+        <li>Autonomie</li>
+        <li>Rigueur</li>
+        <li>Travail en équipe</li>
+        <li>Curiosité</li>
+        <li>Sens du détail</li>
+      </ul>
+    </section>
+
+    <!-- ===================== PARCOURS ===================== -->
+    <section id="parcours" class="section">
+      <h2>Parcours</h2>
+      <ol class="frise">
+         <li>
+          <span class="frise-annee">2025 — aujourd'hui</span>
+          <div class="frise-corps">
+            <h3>3eme annee en informatique</h3>
+            <p>École Marocaine des Sciences de l'Ingénieur (EMSI), Marrakech.</p>
+          </div>
+        </li>
+        <li>
+          <span class="frise-annee">2024 — 2025</span>
+          <div class="frise-corps">
+            <h3>Cycle préparatoire intégré</h3>
+            <p>École Marocaine des Sciences de l'Ingénieur (EMSI), Marrakech.</p>
+          </div>
+        </li>
+        <li>
+          <span class="frise-annee">2023 — 2024</span>
+          <div class="frise-corps">
+            <h3>Baccalauréat sciences physiques</h3>
+            <p>Lycée Riad Sallam.</p>
+          </div>
+        </li>
+        <li>
+          <span class="frise-annee">En continu</span>
+          <div class="frise-corps">
+            <h3>Auto-formation au développement web</h3>
+            <p>HTML, CSS, JavaScript et UI/UX design, à travers des projets personnels.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===================== COMPÉTENCES ===================== -->
+    <section id="competences" class="section">
+      <h2>Compétences</h2>
+      <p class="mesure-large lead">
+        Un pourcentage reste une affirmation. Chaque compétence renvoie donc au
+        projet qui la démontre&nbsp;; là où je n’ai encore rien à montrer, je
+        préfère m’en tenir à ce que je peux réellement prouver.
+      </p>
+
+      <div class="competences-grille">
+        <div>
+          <h3 class="sous-titre">Développement &amp; design</h3>
+          <ul class="skills">
+            <li class="skill" data-niveau="95">
+              <div class="skill-tete"><span>HTML5 &amp; CSS3</span><span class="skill-pct">95<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+              <a class="skill-preuve" href="../boutique-souk/index.html" target="_blank" rel="noopener">
+                Preuve : la boutique Souk <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li class="skill" data-niveau="85">
+              <div class="skill-tete"><span>Responsive Design</span><span class="skill-pct">85<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+              <a class="skill-preuve" href="../carte-points-interet/index.html" target="_blank" rel="noopener">
+                Preuve : la carte, jusqu’à 360&nbsp;px <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li class="skill" data-niveau="70">
+              <div class="skill-tete"><span>JavaScript</span><span class="skill-pct">70<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+              <a class="skill-preuve" href="../mini-sgbd/index.html" target="_blank" rel="noopener">
+                Preuve : le moteur du Mini-SGBD <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li class="skill" data-niveau="60">
+              <div class="skill-tete"><span>Git &amp; GitHub</span><span class="skill-pct">60<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+              <a class="skill-preuve" href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+                Preuve : mes dépôts GitHub <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li class="skill" data-niveau="90">
+              <div class="skill-tete"><span>UI Design (Figma)</span><span class="skill-pct">90<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+            </li>
+            <li class="skill" data-niveau="63">
+              <div class="skill-tete"><span>Node.js &amp; Express</span><span class="skill-pct">63<small>%</small></span></div>
+              <div class="skill-bar"><div class="skill-fill"></div></div>
+              <a class="skill-preuve" href="projets/api-express.html">
+                Preuve : l'API Express « Contacts » <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="sous-titre">Autres outils</h3>
+          <ul class="tags">
+            <li>
+              <svg class="ico" aria-hidden="true"><use href="#i-code"/></svg>Python
+              <a class="tag-preuve" href="projets/python.html">
+                voir le code <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li>
+              <svg class="ico" aria-hidden="true"><use href="#i-db"/></svg>SQL / MySQL
+              <a class="tag-preuve" href="../mini-sgbd/index.html" target="_blank" rel="noopener">
+                voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-figma"/></svg>Figma</li>
+            <li>
+              <svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg>Bootstrap
+              <a class="tag-preuve" href="../bootstrap-demo/index.html" target="_blank" rel="noopener">
+                voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li>
+              <svg class="ico" aria-hidden="true"><use href="#i-wind"/></svg>Tailwind CSS
+              <a class="tag-preuve" href="../tailwind-demo/index.html" target="_blank" rel="noopener">
+                voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li>
+              <svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg>WordPress
+              <a class="tag-preuve" href="projets/wordpress.html">
+                voir le thème <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg>Adobe XD</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROJETS ===================== -->
+    <section id="projets" class="section">
+      <h2>Projets</h2>
+      <p class="mesure-large lead">Quatorze applications web complètes, chacune accompagnée de sa démo jouable dans le navigateur.</p>
+
+      <ol class="projets">
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-cart"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Boutique en ligne « Souk »</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Un site marchand complet : catalogue, fiches produit, avis clients, favoris et panier.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p1" data-cible="details-p1">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/souk.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../boutique-souk/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p1" hidden>
+              Catalogue de 8 articles, filtres par catégorie, panier dans un tiroir latéral et
+              formulaire de commande validé. Chaque article a sa fiche détaillée — description,
+              caractéristiques, disponibilité — avec les avis des clients et une note moyenne,
+              plus une liste de favoris. Le tout en JavaScript, sans framework : les frais de
+              livraison sont calculés et le panier, les avis et les favoris survivent à un
+              rechargement de la page.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-server"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>API REST « Contacts »</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Une API « Contacts » complète : recherche, tri et pagination, avec sa console de test.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p2" data-cible="details-p2">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/api-rest.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../api-contacts/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p2" hidden>
+              Routes <code>GET</code>, <code>POST</code>, <code>PUT</code> et <code>DELETE</code>,
+              validation des données et vrais codes de statut (200, 201, 204, 400, 404). On peut
+              rechercher un contact (sans se soucier des accents), trier par identifiant, nom ou
+              ville, et paginer la liste ; les réponses renvoient une enveloppe avec les
+              métadonnées (page, total, pages). L'API est simulée dans la page : elle fonctionne
+              sans serveur et se teste depuis une console intégrée, qui affiche la réponse, le
+              statut et la durée.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-chat"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Messagerie en temps réel</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Des messages instantanés entre les onglets, avec réactions, réponses citées et édition.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>BroadcastChannel</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p3" data-cible="details-p3">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/messagerie.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../messagerie-temps-reel/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p3" hidden>
+              Salons, pseudonyme mémorisé et indicateur « est en train d'écrire… ». On peut réagir
+              à un message avec un emoji, répondre en citant le message d'origine et modifier son
+              propre message (marqué « modifié »). Chaque message est diffusé aux autres onglets
+              via <code>BroadcastChannel</code>, avec un repli sur l'événement
+              <code>storage</code> — et sans aucun serveur.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-gauge"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Suivi de dépenses</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Un carnet de dépenses avec totaux par catégorie et par mois, budgets et répartition.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p4" data-cible="details-p4">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/depenses.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../suivi-depenses/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p4" hidden>
+              Ajout et suppression d'une dépense, filtres par mois et par catégorie, graphique
+              des 6 derniers mois et export CSV. On fixe un budget mensuel par catégorie : chaque
+              jauge signale l'approche du plafond puis son dépassement, et un graphique en anneau
+              montre la répartition du mois. Les données restent dans le navigateur
+              (<code>localStorage</code>), sans base de données ni compte à créer.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-map"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Carte des points d'intérêt</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Une carte interactive pour placer, déplacer et filtrer des lieux, sans bibliothèque.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>SVG</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p5" data-cible="details-p5">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/carte.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../carte-points-interet/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p5" hidden>
+              Un plan de Marrakech dessiné en SVG, sans bibliothèque de cartographie. Six lieux,
+              filtres par catégorie, punaises cliquables au clavier et un mode « ajouter un
+              lieu » : un clic sur le plan ouvre le formulaire de description. Un lieu se déplace
+              à la souris ou aux flèches du clavier, et toute la liste s'exporte en JSON puis
+              peut être réimportée.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-term"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Quiz de culture générale</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Un quiz à choix multiples, par thème et difficulté, avec un score commenté et une révision des erreurs.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p6" data-cible="details-p6">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/quiz.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../quiz-culture-generale/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p6" hidden>
+              12 questions tirées au hasard, correction immédiate avec explication, barre de
+              progression et récapitulatif à la fin. On choisit un thème et une difficulté qui
+              règle le temps par question, et un mode « Revoir mes erreurs » rejoue les questions
+              ratées. Le meilleur score est conservé dans le navigateur
+              (<code>localStorage</code>).
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-chart"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Tri-visualiseur</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Cinq algorithmes de tri animés pas à pas, avec le compteur de comparaisons qui défile.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p7" data-cible="details-p7">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/tri.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../tri-visualiseur/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p7" hidden>
+              À bulles, par insertion, par sélection, fusion et rapide, exécutés sur le même
+              tableau. On règle la taille, la vitesse et la forme des données — aléatoire,
+              presque trié ou inverse — et on suit les comparaisons et les écritures, en
+              automatique ou au pas à pas. Un tableau des complexités affiche la ligne de
+              l'algorithme courant.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-database"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Mini-SGBD</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Un moteur SQL écrit à la main : analyse lexicale, arbre syntaxique, puis exécution réelle.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p8" data-cible="details-p8">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/sgbd.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../mini-sgbd/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p8" hidden>
+              Trois étages écrits sans librairie : découpage en jetons, analyse syntaxique
+              descendante récursive, puis exécution contre des tables en mémoire. SELECT avec
+              WHERE, GROUP BY, HAVING, ORDER BY, DISTINCT et LIMIT, jointures internes ou à
+              gauche, agrégats, puis INSERT, UPDATE, DELETE et CREATE TABLE. L'erreur s'affiche
+              à la ligne et à la colonne exactes, et la requête se déroule en trois panneaux —
+              jetons, arbre, phases d'exécution.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-duel"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Duel de tris</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Deux algorithmes, un même tableau, et un bilan qui refuse d’annoncer un seul vainqueur.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p9" data-cible="details-p9">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/duel.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../duel-tri/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p9" hidden>
+              Le tableau est généré une seule fois puis dupliqué, pour que les deux
+              candidats partent de strictement les mêmes valeurs. Chaque algorithme est
+              écrit comme un générateur qui rend une opération à la fois, et le duel
+              avance A puis B d’une opération par image. Six algorithmes au choix,
+              quatre formes de données, et un bilan qui sépare les comparaisons des
+              écritures plutôt que d’annoncer un vainqueur unique.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-grid"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Tableau de bord Bootstrap</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Composants Bootstrap 5 : grille, cartes, tableau, formulaire, alertes, modale et mode sombre.</p>
+            <ul class="stack">
+              <li>HTML</li><li>CSS</li><li>Bootstrap 5</li><li>JavaScript</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p10" data-cible="details-p10">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/bootstrap.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../bootstrap-demo/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p10" hidden>
+              Une page d'administration construite avec Bootstrap 5 : barre de navigation,
+              colonne latérale, cartes de statistiques, tableau des dernières commandes,
+              formulaire validé, alertes, modale et barre de progression. Le CSS de
+              Bootstrap est vendu localement (pas de CDN), et le JavaScript ajoute la
+              validation du formulaire, le toast et le basculement du thème.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-server"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>API Express « Contacts »</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Vraie API REST en Express.js : routes CRUD, validation, pagination, tri, recherche et codes HTTP réels.</p>
+            <ul class="stack">
+              <li>Node.js</li><li>Express</li><li>JavaScript</li><li>REST</li><li>JSON</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p11" data-cible="details-p11">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/api-express.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="https://github.com/M-A-E-A/api-express-contacts" target="_blank" rel="noopener">
+                Code source <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p11" hidden>
+              Une API complète de gestion de contacts, avec GET, POST, PUT et DELETE,
+              recherche, tri, pagination, validation des entrées et codes HTTP réels
+              (200, 201, 204, 400, 404, 500). Middleware de journalisation et
+              gestionnaire d'erreurs global. Données en mémoire : l'API se lance avec
+              <code>npm install && npm start</code>, sans base de données. C'est la
+              preuve réelle derrière la compétence Node.js &amp; Express.
+            </p>
+          </div>
+        </li>
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-code"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Analyse CSV — Python</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Outil en ligne de commande qui lit un CSV et produit des statistiques par colonne, avec regroupement.</p>
+            <ul class="stack">
+              <li>Python</li><li>csv</li><li>statistics</li><li>argparse</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p12" data-cible="details-p12">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/python.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="https://github.com/M-A-E-A/python-analyse" target="_blank" rel="noopener">
+                Code source <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p12" hidden>
+              Un script Python qui lit un fichier CSV et calcule, pour chaque colonne,
+              min, max, moyenne, médiane et écart-type (ou le nombre de valeurs
+              distinctes pour le texte). Regroupement par une colonne avec moyenne
+              d'une autre. Aucune dépendance externe : uniquement la bibliothèque
+              standard. C'est la preuve réelle derrière la mention Python.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-wind"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Page Tailwind CSS</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Page construite avec Tailwind CSS : approche utility-first, mise en page responsive, mode sombre.</p>
+            <ul class="stack">
+              <li>HTML</li><li>Tailwind CSS</li><li>JavaScript</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p13" data-cible="details-p13">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/tailwind.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="../tailwind-demo/index.html" target="_blank" rel="noopener">
+                Voir la démo <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p13" hidden>
+              Une page marketing construite avec Tailwind CSS : navigation, section hero,
+              statistiques, cartes de fonctionnalités, formulaire et pied de page. Le CSS
+              est généré par un build Tailwind réel (npm + tailwind.config.js), puis
+              vendu localement. Le fichier final ne contient que les utilitaires
+              réellement utilisés. Mode sombre via la stratégie par classe.
+            </p>
+          </div>
+        </li>
+
+        <li class="projet">
+          <span class="projet-ico" aria-hidden="true"><svg><use href="#i-globe"/></svg></span>
+          <div class="projet-corps">
+            <div class="projet-tete">
+              <h3>Thème WordPress « Portfolio »</h3>
+              <span class="projet-an">2026</span>
+            </div>
+            <p class="projet-desc">Thème WordPress minimal mais complet : en-tête, boucle, article unique, page, archive, barre latérale, 404.</p>
+            <ul class="stack">
+              <li>PHP</li><li>WordPress</li><li>HTML</li><li>CSS</li>
+            </ul>
+            <div class="projet-actions">
+              <button class="lien" type="button" aria-expanded="false" aria-controls="details-p14" data-cible="details-p14">
+                <span class="lien-label">Voir plus</span> <svg class="ico-fleche" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="lien" href="projets/wordpress.html">
+                Voir le projet <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+              <a class="lien" href="https://github.com/M-A-E-A/wp-theme-portfolio" target="_blank" rel="noopener">
+                Code source <svg class="ico-ext" aria-hidden="true"><use href="#i-ext"/></svg>
+              </a>
+            </div>
+            <p class="projet-details" id="details-p14" hidden>
+              Un thème WordPress avec la hiérarchie de templates complète : index, single,
+              page, archive, 404. Enregistrement des menus et de la barre latérale,
+              enqueue des styles, internationalisation, pagination. Les données viennent
+              de WordPress : le thème est une couche de présentation, pas un site.
+              C'est la preuve réelle derrière la mention WordPress.
+            </p>
+          </div>
+        </li>
+      </ol>
+    <section id="contact" class="section">
+      <h2>Contact</h2>
+      <p class="mesure-large lead">
+        Une question, un projet ou une opportunité de stage&nbsp;? Écrivez-moi&nbsp;:
+        je réponds vite.
+      </p>
+
+      <div class="contact-grille">
+        <div class="contact-infos">
+          <a class="contact-ligne" href="mailto:m.a.eladnani1@gmail.com">
+            <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>
+            <span>m.a.eladnani1@gmail.com</span>
+          </a>
+          <a class="contact-ligne" href="tel:+212777609228">
+            <svg class="ico" aria-hidden="true"><use href="#i-tel"/></svg>
+            <span>+212 7 77 60 92 28</span>
+          </a>
+          <a class="contact-ligne" href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+            <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>
+            <span>github.com/M-A-E-A</span>
+          </a>
+          <a class="contact-ligne" href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+            <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>
+            <span>LinkedIn — El ADNANI</span>
+          </a>
+          <p class="contact-ligne">
+            <svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>
+            <span>Marrakech, Maroc</span>
+          </p>
+
+          <!-- Atelier 3 : un clic affiche mes coordonnées dans une alerte -->
+          <button id="coordonnees" type="button" class="bouton bouton-ligne bouton-pleine">
+            Afficher mes coordonnées
+          </button>
+        </div>
+
+        <!-- Formulaire validé en JavaScript (pas d'envoi réel) -->
+        <form id="formulaire" novalidate>
+          <div class="champ">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" autocomplete="name" required>
+          </div>
+          <div class="champ">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+          </div>
+          <div class="champ">
+            <label for="objet">Objet</label>
+            <select id="objet" name="objet">
+              <option value="stage">Stage</option>
+              <option value="projet">Projet</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div class="champ">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+
+          <p class="consentement">
+            <input type="checkbox" id="ok" name="consentement" required>
+            <label for="ok">J'accepte d'être recontacté(e) par e-mail.</label>
+          </p>
+
+          <button type="submit" class="bouton">Envoyer le message</button>
+          <p class="form-message" id="form-message" role="status" hidden></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== PIED DE PAGE ===================== -->
+  <footer>
+    <div class="footer-contenu">
+      <p class="footer-logo">Abderrahmane El ADNANI</p>
+      <nav class="footer-liens" aria-label="Liens externes">
+        <a href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn
+        </a>
+        <a href="mailto:m.a.eladnani1@gmail.com">
+          <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>E-mail
+        </a>
+      </nav>
+      <p class="footer-copie">
+        © <span id="annee">2026</span> Abderrahmane El ADNANI — fait en HTML, CSS et JavaScript.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

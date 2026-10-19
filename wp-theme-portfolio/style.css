@@ -1,0 +1,80 @@
+/*
+Theme Name: Portfolio Theme
+Theme URI: https://github.com/M-A-E-A/wp-theme-portfolio
+Author: Abderrahmane El ADNANI
+Author URI: https://github.com/M-A-E-A
+Description: Thème WordPress minimal mais complet : en-tête, boucle, article unique, page, archive, barre latérale, 404.
+Version: 1.0.0
+License: MIT
+License URI: https://opensource.org/licenses/MIT
+Text Domain: portfolio-theme
+Tags: blog, portfolio, responsive, dark-mode-ready
+*/
+
+:root {
+  --pt-accent: #1b4de4;
+  --pt-text: #2b3138;
+  --pt-bg: #ffffff;
+  --pt-muted: #59626e;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--pt-text);
+  background: var(--pt-bg);
+  line-height: 1.65;
+}
+a { color: var(--pt-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+
+.site-header {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site-title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+.site-title a { color: inherit; }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem; }
+.site-nav a { color: var(--pt-muted); font-size: 0.9rem; }
+
+.site-main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 18rem;
+  gap: 2rem;
+}
+@media (max-width: 48rem) {
+  .site-main { grid-template-columns: 1fr; }
+}
+
+.entry { margin-bottom: 2.5rem; }
+.entry-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
+.entry-meta { color: var(--pt-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.entry-content p { margin: 0 0 1rem; }
+
+.sidebar { font-size: 0.9rem; }
+.sidebar h2 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
+.sidebar li { margin-bottom: 0.4rem; }
+
+.site-footer {
+  border-top: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--pt-muted);
+  font-size: 0.85rem;
+}
+
+.pagination { display: flex; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+.pagination a, .pagination span { padding: 0.4rem 0.8rem; border: 1px solid #e2e8f0; border-radius: 0.4rem; }
+
+.not-found { text-align: center; padding: 4rem 1rem; }
+.not-found h1 { font-size: 4rem; margin: 0; color: var(--pt-accent); }

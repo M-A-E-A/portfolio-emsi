@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-SGBD — moteur SQL exécuté dans le navigateur</title>
+  <meta name="description" content="Mini-SGBD : un moteur de base de données écrit à la main en JavaScript. Analyse lexicale, analyse syntaxique descendante, puis exécution de SELECT, INSERT, UPDATE, DELETE et CREATE TABLE sur des tables en mémoire. Requêtes JOIN, GROUP BY, HAVING et ORDER BY.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+
+  <!-- Polices Google (Space Grotesk pour les titres, Inter pour le texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <!-- ===================================================================
+       Sprite d'icônes : tous les SVG sont dessinés en ligne (aucune image)
+       =================================================================== -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Marque : cylindre de base de données -->
+      <symbol id="i-marque" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5.6" rx="7.4" ry="2.9"/>
+        <path d="M4.6 5.6v12.8c0 1.6 3.31 2.9 7.4 2.9s7.4-1.3 7.4-2.9V5.6"/>
+        <path d="M4.6 12c0 1.6 3.31 2.9 7.4 2.9s7.4-1.3 7.4-2.9"/>
+      </symbol>
+      <!-- Thème -->
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <!-- Console -->
+      <symbol id="i-executer" viewBox="0 0 24 24"><path d="M7.5 4.8 19 12 7.5 19.2Z"/></symbol>
+      <symbol id="i-effacer" viewBox="0 0 24 24">
+        <path d="M18.5 6.5 13 12l5.5 5.5"/><path d="M11 6.5 5.5 12 11 17.5"/><path d="M4 20h16"/>
+      </symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24">
+        <path d="M4 12.5a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5v6h6"/>
+      </symbol>
+      <symbol id="i-annuler" viewBox="0 0 24 24">
+        <path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================ En-tête ============================ -->
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-marque"></use></svg>
+        <span class="marque-nom">Mini-SGBD</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================= Contenu ============================= -->
+  <main id="contenu">
+
+    <!-- Message annoncé aux lecteurs d'écran -->
+    <p class="sr-only" id="statut" aria-live="polite"></p>
+
+    <section class="intro">
+      <p class="sur-titre">Bases de données</p>
+      <h1>Mini-SGBD</h1>
+      <p class="intro-texte">
+        Un moteur SQL écrit à la main, sans librairie : analyse lexicale, analyse
+        syntaxique descendante, puis exécution sur des tables en mémoire.
+        <code>SELECT</code>, <code>JOIN</code>, <code>GROUP BY</code>,
+        <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> et
+        <code>CREATE TABLE</code> fonctionnent réellement. Tout se passe dans
+        votre navigateur.
+      </p>
+    </section>
+
+    <!-- ---------------------- Console ---------------------- -->
+    <section class="carte" aria-labelledby="titre-console">
+      <header class="carte-tete">
+        <h2 id="titre-console">Console SQL</h2>
+        <p class="carte-note">Écrivez une requête, puis exécutez-la. Raccourci : <kbd>Ctrl</kbd> + <kbd>Entrée</kbd>.</p>
+      </header>
+
+      <label class="sr-only" for="sql">Requête SQL</label>
+      <textarea id="sql" rows="4" spellcheck="false" autocomplete="off" autocorrect="off"
+                autocapitalize="off" wrap="off"
+                placeholder="SELECT ville, COUNT(*) AS effectif FROM etudiants GROUP BY ville;">SELECT ville, COUNT(*) AS effectif, ROUND(AVG(moyenne), 2) AS moyenne
+FROM etudiants
+GROUP BY ville
+ORDER BY moyenne DESC;</textarea>
+
+      <!-- Emplacement du message d'erreur, avec le curseur sous la position fautive -->
+      <div class="erreur-bloc" id="erreur" hidden>
+        <p class="erreur-texte" id="erreur-texte"></p>
+        <pre class="erreur-reperes" id="erreur-reperes"></pre>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primaire" id="btn-executer">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-executer"></use></svg>
+          <span>Exécuter</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-annuler" disabled>
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-annuler"></use></svg>
+          <span>Annuler la modification</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-effacer">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-effacer"></use></svg>
+          <span>Effacer la console</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-reset">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+          <span>Réinitialiser la base</span>
+        </button>
+      </div>
+
+      <div class="exemples">
+        <p class="exemples-titre" id="titre-exemples">Exemples à cliquer</p>
+        <ul class="puces-exemples" id="exemples" aria-labelledby="titre-exemples"></ul>
+      </div>
+    </section>
+
+    <!-- ---------------------- Résultat ---------------------- -->
+    <section class="carte" aria-labelledby="titre-resultat">
+      <header class="carte-tete">
+        <h2 id="titre-resultat">Résultat</h2>
+        <p class="carte-note" id="resultat-note">En attente d'une requête.</p>
+      </header>
+      <div id="resultat" class="resultat">
+        <p class="vide">Le résultat de la requête s'affichera ici.</p>
+      </div>
+    </section>
+
+    <!-- ---------------------- Mesures ---------------------- -->
+    <section class="tuiles" aria-label="Mesures de la dernière exécution">
+      <article class="tuile">
+        <h2 class="tuile-titre">Lignes</h2>
+        <p class="tuile-valeur" id="m-lignes">—</p>
+        <p class="tuile-note">Retournées par la requête</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Temps</h2>
+        <p class="tuile-valeur" id="m-temps">—</p>
+        <p class="tuile-note">Mesuré sur votre machine</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Lues</h2>
+        <p class="tuile-valeur" id="m-lues">—</p>
+        <p class="tuile-note">Lignes parcourues en mémoire</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Nature</h2>
+        <p class="tuile-valeur" id="m-nature">—</p>
+        <p class="tuile-note" id="m-nature-note">Aucune exécution</p>
+      </article>
+    </section>
+
+    <!-- ---------------------- Étapes ---------------------- -->
+    <section class="carte" aria-labelledby="titre-etapes">
+      <header class="carte-tete">
+        <h2 id="titre-etapes">Ce que le moteur a fait</h2>
+        <p class="carte-note">Le chemin suivi par la dernière requête, phase par phase.</p>
+      </header>
+      <ol class="etapes" id="etapes">
+        <li class="vide">Aucune requête exécutée pour l'instant.</li>
+      </ol>
+
+      <details class="details">
+        <summary>Jeten lexicale</summary>
+        <p class="details-note">Les jetons produits par l'analyseur, dans l'ordre. Les mots-clés sont reconnus à ce stade, pas les significations.</p>
+        <ul class="jetons" id="jetons"></ul>
+      </details>
+
+      <details class="details">
+        <summary>Arbre syntaxique</summary>
+        <p class="details-note">L'analyse syntaxique transforme la suite de jetons en une structure arborescente : c'est elle que l'exécuteur parcourt.</p>
+        <div class="arbre" id="arbre"></div>
+      </details>
+    </section>
+
+    <!-- ---------------- Base de données + historique ---------------- -->
+    <div class="grille">
+
+      <section class="carte" aria-labelledby="titre-base">
+        <header class="carte-tete">
+          <h2 id="titre-base">Base de données</h2>
+          <p class="carte-note" id="base-note">Tables présentes en mémoire.</p>
+        </header>
+        <div class="onglets" id="bd-tables" role="group" aria-label="Choisir une table"></div>
+        <div id="bd-vue" class="resultat"></div>
+      </section>
+
+      <section class="carte" aria-labelledby="titre-historique">
+        <header class="carte-tete">
+          <h2 id="titre-historique">Historique</h2>
+          <p class="carte-note">Vos dernières requêtes. Cliquez pour en recharger une.</p>
+        </div>
+        <ul class="historique" id="historique">
+          <li class="vide">Rien pour l'instant.</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- ---------------------- Notes ---------------------- -->
+    <section class="carte" aria-labelledby="titre-notes">
+      <header class="carte-tete">
+        <h2 id="titre-notes">Comment ça marche, et ce que c'est</h2>
+      </header>
+      <div class="notes">
+        <p>
+          Une requête traverse trois étages. L'<strong>analyse lexicale</strong> découpe
+          le texte en jetons (mots-clés, identifiants, nombres, chaînes, opérateurs).
+          L'<strong>analyse syntaxique descendante</strong> les transforme en un arbre,
+          en respectant la priorité des opérateurs. L'<strong>exécuteur</strong> parcourt
+          cet arbre contre les tables. Il n'y a aucune recherche de mots-clés dans une
+          chaîne : les erreurs de syntaxe sont détectées à la position exacte où elles
+          se produisent.
+        </p>
+        <p>
+          Les <code>JOIN</code> sont exécutés en boucle imbriquée, les agrégats
+          (<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>,
+          <code>MAX</code>) regroupent les lignes, et les valeurs manquantes suivent la
+          logique à trois valeurs de SQL : une comparaison avec <code>NULL</code> ne vaut
+          ni vrai ni faux.
+        </p>
+        <p class="avertissement">
+          <strong>À savoir :</strong> il n'y a pas de serveur, pas de réseau, et vos
+          requêtes ne sont envoyées nulle part. Les tables vivent dans le
+          <code>localStorage</code> de votre navigateur, et le contenu de démonstration
+          est un jeu d'exemple écrit pour cette page. Ce moteur est une réalisation
+          pédagogique, pas un SGBD de production.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================= Pied ============================= -->
+  <footer class="pied">
+    <div class="pied-interieur">
+      <p>Abderrahmane El ADNANI — Mini-SGBD</p>
+      <p>© <span id="annee">2026</span></p>
+    </div>
+  </footer>
+
+</body>
+</html>

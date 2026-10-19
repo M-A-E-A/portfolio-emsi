@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de culture générale — Abderrahmane El ADNANI</title>
+  <meta name="description" content="Quiz de culture générale : thèmes, difficulté chronométrée, correction expliquée et révision des erreurs. Projet d'Abderrahmane El ADNANI.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="projet.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="../js/script.js" defer></script>
+  <script src="projet.js" defer></script>
+</head>
+<body>
+
+  <div class="fond-anime" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+    <span class="grain"></span>
+  </div>
+
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
+      <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></symbol>
+    </defs>
+  </svg>
+
+  <header id="entete">
+    <div class="entete-contenu">
+      <a href="../index.html" class="logo">
+        <img class="logo-marque" src="../img/m3.png" alt="" width="402" height="159">
+        <span class="logo-nom">Abderrahmane<b>El&nbsp;ADNANI</b></span>
+      </a>
+
+      <div class="entete-actions">
+        <button id="menu" type="button" class="bouton-icone" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu">
+          <span class="burger" aria-hidden="true"></span>
+        </button>
+        <button id="theme" type="button" class="bouton-icone" aria-label="Basculer en mode sombre" title="Mode sombre">
+          <span class="ico ico-sombre" aria-hidden="true"><svg><use href="#i-moon"/></svg></span>
+          <span class="ico ico-clair" aria-hidden="true"><svg><use href="#i-sun"/></svg></span>
+        </button>
+      </div>
+
+      <nav id="navigation" aria-label="Navigation principale">
+        <a href="../index.html#accueil">Accueil</a>
+        <a href="../index.html#projets">Projets</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu" class="page-projet">
+
+    <p class="fil"><a href="../index.html#projets">← Tous les projets</a></p>
+
+    <div class="projet-titre">
+      <span class="projet-icone" aria-hidden="true"><svg><use href="#i-term"/></svg></span>
+      <div>
+        <h1>Quiz de culture générale</h1>
+        <p class="projet-meta">2026 · Projet personnel</p>
+      </div>
+    </div>
+
+    <p class="chapeau">
+      Des questions à choix multiples, par thème et par difficulté, avec un score commenté et
+      une révision des erreurs.
+    </p>
+
+    <p class="projet-demo">
+      <a class="bouton" href="../../quiz-culture-generale/index.html" target="_blank" rel="noopener">
+        Voir la démo
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+      </a>
+      <span class="projet-demo-note">Application complète et fonctionnelle.</span>
+    </p>
+
+    <dl class="projet-fiche">
+      <div><dt>Rôle</dt><dd>Conception et développement</dd></div>
+      <div><dt>Contexte</dt><dd>Projet personnel</dd></div>
+      <div><dt>Statut</dt><dd>Terminé — démo jouable</dd></div>
+    </dl>
+
+    <p class="stack-titre">Technologies</p>
+    <ul class="stack">
+      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+    </ul>
+
+    <section class="bloc">
+      <h2>Le point de départ</h2>
+      <p>
+        Je voulais un projet court mais complet : trois écrans, une progression et un
+        résultat. Le quiz s'y prêtait bien, et il m'a servi à travailler les listes, les
+        conditions et le tirage aléatoire.
+      </p>
+      <p>
+        Les questions sont séparées de la logique du jeu : le programme ne fait que les
+        mélanger, les poser, comparer la réponse et compter les points.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>L'objectif</h2>
+      <p>
+        Poser douze questions à choix multiples dans un ordre variable, vérifier chaque
+        réponse, puis afficher un score accompagné d'un commentaire et du détail des
+        réponses — avec la possibilité de rejouer immédiatement.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'ai construit</h2>
+      <ul class="liste-puces">
+        <li>12 questions à choix multiples, en français</li>
+        <li>Tirage au hasard des questions et de l'ordre des réponses</li>
+        <li>Correction immédiate, avec une explication pour chaque réponse</li>
+        <li>Barre de progression et compteur de bonnes réponses</li>
+        <li>Écran de résultat : score, commentaire et récapitulatif des 12 questions</li>
+        <li>Meilleur score conservé dans le navigateur (<code>localStorage</code>)</li>
+        <li>Boutons « Recommencer » et retour à l'accueil</li>
+        <li>Choix du thème (Maroc, géographie, sciences, histoire) et du niveau de difficulté</li>
+        <li>Chronomètre par question, dont la durée dépend de la difficulté (30, 20 ou 12 secondes)</li>
+        <li>Mode « Revoir mes erreurs », qui rejoue uniquement les questions ratées</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>Les étapes</h2>
+      <ol class="etapes">
+        <li><span class="etape-num" aria-hidden="true">1</span>Écrire les questions dans une liste</li>
+        <li><span class="etape-num" aria-hidden="true">2</span>Mélanger les questions et les réponses</li>
+        <li><span class="etape-num" aria-hidden="true">3</span>Comparer la réponse et compter les points</li>
+        <li><span class="etape-num" aria-hidden="true">4</span>Barre de progression et écran de résultat</li>
+        <li><span class="etape-num" aria-hidden="true">5</span>Meilleur score et bouton « Recommencer »</li>
+      </ol>
+    </section>
+
+    <section class="bloc">
+      <h2>Aperçu</h2>
+      <p>Une partie, du lancement jusqu'au score final.</p>
+      <button class="apercu-bouton" type="button" data-ouvrir="apercu-quiz" aria-haspopup="dialog">
+        <div class="maquette" aria-hidden="true">
+          <div class="maquette-barre"><span></span><span></span><span></span><i class="maquette-adresse"></i></div>
+          <div class="maquette-corps">
+            <div class="maquette-titre"></div>
+            <div class="maquette-texte"></div>
+            <div class="maquette-texte court"></div>
+            <div class="maquette-grille">
+              <div class="maquette-carte"></div>
+              <div class="maquette-carte"></div>
+              <div class="maquette-carte"></div>
+            </div>
+          </div>
+        </div>
+        <span class="apercu-legende">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          Cliquer pour agrandir
+        </span>
+      </button>
+
+      <div class="visionneuse" id="apercu-quiz" role="dialog" aria-modal="true" aria-label="Aperçu — Quiz de culture générale" hidden>
+        <div class="visionneuse-boite">
+          <button class="visionneuse-fermer" type="button" aria-label="Fermer l'aperçu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <div class="visionneuse-tete">
+            <h2>Quiz de culture générale</h2>
+            <p>Question, réponses et progression</p>
+          </div>
+          <div class="prev">
+            <div class="prev-barre">
+              <span class="prev-dots"><span></span><span></span><span></span></span>
+              <span class="prev-url">quiz-culture-generale/index.html</span>
+            </div>
+            <div class="prev-quiz">
+              <div class="prev-quiz-tete">
+                <span>Question <strong>4</strong> / 12</span>
+                <span class="prev-score" data-bonnes="3">Score <b>3</b></span>
+              </div>
+              <div class="prev-progression" style="--p:33%"><i></i></div>
+              <h3 class="prev-question">Quelle est la capitale du Maroc ?</h3>
+              <div class="prev-reponses">
+                <button class="prev-reponse" type="button" data-juste="false">Casablanca</button>
+                <button class="prev-reponse" type="button" data-juste="false">Marrakech</button>
+                <button class="prev-reponse" type="button" data-juste="true">Rabat</button>
+                <button class="prev-reponse" type="button" data-juste="false">Fès</button>
+              </div>
+              <div class="prev-quiz-bas">Cliquez sur une réponse : la bonne s'affiche en bleu.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Les difficultés</h2>
+      <p>
+        Le piège a été le mélange : si l'on mélange les réponses sans retenir laquelle est
+        la bonne, le corrigé devient faux. Il fallait donc mélanger, puis retrouver la
+        position de la bonne réponse dans la nouvelle liste.
+      </p>
+      <p>
+        Au début, tout était écrit d'un seul bloc et devenait difficile à corriger. En
+        séparant les questions de la logique du jeu, le programme est devenu lisible — ma
+        première leçon de propreté de code.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que j'en retiens</h2>
+      <p>
+        C'est le projet le plus court, mais celui qui m'a le plus fait réfléchir aux états :
+        accueil, partie en cours, résultat. J'ai aussi vu l'intérêt d'un petit détail
+        soigné — un meilleur score mémorisé — pour donner envie de rejouer.
+      </p>
+    </section>
+
+<p class="retour"><a class="bouton" href="../index.html#projets">← Retour au portfolio</a></p>
+  </main>
+
+  <footer>
+    <div class="footer-contenu">
+      <p class="footer-logo">Abderrahmane El ADNANI</p>
+      <nav class="footer-liens" aria-label="Liens externes">
+        <a href="https://github.com/M-A-E-A" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/mly-abderrahmane-el-adnani-b4477b298/" target="_blank" rel="noopener">
+          <svg class="ico" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn
+        </a>
+        <a href="mailto:m.a.eladnani1@gmail.com">
+          <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>E-mail
+        </a>
+      </nav>
+      <p class="footer-copie">
+        © <span id="annee">2026</span> Abderrahmane El ADNANI — fait en HTML, CSS et JavaScript.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

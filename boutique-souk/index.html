@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Souk — Objets artisanaux marocains · Fiches produit, avis et favoris</title>
+  <meta name="description" content="Souk : boutique en ligne d'objets artisanaux marocains. Fiches produit détaillées, avis des clients et favoris, avec panier et commande.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+
+  <!-- Polices Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <p id="annonce" class="sr-only" aria-live="polite"></p>
+
+  <!-- ===================================================================
+       Sprite d'icônes : tous les SVG sont dessinés en ligne (aucune image)
+       =================================================================== -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Marque : arche de porte marocaine, façon dessin technique -->
+      <symbol id="i-marque" viewBox="0 0 24 24">
+        <path d="M4.5 21V11a7.5 7.5 0 0 1 15 0v10"/>
+        <path d="M9.5 21v-5.5a2.5 2.5 0 0 1 5 0V21"/>
+        <path d="M4.5 21h15"/>
+      </symbol>
+      <!-- Panier -->
+      <symbol id="i-panier" viewBox="0 0 24 24">
+        <path d="M2.5 3.5h2.3l2.3 11.2h11.2l1.7-8H5.7"/>
+        <circle cx="9" cy="19.5" r="1.4"/>
+        <circle cx="18" cy="19.5" r="1.4"/>
+      </symbol>
+      <!-- Lune / Soleil -->
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <!-- Actions -->
+      <symbol id="i-croix" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-moins" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-recherche" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-3.7-3.7"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6.5 9.5 17 4 11.5"/></symbol>
+      <!-- Avis & favoris -->
+      <symbol id="i-etoile" viewBox="0 0 24 24"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></symbol>
+      <symbol id="i-coeur" viewBox="0 0 24 24">
+        <path d="M12 20.4S3.6 15.1 3.6 9.4A4.9 4.9 0 0 1 12 6.3a4.9 4.9 0 0 1 8.4 3.1c0 5.7-8.4 11-8.4 11Z"/>
+      </symbol>
+      <!-- Catégories -->
+      <symbol id="i-cuisine" viewBox="0 0 24 24">
+        <path d="M4 11h13v4.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/>
+        <path d="M17 12.5h1.4a2.5 2.5 0 0 1 0 5H17"/>
+        <path d="M8.2 11V8.4A3 3 0 0 1 13 6.2"/>
+        <path d="M7.5 8.4H6.2"/>
+      </symbol>
+      <symbol id="i-textile" viewBox="0 0 24 24">
+        <rect x="3.5" y="6" width="17" height="12" rx="1.5"/>
+        <path d="M8 6v12M12 6v12M16 6v12"/>
+        <path d="M6 3.5v2.5M10 3.5v2.5M14 3.5v2.5M18 3.5v2.5M6 18v2.5M10 18v2.5M14 18v2.5M18 18v2.5"/>
+      </symbol>
+      <symbol id="i-luminaire" viewBox="0 0 24 24">
+        <path d="M9 3.5h6"/>
+        <path d="M10 3.5 8.5 7v9l2 2.5h3l2-2.5V7l-1.5-3.5"/>
+        <path d="M12 8v6M9 12h6"/>
+        <path d="M12 19v2.5"/>
+      </symbol>
+      <symbol id="i-decoration" viewBox="0 0 24 24">
+        <rect x="5" y="3" width="14" height="18" rx="2"/>
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 8v8M8 12h8"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================ En-tête ============================ -->
+  <header class="entete">
+    <div class="entete-contenu">
+      <a class="marque" href="#contenu" aria-label="Accueil — Souk">
+        <span class="marque-icone" aria-hidden="true"><svg><use href="#i-marque"/></svg></span>
+        <span class="marque-nom">Souk</span>
+      </a>
+
+      <div class="entete-actions">
+        <button id="panier-bouton" type="button" class="bouton bouton-panier"
+                aria-controls="panier" aria-expanded="false" aria-haspopup="dialog">
+          <svg class="ico" aria-hidden="true"><use href="#i-panier"/></svg>
+          <span class="bouton-panier-texte">Panier</span>
+          <span id="panier-compteur" class="compteur">0</span>
+        </button>
+
+        <button id="theme" type="button" class="bouton-icone" aria-label="Basculer en mode sombre" title="Mode sombre">
+          <span class="ico ico-sombre" aria-hidden="true"><svg><use href="#i-lune"/></svg></span>
+          <span class="ico ico-clair" aria-hidden="true"><svg><use href="#i-soleil"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <!-- ======================= Vue : catalogue ======================= -->
+    <section id="vue-catalogue" class="vue">
+
+      <section class="hero">
+        <p class="hero-sur">Artisanat marocain · Marrakech</p>
+        <h1>Des objets de la médina, livrés chez vous</h1>
+        <p class="hero-texte">
+          Théières en cuivre, tapis tissés et luminaires en laiton, choisis chez des
+          artisans et expédiés partout au Maroc.
+        </p>
+      </section>
+
+      <!-- Filtres -->
+      <section class="filtres" aria-label="Filtrer le catalogue">
+        <div class="champ-recherche">
+          <svg class="ico" aria-hidden="true"><use href="#i-recherche"/></svg>
+          <label class="sr-only" for="recherche">Rechercher un article</label>
+          <input id="recherche" type="search" placeholder="Rechercher un article…" autocomplete="off">
+        </div>
+
+        <div class="filtres-groupes">
+          <div id="puces" class="puces" role="group" aria-label="Catégories">
+            <!-- Puces générées par le script -->
+          </div>
+
+          <div class="puces" role="group" aria-label="Favoris">
+            <button id="filtre-favoris" type="button" class="puce puce--favoris" aria-pressed="false">
+              <span class="ico" aria-hidden="true"><svg><use href="#i-coeur"/></svg></span>
+              <span>Favoris (<span id="favoris-compteur">0</span>)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tri et prix : les bornes du curseur sont recalculées par le script
+             d'après le prix le plus élevé du catalogue. -->
+        <div class="filtres-reglages">
+          <div class="champ champ-tri">
+            <label for="tri">Trier par</label>
+            <select id="tri">
+              <option value="pertinence">Pertinence</option>
+              <option value="prix-croissant">Prix croissant</option>
+              <option value="prix-decroissant">Prix décroissant</option>
+              <option value="nom">Nom (A → Z)</option>
+              <option value="note">Mieux notés</option>
+            </select>
+          </div>
+
+          <div class="champ champ-prix">
+            <label for="prix-max">Prix maximum</label>
+            <input id="prix-max" type="range" min="0" max="950" step="10" value="950"
+                   aria-valuetext="Jusqu'à 950 MAD">
+            <!-- Valeur affichée : doublon visuel de aria-valuetext, donc masquée aux lecteurs d'écran -->
+            <span id="prix-max-valeur" class="prix-valeur" aria-hidden="true">Jusqu'à 950 MAD</span>
+          </div>
+
+          <button id="reinitialiser-filtres" type="button" class="bouton bouton-reinit">
+            Réinitialiser les filtres
+          </button>
+        </div>
+      </section>
+
+      <p id="compte-resultats" class="compte-resultats" aria-live="polite"></p>
+
+      <div id="grille" class="grille"></div>
+
+      <p id="grille-vide" class="vide" hidden>Aucun article ne correspond à votre recherche.</p>
+    </section>
+
+    <!-- ======================= Vue : commande ======================= -->
+    <section id="vue-commande" class="vue" hidden>
+      <p class="fil">
+        <button id="retour-catalogue" type="button" class="bouton-lien">← Retour au catalogue</button>
+      </p>
+
+      <h1 class="titre-vue">Votre commande</h1>
+      <p class="sous-titre-vue">Renseignez vos coordonnées, puis validez. Le paiement se fait à la livraison.</p>
+
+      <div class="commande-deux">
+        <form id="form-commande" class="formulaire" novalidate>
+          <div class="champ">
+            <label for="nom">Nom complet</label>
+            <input id="nom" name="nom" type="text" autocomplete="name" aria-describedby="erreur-nom">
+            <p id="erreur-nom" class="erreur" hidden></p>
+          </div>
+
+          <div class="champ">
+            <label for="email">Adresse e-mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" aria-describedby="erreur-email">
+            <p id="erreur-email" class="erreur" hidden></p>
+          </div>
+
+          <div class="champ">
+            <label for="adresse">Adresse de livraison</label>
+            <textarea id="adresse" name="adresse" rows="3" autocomplete="street-address" aria-describedby="erreur-adresse"></textarea>
+            <p id="erreur-adresse" class="erreur" hidden></p>
+          </div>
+
+          <button type="submit" class="bouton bouton-primaire">Valider la commande</button>
+        </form>
+
+        <aside class="recap" aria-label="Récapitulatif de la commande">
+          <h2>Récapitulatif</h2>
+          <div id="recap-lignes" class="recap-lignes"></div>
+          <dl class="totaux">
+            <div><dt>Sous-total</dt><dd id="recap-sous-total">0 MAD</dd></div>
+            <div><dt>Livraison</dt><dd id="recap-livraison">—</dd></div>
+            <div class="total"><dt>Total</dt><dd id="recap-total">0 MAD</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ====================== Vue : confirmation ====================== -->
+    <section id="vue-confirmation" class="vue" hidden>
+      <div class="confirmation">
+        <span class="conf-icone" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+        <p class="conf-num">Commande <span id="conf-numero" class="mono">CMD-0000</span></p>
+        <h1 class="titre-vue">Merci, votre commande est enregistrée.</h1>
+        <p class="sous-titre-vue">Un e-mail de confirmation vous sera envoyé. Récapitulatif ci-dessous.</p>
+
+        <div id="conf-lignes" class="recap-lignes recap-lignes--conf"></div>
+
+        <dl class="totaux">
+          <div><dt>Sous-total</dt><dd id="conf-sous-total">0 MAD</dd></div>
+          <div><dt>Livraison</dt><dd id="conf-livraison">—</dd></div>
+          <div class="total"><dt>Total</dt><dd id="conf-total">0 MAD</dd></div>
+        </dl>
+
+        <button id="conf-retour" type="button" class="bouton bouton-primaire">Continuer mes achats</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================= Pied ============================= -->
+  <footer class="pied">
+    <div class="pied-contenu">
+      <p class="pied-marque">Abderrahmane El ADNANI — Souk</p>
+      <p class="pied-copie">© <span id="annee">2026</span> · Fait en HTML, CSS et JavaScript.</p>
+    </div>
+  </footer>
+
+  <!-- ===================== Tiroir du panier + voile ===================== -->
+  <div id="voile" class="voile" hidden></div>
+
+  <aside id="panier" class="tiroir" role="dialog" aria-modal="true" aria-label="Panier"
+         aria-hidden="true" hidden>
+    <header class="tiroir-tete">
+      <h2>Panier</h2>
+      <button id="panier-fermer" type="button" class="bouton-icone" aria-label="Fermer le panier">
+        <span class="ico" aria-hidden="true"><svg><use href="#i-croix"/></svg></span>
+      </button>
+    </header>
+
+    <div class="tiroir-corps">
+      <div id="panier-lignes" class="panier-lignes"></div>
+      <p id="panier-vide" class="vide" hidden>Votre panier est vide.</p>
+    </div>
+
+    <footer id="panier-pied" class="tiroir-pied">
+      <dl class="totaux">
+        <div><dt>Sous-total</dt><dd id="panier-sous-total">0 MAD</dd></div>
+        <div><dt>Livraison</dt><dd id="panier-livraison">—</dd></div>
+        <div class="total"><dt>Total</dt><dd id="panier-total">0 MAD</dd></div>
+      </dl>
+      <button id="panier-commander" type="button" class="bouton bouton-primaire">Commander</button>
+    </footer>
+  </aside>
+
+  <!-- ===================== Fiche produit (modale) ===================== -->
+  <aside id="fiche" class="fiche" role="dialog" aria-modal="true"
+         aria-labelledby="fiche-nom" aria-hidden="true" tabindex="-1" hidden>
+    <div class="fiche-panneau">
+      <header class="fiche-tete">
+        <div class="fiche-tete-texte">
+          <span id="fiche-cat" class="carte-cat"></span>
+          <h2 id="fiche-nom" class="fiche-nom">Fiche produit</h2>
+        </div>
+        <button id="fiche-fermer" type="button" class="bouton-icone" aria-label="Fermer la fiche produit">
+          <span class="ico" aria-hidden="true"><svg><use href="#i-croix"/></svg></span>
+        </button>
+      </header>
+
+      <div id="fiche-contenu" class="fiche-contenu"></div>
+    </div>
+  </aside>
+
+</body>
+</html>

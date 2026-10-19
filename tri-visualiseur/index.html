@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tri-visualiseur — Cinq algorithmes de tri pas à pas</title>
+  <meta name="description" content="Tri-visualiseur : comparez le tri à bulles, par insertion, par sélection, fusion et rapide sur le même tableau. Choisissez la taille, la vitesse et la forme des données, et suivez les comparaisons et les écritures étape par étape.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+
+  <!-- Polices Google (Space Grotesk pour les titres, Inter pour le texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <!-- ===================================================================
+       Sprite d'icônes : tous les SVG sont dessinés en ligne (aucune image)
+       =================================================================== -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Marque : cinq barres de hauteurs décroissantes -->
+      <symbol id="i-marque" viewBox="0 0 24 24">
+        <path d="M3.5 20.5h17"/>
+        <path d="M6.5 20.5V15M10.5 20.5V11M14.5 20.5V7.5M18.5 20.5V4.5"/>
+      </symbol>
+      <!-- Thème -->
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <!-- Lecture -->
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.8 19 12 7.5 19.2Z"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+      <symbol id="i-pas" viewBox="0 0 24 24">
+        <path d="M5 5.5 13 12l-8 6.5Z"/><path d="M18 5v14"/>
+      </symbol>
+      <!-- Données -->
+      <symbol id="i-nouveau" viewBox="0 0 24 24">
+        <path d="M20 11.5a8 8 0 1 0-2.4 5.7"/><path d="M20 4.5v6h-6"/>
+      </symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24">
+        <path d="M4 12.5a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5v6h6"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================ En-tête ============================ -->
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-marque"></use></svg>
+        <span class="marque-nom">Tri-visualiseur</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================= Contenu ============================= -->
+  <main id="contenu">
+
+    <!-- Message annoncé aux lecteurs d'écran -->
+    <p class="sr-only" id="statut" aria-live="polite"></p>
+
+    <section class="intro">
+      <p class="sur-titre">Algorithmes de tri</p>
+      <h1>Tri-visualiseur</h1>
+      <p class="intro-texte">
+        Cinq algorithmes classiques, le même tableau, et chaque comparaison affichée.
+        Choisissez la taille, la vitesse et la forme des données : les complexités
+        théoriques se vérifient sous vos yeux. Tout est calculé dans le navigateur.
+      </p>
+    </section>
+
+    <!-- ---------------------- Commandes ---------------------- -->
+    <section class="carte carte-commandes" aria-labelledby="titre-commandes">
+      <header class="carte-tete">
+        <h2 id="titre-commandes">Réglages</h2>
+        <p class="carte-note" id="reglages-note">—</p>
+      </header>
+
+      <div class="commandes">
+        <div class="champ">
+          <label for="algorithme">Algorithme</label>
+          <select id="algorithme">
+            <option value="bulles">Tri à bulles</option>
+            <option value="insertion">Tri par insertion</option>
+            <option value="selection">Tri par sélection</option>
+            <option value="fusion">Tri fusion</option>
+            <option value="rapide" selected>Tri rapide</option>
+          </select>
+        </div>
+
+        <div class="champ">
+          <label for="forme">Forme des données</label>
+          <select id="forme">
+            <option value="aleatoire" selected>Aléatoire</option>
+            <option value="presque">Presque trié</option>
+            <option value="inverse">Inverse</option>
+          </select>
+        </div>
+
+        <div class="champ champ-curseur">
+          <label for="taille">Taille du tableau <span class="valeur" id="taille-valeur">30</span></label>
+          <input type="range" id="taille" min="8" max="60" step="1" value="30"
+                 aria-describedby="taille-aide">
+          <p class="aide" id="taille-aide">De 8 à 60 valeurs.</p>
+        </div>
+
+        <div class="champ champ-curseur">
+          <label for="vitesse">Vitesse <span class="valeur" id="vitesse-valeur">5</span></label>
+          <input type="range" id="vitesse" min="1" max="10" step="1" value="5"
+                 aria-describedby="vitesse-aide">
+          <p class="aide" id="vitesse-aide">Du pas à pas contemplatif au fondu rapide.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primaire" id="btn-lancer">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play" id="ico-lancer"></use></svg>
+          <span id="libelle-lancer">Lancer</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-pas">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-pas"></use></svg>
+          <span>Étape suivante</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-nouveau">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-nouveau"></use></svg>
+          <span>Nouveau tableau</span>
+        </button>
+        <button type="button" class="btn btn-secondaire" id="btn-reset">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+          <span>Réinitialiser</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------------------- Visualisation ---------------------- -->
+    <section class="carte carte-vue" aria-labelledby="titre-vue">
+      <header class="carte-tete">
+        <h2 id="titre-vue">Exécution</h2>
+        <p class="carte-note" id="vue-note">—</p>
+      </header>
+
+      <div class="barres" id="barres" role="img" aria-label="Tableau à trier"></div>
+
+      <p class="lecture" id="lecture">Prêt. Choisissez un algorithme et lancez.</p>
+    </section>
+
+    <!-- ---------------------- Mesures ---------------------- -->
+    <section class="tuiles" aria-label="Mesures de l'exécution">
+      <article class="tuile">
+        <h2 class="tuile-titre">Comparaisons</h2>
+        <p class="tuile-valeur" id="m-comparaisons">0</p>
+        <p class="tuile-note">Éléments comparés deux à deux</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Écritures</h2>
+        <p class="tuile-valeur" id="m-ecritures">0</p>
+        <p class="tuile-note">Déplacements ou échanges de valeurs</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Temps</h2>
+        <p class="tuile-valeur" id="m-temps">0,0 s</p>
+        <p class="tuile-note">Mesuré sur votre machine</p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">État</h2>
+        <p class="tuile-valeur" id="m-etat">—</p>
+        <p class="tuile-note" id="m-etat-note">Aucune exécution</p>
+      </article>
+    </section>
+
+    <!-- ---------------- Complexité + légende ---------------- -->
+    <div class="grille">
+
+      <section class="carte carte-tableau" aria-labelledby="titre-complexite">
+        <header class="carte-tete">
+          <h2 id="titre-complexite">Complexités</h2>
+          <p class="carte-note">Complexités asymptotiques, en n éléments à trier.</p>
+        </header>
+        <div class="defilement">
+          <table class="tableau">
+            <caption class="sr-only">Complexité de chaque algorithme proposé</caption>
+            <thead>
+              <tr>
+                <th scope="col">Algorithme</th>
+                <th scope="col">Pire cas</th>
+                <th scope="col">Moyen</th>
+                <th scope="col">Meilleur</th>
+                <th scope="col">Mémoire</th>
+                <th scope="col">Stable</th>
+              </tr>
+            </thead>
+            <tbody id="corps-complexite"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="carte" aria-labelledby="titre-legende">
+        <header class="carte-tete">
+          <h2 id="titre-legende">Lecture du graphique</h2>
+          <p class="carte-note">La couleur porte l'information, le texte la confirme.</p>
+        </header>
+        <ul class="legende">
+          <li><span class="pastille pastille-ordinaire"></span> Valeur ordinaire</li>
+          <li><span class="pastille pastille-compare"></span> En cours de comparaison</li>
+          <li><span class="pastille pastille-ecrit"></span> Déplacée à l'instant</li>
+          <li><span class="pastille pastille-zone"></span> Zone travaillée</li>
+          <li><span class="pastille pastille-place"></span> À sa place définitive</li>
+        </ul>
+        <p class="note-legende">
+          Les barres sont tranchées à hauteur proportionnelle à leur valeur.
+          L'animation ne change rien au résultat : elle ne fait que rendre visibles
+          les étapes que l'algorithme exécute déjà.
+        </p>
+      </section>
+
+    </div>
+
+    <!-- ---------------------- Commentaires ---------------------- -->
+    <section class="carte" aria-labelledby="titre-notes">
+      <header class="carte-tete">
+        <h2 id="titre-notes">Ce que montre cette page</h2>
+      </header>
+      <div class="notes">
+        <p>
+          Le tri à bulles et le tri par sélection réalisent toujours
+          <strong>O(n²)</strong> comparaisons : prenez 60 éléments, relevez le compteur,
+          puis doublez la taille et comparez. Le tri rapide n'atteint jamais ce niveau
+          sur des données aléatoires, mais retombe en <strong>O(n²)</strong> si vous
+          choisissez « Presque trié » avec un pivot défavorable.
+        </p>
+        <p>
+          « Forme des données » n'est pas un détail cosmétique : les algorithmes
+          adaptatifs comme le tri par insertion passent de O(n²) à O(n) sur un tableau
+          déjà trié, ce que la borne « Meilleur cas » du tableau ci-dessus annonce.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================= Pied ============================= -->
+  <footer class="pied">
+    <div class="pied-interieur">
+      <p>Abderrahmane El ADNANI — Tri-visualiseur</p>
+      <p>© <span id="annee">2026</span></p>
+    </div>
+  </footer>
+
+</body>
+</html>

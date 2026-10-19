@@ -1,0 +1,6 @@
+/* Surcharges légères par-dessus Bootstrap 5. */
+body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+.navbar-brand { letter-spacing: -0.01em; }
+.card { border-radius: 0.75rem; }
+.table thead th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+#toast { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 1080; min-width: 16rem; }

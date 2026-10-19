@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suivi de dépenses — Budget personnel par catégorie</title>
+  <meta name="description" content="Suivi de dépenses : ajoutez vos dépenses, fixez un budget mensuel par catégorie, suivez la répartition du mois, lisez vos totaux, un graphique des 6 derniers mois et exportez le détail en CSV.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+
+  <!-- Polices Google (Space Grotesk pour les titres, Inter pour le texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <!-- ===================================================================
+       Sprite d'icônes : tous les SVG sont dessinés en ligne (aucune image)
+       =================================================================== -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Marque : carnet de comptes avec trois barres, façon dessin technique -->
+      <symbol id="i-marque" viewBox="0 0 24 24">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/>
+        <path d="M8 16.5v-4M12 16.5v-7M16 16.5v-2.5"/>
+      </symbol>
+      <!-- Thème -->
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <!-- Actions -->
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-corbeille" viewBox="0 0 24 24">
+        <path d="M4 7h16M10 4h4M6.5 7l1 13h9l1-13"/>
+        <path d="M10.5 10.5v6.5M13.5 10.5v6.5"/>
+      </symbol>
+      <symbol id="i-telecharger" viewBox="0 0 24 24">
+        <path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5"/>
+        <path d="M4.5 19.5h15"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================ En-tête ============================ -->
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-marque"></use></svg>
+        <span class="marque-nom">Suivi de dépenses</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================= Contenu ============================= -->
+  <main id="contenu">
+
+    <!-- Message annoncé aux lecteurs d'écran (ajouts, suppressions, filtres) -->
+    <p class="sr-only" id="statut" aria-live="polite"></p>
+
+    <section class="intro">
+      <p class="sur-titre">Budget personnel</p>
+      <h1>Suivi de dépenses</h1>
+      <p class="intro-texte">
+        Notez vos dépenses, lisez vos six derniers mois d'un seul coup d'œil et exportez le détail
+        en CSV. Tout reste dans votre navigateur, sans compte ni serveur.
+      </p>
+    </section>
+
+    <!-- ---------------------- Tuiles de synthèse ---------------------- -->
+    <section class="tuiles" aria-label="Synthèse">
+      <article class="tuile tuile-mois">
+        <h2 class="tuile-titre">Ce mois-ci</h2>
+        <p class="tuile-valeur" id="tuile-mois">—</p>
+        <p class="tuile-note" id="tuile-mois-note">—</p>
+        <p class="variation" id="tuile-mois-variation" hidden></p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Total</h2>
+        <p class="tuile-valeur" id="tuile-total">—</p>
+        <p class="tuile-note" id="tuile-total-note">—</p>
+        <p class="variation" id="tuile-total-variation" hidden></p>
+      </article>
+      <article class="tuile">
+        <h2 class="tuile-titre">Moyenne / mois</h2>
+        <p class="tuile-valeur" id="tuile-moyenne">—</p>
+        <p class="tuile-note" id="tuile-moyenne-note">—</p>
+        <p class="variation" id="tuile-moyenne-variation" hidden></p>
+      </article>
+    </section>
+
+    <!-- ------------------ Graphique + formulaire ------------------ -->
+    <div class="grille grille-a">
+
+      <section class="carte carte-graphique" aria-labelledby="titre-graphique">
+        <header class="carte-tete">
+          <h2 id="titre-graphique">Six derniers mois</h2>
+          <p class="carte-note">Cliquez une colonne pour filtrer la liste sur ce mois.</p>
+        </header>
+        <div class="barres" id="barres" role="group" aria-label="Total des dépenses par mois"></div>
+        <p class="lecture" id="lecture-graph" aria-live="polite">—</p>
+      </section>
+
+      <section class="carte carte-formulaire" aria-labelledby="titre-formulaire">
+        <header class="carte-tete">
+          <h2 id="titre-formulaire">Nouvelle dépense</h2>
+          <p class="carte-note">Libellé et montant sont obligatoires.</p>
+        </header>
+
+        <form id="form-depense" novalidate>
+          <div class="champ">
+            <label for="libelle">Libellé</label>
+            <input type="text" id="libelle" name="libelle" maxlength="80" autocomplete="off"
+                   placeholder="Courses de la semaine" aria-describedby="erreur-libelle">
+            <p class="erreur" id="erreur-libelle" hidden></p>
+          </div>
+
+          <div class="champ">
+            <label for="montant">Montant (MAD)</label>
+            <input type="number" id="montant" name="montant" min="0.01" step="0.01" inputmode="decimal"
+                   placeholder="120,50" aria-describedby="erreur-montant">
+            <p class="erreur" id="erreur-montant" hidden></p>
+          </div>
+
+          <div class="champ-duo">
+            <div class="champ">
+              <label for="categorie">Catégorie</label>
+              <select id="categorie" name="categorie"></select>
+            </div>
+            <div class="champ">
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" aria-describedby="erreur-date">
+              <p class="erreur" id="erreur-date" hidden></p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primaire">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-plus"></use></svg>
+            <span>Ajouter la dépense</span>
+          </button>
+        </form>
+      </section>
+
+    </div>
+
+    <!-- ------------------ Budgets + Répartition du mois ------------------ -->
+    <div class="grille grille-c">
+
+      <section class="carte carte-budgets" aria-labelledby="titre-budgets">
+        <header class="carte-tete">
+          <h2 id="titre-budgets">Budgets par catégorie</h2>
+          <p class="carte-note" id="budgets-note">Enveloppe mensuelle. Laissez vide pour aucun budget.</p>
+        </header>
+        <!-- Les lignes (libellé + saisie + jauge) sont créées par le script -->
+        <div class="budgets" id="budgets"></div>
+        <p class="vide" id="budgets-vide" hidden>Aucun budget défini pour le moment.</p>
+      </section>
+
+      <section class="carte carte-donut" aria-labelledby="titre-donut">
+        <header class="carte-tete">
+          <h2 id="titre-donut">Répartition du mois</h2>
+          <p class="carte-note" id="donut-note">—</p>
+        </header>
+        <div class="donut-zone" id="donut-zone">
+          <!-- Anneau décoratif : l'information est portée par la légende ci-dessous -->
+          <div class="donut" id="donut" aria-hidden="true">
+            <div class="donut-trou">
+              <span class="donut-total" id="donut-total"></span>
+              <span class="donut-sous">MAD</span>
+            </div>
+          </div>
+          <ul class="legende" id="donut-legende"></ul>
+        </div>
+        <p class="vide" id="donut-vide" hidden>Aucune dépense pour ce mois.</p>
+      </section>
+
+    </div>
+
+    <!-- ------------------ Répartition + liste ------------------ -->
+    <div class="grille grille-b">
+
+      <section class="carte carte-repartition" aria-labelledby="titre-repartition">
+        <header class="carte-tete">
+          <h2 id="titre-repartition">Par catégorie</h2>
+          <p class="carte-note">Sur l'ensemble des dépenses enregistrées.</p>
+        </header>
+        <ul class="repartition" id="repartition"></ul>
+        <p class="vide" id="repartition-vide" hidden>Aucune catégorie pour le moment.</p>
+      </section>
+
+      <section class="carte carte-liste" aria-labelledby="titre-liste">
+        <header class="carte-tete">
+          <h2 id="titre-liste">Dépenses</h2>
+          <p class="carte-note">Filtrez par catégorie ci-dessous, ou par mois avec le graphique.</p>
+        </header>
+
+        <!-- Puces de filtre par catégorie -->
+        <div class="puces" id="puces" role="group" aria-label="Filtrer par catégorie"></div>
+
+        <!-- Bandeau : nombre de dépenses affichées + total filtré + actions -->
+        <div class="bandeau">
+          <p class="bandeau-resume" id="resume-liste">—</p>
+          <div class="bandeau-actions">
+            <button type="button" class="btn btn-secondaire" id="tout-afficher" hidden>Tout afficher</button>
+            <button type="button" class="btn btn-secondaire" id="export-csv">
+              <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-telecharger"></use></svg>
+              <span>Exporter en CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <ul class="liste" id="liste"></ul>
+
+        <!-- États vides : le texte est ajusté par le script -->
+        <p class="vide" id="liste-vide" hidden>Aucune dépense pour le moment.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================= Pied ============================= -->
+  <footer class="pied">
+    <div class="pied-interieur">
+      <p>Abderrahmane El ADNANI — Suivi de dépenses</p>
+      <p>© <span id="annee">2026</span></p>
+    </div>
+  </footer>
+
+</body>
+</html>
