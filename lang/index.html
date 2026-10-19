@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interpréteur de langage — débogueur visuel en JavaScript</title>
+  <meta name="description" content="Interpréteur de langage écrit de zéro : lexer, analyseur récursif descendant, arbre syntaxique, évaluateur et débogueur visuel pas à pas. Aucune bibliothèque.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/lang.js" defer></script>
+  <script src="js/interpreter.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="lang" data-fond="grille">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('lang-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6M13 4l-2 16"/></symbol>
+      <symbol id="i-pas" viewBox="0 0 24 24"><path d="M5 5.5 13 12l-8 6.5Z"/><path d="M18 5v14"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.8 19 12 7.5 19.2Z"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12.5a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5v6h6"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-code"></use></svg>
+        <span class="marque-nom">Interpréteur</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">Langage « Lume »</p>
+      <h1>Écrire un langage, et le regarder thinker</h1>
+      <p class="intro-texte">
+        Un lexer, un analyseur récursif descendant, un arbre syntaxique, un évaluateur —
+        et un débogueur qui allume le nœud en cours d'évaluation. Chaque clic sur
+        « Pas à pas » avance d'un nœud : on voit la récursion se construire.
+      </p>
+    </section>
+
+    <div class="atelier">
+
+      <!-- ------------------------- Éditeur ------------------------- -->
+      <section class="zone-code" aria-labelledby="titre-code">
+        <div class="zone-tete">
+          <h2 class="zone-titre" id="titre-code">Code source</h2>
+          <label class="selecteur">
+            <span class="sr-only">Choisir un exemple</span>
+            <select id="bouton-exemples">
+              <option value="">Charger un exemple…</option>
+              <option value="fibonacci">Fibonacci</option>
+              <option value="liste">Listes et parcours</option>
+              <option value="closures">Fermetures</option>
+              <option value="erreurs">Pas à pas guidé</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="sr-only" for="code">Programme Lume à exécuter</label>
+        <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" rows="18"></textarea>
+
+        <div class="commandes">
+          <button type="button" class="bouton bouton--primaire" id="bouton-analyser">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+            <span>Analyser</span>
+          </button>
+          <button type="button" class="bouton" id="bouton-pas">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-pas"></use></svg>
+            <span>Pas à pas</span>
+          </button>
+          <button type="button" class="bouton" id="bouton-continuer">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play"></use></svg>
+            <span>Continuer</span>
+          </button>
+          <button type="button" class="bouton" id="bouton-reinit">
+            <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+            <span>Réinitialiser</span>
+          </button>
+        </div>
+        <p class="astuce">
+          Cliquez sur un nœud de l'arbre pour y poser un point d'arrêt, puis utilisez
+          « Continuer » : l'exécution s'arrêtera dessus.
+        </p>
+      </section>
+
+      <!-- -------------------------- Arbre -------------------------- -->
+      <section class="zone-arbre" aria-labelledby="titre-arbre">
+        <div class="zone-tete">
+          <h2 class="zone-titre" id="titre-arbre">Arbre syntaxique</h2>
+          <div class="zone-outils">
+            <p class="zone-note">Le nœud en cours d'évaluation est surligné.</p>
+            <div class="zoom">
+              <label class="zoom-lbl" for="zoom">Zoom</label>
+              <input type="range" id="zoom" min="50" max="160" step="5" value="100">
+              <output class="zoom-val" id="zoom-val" for="zoom">100 %</output>
+            </div>
+          </div>
+        </div>
+        <div class="arbre" id="arbre"></div>
+      </section>
+    </div>
+
+    <div class="bandeau">
+      <section class="zone-variables" aria-labelledby="titre-variables">
+        <h2 class="zone-titre" id="titre-variables">Variables</h2>
+        <div class="variables" id="variables"></div>
+      </section>
+
+      <section class="zone-console" aria-labelledby="titre-console">
+        <h2 class="zone-titre" id="titre-console">Console</h2>
+        <div class="console" id="console" role="log" aria-live="polite" aria-label="Sortie du programme"></div>
+      </section>
+    </div>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Le langage</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>Types</h3>
+          <p>
+            Nombres, chaînes, booléens, <code>null</code> et listes. Les listes se
+            construisent avec <code>[1, 2, 3]</code>, s'indexent avec
+            <code>liste[0]</code> et se concatènent avec <code>+</code>.
+          </p>
+        </article>
+        <article>
+          <h3>Instructions</h3>
+          <p>
+            Affectation <code>=</code>, condition <code>if / else</code>, boucle
+            <code>while</code>, fonction <code>fn nom(a, b) { … }</code> et
+            <code>return</code>. Les blocs créent leur propre portée.
+          </p>
+        </article>
+        <article>
+          <h3>Fonctions natives</h3>
+          <p>
+            <code>print</code>, <code>len</code>, <code>abs</code>,
+            <code>floor</code>, <code>ceil</code>, <code>round</code>,
+            <code>sqrt</code>, <code>min</code>, <code>max</code> et
+            <code>random</code> sont fournis par l'environnement.
+          </p>
+        </article>
+        <article>
+          <h3>Le débogueur</h3>
+          <p>
+            L'évaluateur est un générateur : il s'arrête à chaque nœud et rend la
+            main. C'est ce qui permet d'afficher l'arbre d'évaluation en direct,
+            avec les variables telles qu'elles sont à cet instant.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — interpréteur de langage et débogueur visuel, en JavaScript vanilla.</p>
+  </footer>
+
+</body>
+</html>

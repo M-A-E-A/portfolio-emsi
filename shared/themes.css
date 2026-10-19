@@ -124,3 +124,13 @@ body[data-projet="raytracer"].sombre {
   --ciel-haut: #0d0722; --ciel-bas: #060312; --blob-1: #5b21b6; --blob-2: #4c1d95; --blob-3: #6d28d9; --blob-4: #7f5ad4; --blob-opacite: .42; --halo-a: rgba(183,155,255,.20); --halo-b: rgba(127,90,212,.18);
 }
 
+/* ---------- 13. lang (interpréteur de langage) ---------- */
+body[data-projet="lang"]:not(.sombre) {
+  --accent: #0f766e; --accent-fonce: #0b544e; --accent-doux: #dff3f0;
+  --ciel-haut: #eef7f5; --ciel-bas: #e2f0ed; --blob-1: #0f766e; --blob-2: #2a9d8f; --blob-3: #0b5c56; --blob-4: #8fcfc4; --blob-opacite: .16; --halo-a: rgba(15,118,110,.15); --halo-b: rgba(143,207,196,.12);
+}
+body[data-projet="lang"].sombre {
+  --accent: #5eead4; --accent-fonce: #99f6e4; --accent-doux: #0d2f2b;
+  --ciel-haut: #031512; --ciel-bas: #010b0a; --blob-1: #0f766e; --blob-2: #14b8a6; --blob-3: #115e59; --blob-4: #5eead4; --blob-opacite: .40; --halo-a: rgba(94,234,212,.20); --halo-b: rgba(20,184,166,.18);
+}
+
