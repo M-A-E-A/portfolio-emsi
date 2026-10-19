@@ -134,3 +134,13 @@ body[data-projet="lang"].sombre {
   --ciel-haut: #031512; --ciel-bas: #010b0a; --blob-1: #0f766e; --blob-2: #14b8a6; --blob-3: #115e59; --blob-4: #5eead4; --blob-opacite: .40; --halo-a: rgba(94,234,212,.20); --halo-b: rgba(20,184,166,.18);
 }
 
+/* ---------- 14. chain (blockchain) ---------- */
+body[data-projet="chain"]:not(.sombre) {
+  --accent: #b45309; --accent-fonce: #7c3a05; --accent-doux: #fbeedd;
+  --ciel-haut: #fdf7ee; --ciel-bas: #f7ecdc; --blob-1: #b45309; --blob-2: #d98a3c; --blob-3: #96511a; --blob-4: #e0b182; --blob-opacite: .17; --halo-a: rgba(180,83,9,.15); --halo-b: rgba(224,177,130,.12);
+}
+body[data-projet="chain"].sombre {
+  --accent: #f0a94c; --accent-fonce: #f7c78a; --accent-doux: #35240e;
+  --ciel-haut: #1a1105; --ciel-bas: #0b0702; --blob-1: #b45309; --blob-2: #9a6a24; --blob-3: #7d4a13; --blob-4: #c9955a; --blob-opacite: .42; --halo-a: rgba(240,169,76,.20); --halo-b: rgba(201,149,90,.18);
+}
+

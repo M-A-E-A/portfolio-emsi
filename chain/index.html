@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockchain from scratch — preuve de travail, Merkle et signatures</title>
+  <meta name="description" content="Blockchain écrite de zéro en JavaScript : proof-of-work SHA-256, arbre de Merkle, signatures ECDSA via WebCrypto, portefeuille, explorateur de blocs et mini-marché.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/chain.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="chain" data-fond="plat">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('chain-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-lien" viewBox="0 0 24 24">
+        <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/>
+        <path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>
+      </symbol>
+      <symbol id="i-mine" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-3M12 20V9M17 20v-6"/></symbol>
+      <symbol id="i-cle" viewBox="0 0 24 24">
+        <circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M15 12v2"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-lien"></use></svg>
+        <span class="marque-nom">Blockchain</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">From scratch</p>
+      <h1>Une chaîne de blocs, écrite à la main</h1>
+      <p class="intro-texte">
+        Blocs, transactions signées, preuve de travail, arbre de Merkle : tout est
+        là, calculé dans le navigateur. La cryptographie (SHA-256, ECDSA) vient de
+        WebCrypto — on n’implémente pas la cryptographie, on écrit la blockchain.
+      </p>
+    </section>
+
+    <section class="indicateurs" aria-label="État de la chaîne">
+      <div class="indicateur">
+        <span class="indicateur-lbl">Blocs</span>
+        <strong class="indicateur-val" id="nb-blocs">0</strong>
+      </div>
+      <div class="indicateur">
+        <span class="indicateur-lbl">Transactions</span>
+        <strong class="indicateur-val" id="nb-transactions">0</strong>
+      </div>
+      <div class="indicateur indicateur-large">
+        <span class="indicateur-lbl">Minage</span>
+        <span class="minage-etat" id="minage-etat">Prêt</span>
+      </div>
+    </section>
+
+    <div class="grille">
+
+      <!-- ---------------------- Portefeuille ---------------------- -->
+      <section class="carte" aria-labelledby="titre-portefeuille">
+        <h2 class="carte-titre" id="titre-portefeuille">
+          <svg class="carte-ico" aria-hidden="true" focusable="false"><use href="#i-cle"></use></svg>
+          Portefeuille
+        </h2>
+        <div id="portefeuille"></div>
+        <button type="button" class="bouton bouton--primaire" id="bouton-portefeuille">Créer un portefeuille</button>
+
+        <form id="form-transfert" class="formulaire">
+          <h3 class="sous-titre">Envoyer des jetons</h3>
+          <div class="champ">
+            <label for="destinataire">Adresse du destinataire</label>
+            <input type="text" id="destinataire" name="destinataire" placeholder="0x…" autocomplete="off">
+          </div>
+          <div class="champ">
+            <label for="montant">Montant</label>
+            <input type="number" id="montant" name="montant" min="1" step="1" value="10">
+          </div>
+          <div class="champ">
+            <label for="libelle">Libellé (facultatif)</label>
+            <input type="text" id="libelle" name="libelle" placeholder="Ex. facture" autocomplete="off">
+          </div>
+          <button type="submit" class="bouton">Signer la transaction</button>
+          <p class="note">La transaction est signée puis ajoutée au prochain bloc miné.</p>
+        </form>
+      </section>
+
+      <!-- ------------------------- Minage ------------------------- -->
+      <section class="carte" aria-labelledby="titre-minage">
+        <h2 class="carte-titre" id="titre-minage">
+          <svg class="carte-ico" aria-hidden="true" focusable="false"><use href="#i-mine"></use></svg>
+          Mineur
+        </h2>
+        <p class="note">
+          Le mineur cherche un <code>nonce</code> tel que le hash du bloc commence
+          par un nombre donné de zéros. Plus la difficulté est haute, plus il
+          faut d’essais.
+        </p>
+        <div class="champ">
+          <label for="difficulte">Difficulté (zéros hexadécimaux)</label>
+          <select id="difficulte">
+            <option value="1">1 — très rapide</option>
+            <option value="2" selected>2 — rapide</option>
+            <option value="3">3 — correct</option>
+            <option value="4">4 — lent</option>
+          </select>
+        </div>
+        <button type="button" class="bouton bouton--primaire" id="bouton-miner">Miner un bloc</button>
+        <div class="actions-secondaires">
+          <button type="button" class="bouton" id="bouton-verifier">Vérifier la chaîne</button>
+          <button type="button" class="bouton" id="bouton-reinitialiser">Réinitialiser</button>
+        </div>
+        <div class="journal" id="journal" role="log" aria-live="polite" aria-label="Journal du mineur"></div>
+      </section>
+
+      <!-- ----------------------- Explorateur ----------------------- -->
+      <section class="carte carte-large" aria-labelledby="titre-explorateur">
+        <h2 class="carte-titre" id="titre-explorateur">Explorateur de blocs</h2>
+        <ol class="explorateur" id="explorateur"></ol>
+      </section>
+
+      <!-- ------------------------- Marché ------------------------- -->
+      <section class="carte carte-large" aria-labelledby="titre-marche">
+        <h2 class="carte-titre" id="titre-marche">Mini-marché</h2>
+        <p class="note">
+          Acheter un article dépense des jetons : la transaction est signée, puis
+          incluse dans le prochain bloc miné.
+        </p>
+        <ul class="marche" id="marche"></ul>
+      </section>
+    </div>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Les quatre briques</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>Le bloc</h3>
+          <p>
+            Il contient l’index, l’horodatage, la racine de Merkle, le hash du
+            bloc précédent, la difficulté et le nonce. Son hash inclut tout ça :
+            modifier une seule transaction invalide le bloc entier.
+          </p>
+        </article>
+        <article>
+          <h3>La preuve de travail</h3>
+          <p>
+            Le hash doit commencer par <em>n</em> zéros. Trouver ce nonce est
+            coûteux ; le vérifier est immédiat. C’est ce qui rend la réécriture
+            de l’historique coûteuse.
+          </p>
+        </article>
+        <article>
+          <h3>L’arbre de Merkle</h3>
+          <p>
+            Les hash des transactions sont appariés deux à deux, puis les paires
+            de hashes, jusqu’à une seule racine. Cette racine résume toutes les
+            transactions du bloc.
+          </p>
+        </article>
+        <article>
+          <h3>Les signatures</h3>
+          <p>
+            Chaque transaction est signée par ECDSA sur P-256. La signature prouve
+            que l’adresse émettrice est bien à l’origine du transfert — sans
+            révéler la clé privée.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — blockchain écrite de zéro, cryptographie fournie par WebCrypto.</p>
+  </footer>
+
+</body>
+</html>
