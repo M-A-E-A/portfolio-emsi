@@ -45,6 +45,78 @@ img, svg { display: block; max-width: 100%; height: auto; }
 /* Accessibilité */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
+/* Lien d'évitement (identique aux autres démos) */
+.lien-evitement {
+  position: absolute; left: .5rem; top: -4rem; z-index: 20;
+  padding: .6rem 1rem; border-radius: var(--r-s);
+  background: var(--accent); color: #fff; text-decoration: none; font-weight: 600;
+  transition: top .15s ease;
+}
+.lien-evitement:focus { top: .5rem; }
+body.sombre .lien-evitement { color: #0f1319; }
+
+/* ---- Harmonisation de la palette Bootstrap avec celle du portfolio ----
+   Bootstrap expose sa palette via des variables --bs-* : on les remplace
+   pour que la démo utilise exactement les mêmes couleurs que les autres
+   projets (papier froid, encre, un seul bleu d'accent).                */
+:root {
+  --bs-primary: #1b4de4;
+  --bs-primary-rgb: 27, 77, 228;
+  --bs-secondary-color: #59626e;
+  --bs-secondary-color-rgb: 89, 98, 110;
+  --bs-secondary-bg: #eceef1;
+  --bs-secondary-bg-rgb: 236, 238, 241;
+  --bs-tertiary-color: #59626e;
+  --bs-tertiary-bg: #e4e7ec;
+  --bs-tertiary-bg-rgb: 228, 231, 236;
+  --bs-body-color: #2b3138;
+  --bs-body-color-rgb: 43, 49, 56;
+  --bs-body-bg: #eceef1;
+  --bs-body-bg-rgb: 236, 238, 241;
+  --bs-emphasis-color: #12161c;
+  --bs-emphasis-color-rgb: 18, 22, 28;
+  --bs-secondary-color: #59626e;
+  --bs-border-color: #d2d7de;
+  --bs-border-color-translucent: rgba(18, 22, 28, .12);
+  --bs-link-color: #1b4de4;
+  --bs-link-color-rgb: 27, 77, 228;
+  --bs-link-hover-color: #123399;
+  --bs-link-hover-color-rgb: 18, 51, 153;
+  --bs-heading-color: #12161c;
+  --bs-focus-ring-color: rgba(27, 77, 228, .25);
+  --bs-border-radius: .5rem;
+  --bs-border-radius-sm: .375rem;
+  --bs-border-radius-lg: .75rem;
+  --bs-font-sans-serif: var(--texte-ff);
+}
+
+/* Mode sombre : même correspondance, valeurs de body.sombre */
+body.sombre {
+  --bs-primary: #7da0ff;
+  --bs-primary-rgb: 125, 160, 255;
+  --bs-secondary-color: #8b95a3;
+  --bs-secondary-color-rgb: 139, 149, 163;
+  --bs-secondary-bg: #171c24;
+  --bs-secondary-bg-rgb: 23, 28, 36;
+  --bs-tertiary-color: #8b95a3;
+  --bs-tertiary-bg: #1c222b;
+  --bs-tertiary-bg-rgb: 28, 34, 43;
+  --bs-body-color: #c6ccd4;
+  --bs-body-color-rgb: 198, 204, 212;
+  --bs-body-bg: #0f1319;
+  --bs-body-bg-rgb: 15, 19, 25;
+  --bs-emphasis-color: #eef1f5;
+  --bs-emphasis-color-rgb: 238, 241, 245;
+  --bs-border-color: #2a313b;
+  --bs-border-color-translucent: rgba(255, 255, 255, .10);
+  --bs-link-color: #7da0ff;
+  --bs-link-color-rgb: 125, 160, 255;
+  --bs-link-hover-color: #a9c0ff;
+  --bs-link-hover-color-rgb: 169, 192, 255;
+  --bs-heading-color: #eef1f5;
+  --bs-focus-ring-color: rgba(125, 160, 255, .30);
+}
+
 /* ---- Surcouches Bootstrap légères ---- */
 .navbar-brand { letter-spacing: -.01em; font-family: var(--display); }
 .card { border-radius: 0.75rem; border-color: var(--trait); background: var(--surface); }
@@ -53,6 +125,29 @@ img, svg { display: block; max-width: 100%; height: auto; }
 .table tbody td { color: var(--texte); }
 .form-control, .form-select { background: var(--surface); border-color: var(--trait); color: var(--texte); font-family: var(--texte-ff); }
 .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .25rem rgba(27,77,228,.15); }
+
+/* La barre de navigation utilise la palette du portfolio, pas le bleu Bootstrap */
+.navbar { background: var(--surface) !important; border-bottom: 1px solid var(--trait); }
+.navbar-brand, .navbar .nav-link { color: var(--encre) !important; }
+.navbar .nav-link:hover, .navbar .nav-link:focus { color: var(--accent) !important; }
+.navbar-toggler { border-color: var(--trait); }
+.navbar-toggler-icon { filter: none; }
+body.sombre .navbar-toggler-icon { filter: invert(1) grayscale(100%); }
+
+/* Titres, cartes et composants */
+h1, h2, h3, h4, h5, h6 { color: var(--encre); font-family: var(--display); letter-spacing: -.02em; }
+.card-title, .card-header { color: var(--encre); }
+.list-group-item { background: var(--surface); color: var(--texte); border-color: var(--trait); }
+.list-group-item.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.progress { background: var(--trait); }
+.progress-bar { background: var(--accent); color: #fff; font-size: .78rem; }
+.badge.text-bg-primary { background: var(--accent) !important; color: #fff !important; }
+.modal-content { background: var(--surface); border-color: var(--trait); color: var(--texte); }
+.modal-header, .modal-footer { border-color: var(--trait); }
+.form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+.btn-primary { --bs-btn-bg: var(--accent); --bs-btn-border-color: var(--accent); --bs-btn-hover-bg: var(--accent-fonce); --bs-btn-hover-border-color: var(--accent-fonce); --bs-btn-active-bg: var(--accent-fonce); }
+.btn-outline-primary { --bs-btn-color: var(--accent); --bs-btn-border-color: var(--accent); --bs-btn-hover-bg: var(--accent); --bs-btn-hover-border-color: var(--accent); --bs-btn-active-bg: var(--accent); }
+.btn-outline-light { --bs-btn-color: var(--encre); --bs-btn-border-color: var(--trait); --bs-btn-hover-bg: var(--accent-doux); --bs-btn-hover-border-color: var(--accent); --bs-btn-hover-color: var(--accent); --bs-btn-active-bg: var(--accent-doux); --bs-btn-active-color: var(--accent); }
 
 /* ---- Thème bouton cohérent ---- */
 #theme { font-family: var(--display); transition: all .2s ease; }

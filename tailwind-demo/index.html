@@ -6,43 +6,48 @@
   <title>Page Tailwind CSS</title>
   <meta name="description" content="Démonstration Tailwind CSS : approche utility-first, mise en page responsive, composants.">
   <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="../shared/theme.css">
   <link rel="stylesheet" href="css/output.css">
+  <link rel="stylesheet" href="css/base.css">
   <script src="../shared/theme.js" defer></script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 antialiased">
 
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
   <!-- Navigation -->
   <nav class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-200 dark:border-slate-700">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="#" class="font-bold text-lg text-slate-900">Tailwind <span class="text-indigo-600">démo</span></a>
-      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-        <a href="#features" class="hover:text-indigo-600 transition">Fonctionnalités</a>
-        <a href="#stats" class="hover:text-indigo-600 transition">Statistiques</a>
-        <a href="#contact" class="hover:text-indigo-600 transition">Contact</a>
+      <a href="#contenu" class="font-display font-bold text-lg text-slate-900 dark:text-slate-100">Tailwind <span class="text-indigo-600 dark:text-indigo-400">démo</span></a>
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">
+        <a href="#features" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Fonctionnalités</a>
+        <a href="#stats" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Statistiques</a>
+        <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
       </div>
-      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition" aria-label="Basculer le thème">🌙</button>
+      <button type="button" id="theme" class="px-3 py-1.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition" aria-label="Activer le thème sombre" aria-pressed="false">🌙</button>
     </div>
   </nav>
 
-  <main>
+  <main id="contenu">
 
   <!-- Hero -->
   <section class="max-w-6xl mx-auto px-4 py-20 text-center">
-    <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold mb-4">Utility-first CSS</span>
-    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-4">
-      Une page construite avec <span class="text-indigo-600">Tailwind CSS</span>
+    <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-4">Utility-first CSS</span>
+    <h1 class="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mb-4">
+      Une page construite avec <span class="text-indigo-600 dark:text-indigo-400">Tailwind CSS</span>
     </h1>
-    <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
+    <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8">
       Pas de classes prédéfinies : chaque élément est composé d'utilitaires atomiques.
       Le CSS final ne contient que ce qui est utilisé.
     </p>
     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a href="#features" class="px-6 py-3 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">Découvrir</a>
-      <a href="#contact" class="px-6 py-3 rounded-lg bg-white text-slate-700 font-medium border border-slate-300 hover:border-indigo-400 transition">Contact</a>
+      <a href="#features" class="px-6 py-3 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg shadow-indigo-200 dark:shadow-none">Découvrir</a>
+      <a href="#contact" class="px-6 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium border border-slate-300 dark:border-slate-600 hover:border-indigo-400 transition">Contact</a>
     </div>
   </section>
 
@@ -50,42 +55,42 @@
   <section id="stats" class="max-w-6xl mx-auto px-4 py-12">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
-        <p class="text-3xl font-bold text-indigo-600">12</p>
-        <p class="text-sm text-slate-600 mt-1">Projets</p>
+        <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">12</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Projets</p>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
-        <p class="text-3xl font-bold text-indigo-600">100%</p>
-        <p class="text-sm text-slate-600 mt-1">Lighthouse</p>
+        <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">100%</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Lighthouse</p>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
-        <p class="text-3xl font-bold text-indigo-600">0</p>
-        <p class="text-sm text-slate-600 mt-1">CDN externe</p>
+        <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">0</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">CDN externe</p>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
-        <p class="text-3xl font-bold text-indigo-600">1</p>
-        <p class="text-sm text-slate-600 mt-1">Fichier CSS</p>
+        <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">1</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Fichier CSS</p>
       </div>
     </div>
   </section>
 
   <!-- Fonctionnalités -->
   <section id="features" class="max-w-6xl mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center">Ce que Tailwind permet</h2>
+    <h2 class="font-display text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">Ce que Tailwind permet</h2>
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-2xl">⚡</div>
-        <h3 class="font-semibold text-lg mb-2">Rapide</h3>
-        <p class="text-slate-600 text-sm">Pas de CSS à écrire à la main : on compose directement dans le HTML.</p>
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">⚡</div>
+        <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Rapide</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm">Pas de CSS à écrire à la main : on compose directement dans le HTML.</p>
       </div>
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-2xl">📱</div>
-        <h3 class="font-semibold text-lg mb-2">Responsive</h3>
-        <p class="text-slate-600 text-sm">Préfixes <code class="bg-slate-100 px-1 rounded">md:</code>, <code class="bg-slate-100 px-1 rounded">lg:</code> pour adapter à chaque écran.</p>
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">📱</div>
+        <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Responsive</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm">Préfixes <code class="bg-slate-100 dark:bg-slate-700 dark:text-slate-200 px-1 rounded">md:</code>, <code class="bg-slate-100 dark:bg-slate-700 dark:text-slate-200 px-1 rounded">lg:</code> pour adapter à chaque écran.</p>
       </div>
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-2xl">🎨</div>
-        <h3 class="font-semibold text-lg mb-2">Cohérent</h3>
-        <p class="text-slate-600 text-sm">Une palette et des espacements partagés, sans divergence entre composants.</p>
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4 text-2xl">🎨</div>
+        <h3 class="font-display font-semibold text-lg text-slate-900 dark:text-slate-100 mb-2">Cohérent</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm">Une palette et des espacements partagés, sans divergence entre composants.</p>
       </div>
     </div>
   </section>
@@ -93,30 +98,30 @@
   <!-- Formulaire -->
   <section id="contact" class="max-w-2xl mx-auto px-4 py-16">
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-8">
-      <h2 class="text-2xl font-bold mb-2">Contact</h2>
-      <p class="text-slate-600 text-sm mb-6">Formulaire de démonstration (rien n'est envoyé).</p>
+      <h2 class="font-display text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Contact</h2>
+      <p class="text-slate-600 dark:text-slate-400 text-sm mb-6">Formulaire de démonstration (rien n'est envoyé).</p>
       <form id="form" class="space-y-4">
         <div>
           <label for="nom" class="block text-sm font-medium mb-1">Nom</label>
-          <input id="nom" type="text" required class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre nom">
+          <input id="nom" type="text" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre nom">
         </div>
         <div>
           <label for="email" class="block text-sm font-medium mb-1">E-mail</label>
-          <input id="email" type="email" required class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="vous@exemple.com">
+          <input id="email" type="email" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="vous@exemple.com">
         </div>
         <div>
           <label for="message" class="block text-sm font-medium mb-1">Message</label>
-          <textarea id="message" rows="4" required class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre message"></textarea>
+          <textarea id="message" rows="4" required class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Votre message"></textarea>
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">Envoyer</button>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition">Envoyer</button>
       </form>
-      <p id="confirmation" class="hidden mt-4 text-sm text-green-600 font-medium">Message envoyé (démo, rien n'est transmis).</p>
+      <p id="confirmation" class="hidden mt-4 text-sm text-green-600 dark:text-green-400 font-medium">Message envoyé (démo, rien n'est transmis).</p>
     </div>
   </section>
 
   </main>
 
-  <footer class="border-t border-slate-200 py-6 text-center text-sm text-slate-600">
+  <footer class="border-t border-slate-200 dark:border-slate-700 py-6 text-center text-sm text-slate-600 dark:text-slate-400">
     © <span id="annee">2026</span> Abderrahmane El ADNANI — démo Tailwind CSS, CSS généré par build.
   </footer>
 
@@ -136,6 +141,7 @@
         document.body.classList.toggle('sombre', sombre);
         btn.setAttribute('aria-pressed', String(sombre));
         btn.setAttribute('aria-label', sombre ? 'Activer le thème clair' : 'Activer le thème sombre');
+        btn.title = sombre ? 'Mode clair' : 'Mode sombre';
         btn.textContent = sombre ? '☀️' : '🌙';
         try { localStorage.setItem(CLE, sombre ? 'sombre' : 'clair'); } catch (e) { /* indisponible */ }
       }
