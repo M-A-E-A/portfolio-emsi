@@ -16,8 +16,14 @@
 
   function appliquerTheme(sombre) {
     document.documentElement.setAttribute('data-bs-theme', sombre ? 'dark' : 'light');
+    document.body.classList.toggle('sombre', sombre);
     const btn = $('#theme');
-    if (btn) btn.textContent = sombre ? '☀️' : '🌙';
+    if (btn) {
+      btn.textContent = sombre ? '☀️' : '🌙';
+      btn.setAttribute('aria-label', sombre ? 'Activer le thème clair' : 'Activer le thème sombre');
+      btn.setAttribute('aria-pressed', String(sombre));
+      btn.title = sombre ? 'Mode clair' : 'Mode sombre';
+    }
     stockage.ecrire('bootstrap-demo-theme', sombre ? 'sombre' : 'clair');
   }
 
