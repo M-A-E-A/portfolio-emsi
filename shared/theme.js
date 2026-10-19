@@ -18,11 +18,14 @@
     div.className = 'fond-anime';
     div.setAttribute('aria-hidden', 'true');
     div.innerHTML =
-      '<span class="blob blob-1"></span>' +
-      '<span class="blob blob-2"></span>' +
-      '<span class="blob blob-3"></span>' +
-      '<span class="blob blob-4"></span>' +
-      '<span class="grain"></span>';
+      (function () {
+        const f = document.body.getAttribute('data-fond') || 'aurore';
+        if (f === 'aurore') return '<span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span><span class="blob blob-4"></span>';
+        if (f === 'ruban' || f === 'soie') return '<span class="ruban ruban-1"></span><span class="ruban ruban-2"></span><span class="ruban ruban-3"></span>';
+        return '';
+      })() + '<span class="grain"></span>';
+    const fond = document.body.getAttribute('data-fond') || 'aurore';
+    div.setAttribute('data-fond', fond);
     document.body.insertBefore(div, document.body.firstChild);
   }
 
