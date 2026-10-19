@@ -113,3 +113,14 @@ body[data-projet="tri-visualiseur"].sombre {
   --accent: #62b6e4; --accent-fonce: #9ad0f0; --accent-doux: #14303f;
   --ciel-haut: #04141f; --ciel-bas: #020a10; --blob-1: #0e7bb5; --blob-2: #1a7fa8; --blob-3: #0a5f86; --blob-4: #57a2c6; --blob-opacite: .42; --halo-a: rgba(98,182,228,.22); --halo-b: rgba(87,162,198,.18);
 }
+
+/* ---------- 12. raytracer (moteur de rendu 3D) ---------- */
+body[data-projet="raytracer"]:not(.sombre) {
+  --accent: #6d28d9; --accent-fonce: #4c1d95; --accent-doux: #efe9fd;
+  --ciel-haut: #f3f0fd; --ciel-bas: #eae5fa; --blob-1: #5b21b6; --blob-2: #7c3aed; --blob-3: #4c1d95; --blob-4: #b4a2f5; --blob-opacite: .17; --halo-a: rgba(109,40,217,.16); --halo-b: rgba(180,162,245,.12);
+}
+body[data-projet="raytracer"].sombre {
+  --accent: #b79bff; --accent-fonce: #d3c2ff; --accent-doux: #251a44;
+  --ciel-haut: #0d0722; --ciel-bas: #060312; --blob-1: #5b21b6; --blob-2: #4c1d95; --blob-3: #6d28d9; --blob-4: #7f5ad4; --blob-opacite: .42; --halo-a: rgba(183,155,255,.20); --halo-b: rgba(127,90,212,.18);
+}
+
