@@ -164,3 +164,13 @@ body[data-projet="whiteboard"].sombre {
   --ciel-haut: #1e050f; --ciel-bas: #0d0207; --blob-1: #be123c; --blob-2: #9f1239; --blob-3: #881337; --blob-4: #f78ca8; --blob-opacite: .42; --halo-a: rgba(247,140,168,.20); --halo-b: rgba(190,18,60,.18);
 }
 
+/* ---------- 17. nn (réseau de neurones) ---------- */
+body[data-projet="nn"]:not(.sombre) {
+  --accent: #047857; --accent-fonce: #024f3c; --accent-doux: #e3f3ed;
+  --ciel-haut: #eef7f3; --ciel-bas: #e2f1ea; --blob-1: #047857; --blob-2: #2f9e77; --blob-3: #065f46; --blob-4: #82c4a8; --blob-opacite: .17; --halo-a: rgba(4,120,87,.15); --halo-b: rgba(130,196,168,.12);
+}
+body[data-projet="nn"].sombre {
+  --accent: #6ee7b7; --accent-fonce: #a7f3d0; --accent-doux: #0d2f22;
+  --ciel-haut: #03150e; --ciel-bas: #010a06; --blob-1: #047857; --blob-2: #10b981; --blob-3: #065f46; --blob-4: #6ee7b7; --blob-opacite: .42; --halo-a: rgba(110,231,183,.20); --halo-b: rgba(16,185,129,.18);
+}
+

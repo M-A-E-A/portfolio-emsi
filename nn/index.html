@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réseau de neurones from scratch — forward, backpropagation et Adam</title>
+  <meta name="description" content="Réseau de neurones écrit de zéro en JavaScript : forward pass, rétropropagation manuelle, Adam, classification de chiffres manuscrits et visualisation de la perte en direct.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/nn.js" defer></script>
+  <script src="js/dataset.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="nn" data-fond="contours">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('nn-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-reseau" viewBox="0 0 24 24">
+        <circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/>
+        <circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/>
+        <path d="M6.6 7 10.4 11M6.6 17l3.8-4M13.6 11l3.8-4M13.6 13l3.8 4"/>
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.8 19 12 7.5 19.2Z"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12.5a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5v6h6"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-reseau"></use></svg>
+        <span class="marque-nom">Réseau de neurones</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">From scratch</p>
+      <h1>Écrire la rétropropagation, pas la réciter</h1>
+      <p class="intro-texte">
+        Forward pass, règle de la chaîne appliquée couche par couche, Adam pour
+        l’optimisation. Le réseau apprend à reconnaître des chiffres manuscrits
+        — des chiffres que l’on dessine ici même, avec une rotation et un
+        bruit différents à chaque exemple. Aucun téléchargement, aucune
+        bibliothèque.
+      </p>
+    </section>
+
+    <section class="barre-actions">
+      <div class="actions-principales">
+        <button type="button" class="bouton bouton--primaire" id="bouton-lancer">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-play"></use></svg>
+          <span>Lancer l’entraînement</span>
+        </button>
+        <button type="button" class="bouton" id="bouton-reinitialiser">
+          <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-reset"></use></svg>
+          <span>Réinitialiser les poids</span>
+        </button>
+      </div>
+      <div class="reglage-taux">
+        <label for="reglage-taux">Taux d’apprentissage <span class="valeur" id="valeur-taux">0.020</span></label>
+        <input type="range" id="reglage-taux" min="2" max="80" step="1" value="20">
+      </div>
+      <p class="statut" id="statut" role="status">Prêt.</p>
+    </section>
+
+    <section class="metriques" aria-label="Résultats de l’entraînement">
+      <div class="metrique">
+        <span class="metrique-lbl">Entropie (test)</span>
+        <strong class="metrique-val" id="metrique-perte">—</strong>
+      </div>
+      <div class="metrique">
+        <span class="metrique-lbl">Exactitude (test)</span>
+        <strong class="metrique-val" id="metrique-exactitude">—</strong>
+      </div>
+      <div class="metrique">
+        <span class="metrique-lbl">Exactitude (apprentissage)</span>
+        <strong class="metrique-val" id="metrique-apprentissage">—</strong>
+      </div>
+      <div class="metrique">
+        <span class="metrique-lbl">Paramètres entraînables</span>
+        <strong class="metrique-val" id="nb-parametres">—</strong>
+      </div>
+    </section>
+
+    <div class="grille">
+      <section class="carte" aria-labelledby="titre-courbe">
+        <h2 class="carte-titre" id="titre-courbe">Courbe d’apprentissage</h2>
+        <canvas id="courbe" width="720" height="300" role="img"
+                aria-label="Courbe de l’entropie et de l’exactitude au fil de l’entraînement."></canvas>
+        <p class="note">
+          La ligne pleine est l’entropie (plus elle est basse, mieux c’est) ;
+          la ligne en pointillés est l’exactitude.
+        </p>
+      </section>
+
+      <section class="carte" aria-labelledby="titre-poids">
+        <h2 class="carte-titre" id="titre-poids">Poids du premier neurone caché</h2>
+        <canvas id="poids" width="240" height="240" role="img"
+                aria-label="Carte de chaleur des poids du premier neurone de la couche cachée, projetés sur l’image d’entrée."></canvas>
+        <p class="note">
+          Chaque neurone caché apprend un « détecteur de forme ». En bleu, le
+          pixel active le neurone ; en rouge, il l’inhibe.
+        </p>
+      </section>
+    </div>
+
+    <section class="carte carte-large" aria-labelledby="titre-predictions">
+      <h2 class="carte-titre" id="titre-predictions">Prédictions sur le jeu de test</h2>
+      <div class="predictions" id="predictions"></div>
+    </section>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Le réseau, couche par couche</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>Forward pass</h3>
+          <p>
+            256 entrées (16 × 16 pixels) traversent deux couches cachées de
+            32 neurones, puis une couche de sortie de 10 neurones. L’activation
+            softmax transforme la sortie en probabilités.
+          </p>
+        </article>
+        <article>
+          <h3>Rétropropagation</h3>
+          <p>
+            À chaque neurone, on demande : « de combien ma sortie varie-t-elle
+            si ce poids varie un peu ? ». La réponse se propage de la sortie
+            vers l’entrée, en multipliant par la dérivée de chaque activation.
+          </p>
+        </article>
+        <article>
+          <h3>Adam</h3>
+          <p>
+            Momentum et correction du biais : la mise à jour est
+            <code>lr · m̂ / (√v̂ + ε)</code>. C’est l’optimiseur qui permet de
+            converger vite sans réglage fin du taux d’apprentissage.
+          </p>
+        </article>
+        <article>
+          <h3>Le jeu de données</h3>
+          <p>
+            Chaque chiffre est un tracé vectoriel, rasterisé par distance :
+            l’anticrénelage est gratuit. On ajoute ensuite rotation, échelle,
+            translation et bruit, pour que le réseau apprenne la forme et non
+            une image figée.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — réseau de neurones écrit de zéro, forward et rétropropagation à la main.</p>
+  </footer>
+
+</body>
+</html>

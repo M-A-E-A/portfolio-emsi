@@ -107,10 +107,13 @@
 
   function rafraichirExplorateur() {
     const zone = $('#explorateur');
+    const vide = $('#explorateur-vide');
     if (!etat.chaine.blocs.length) {
-      zone.innerHTML = '<p class="vide">Aucun bloc miné pour l’instant.</p>';
+      zone.innerHTML = '';
+      vide.hidden = false;
       return;
     }
+    vide.hidden = true;
     zone.innerHTML = etat.chaine.blocs
       .slice()
       .reverse()

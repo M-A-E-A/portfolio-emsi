@@ -1,20 +1,20 @@
 # Portfolio — Abderrahmane El ADNANI
 
-> Un portfolio vivant : 14 projets détaillés, un thème de fond animé, un mode sombre persistant, et 11 démos standalone.
+> Un portfolio vivant : 20 projets détaillés, un thème de fond animé, un mode sombre persistant, et 17 démos standalone.
 
 ---
 
 ## ✨ En une ligne
 
-**Portfolio + 11 démo-apps + thème partagé (fond animé + dark/light)** — en pur HTML/CSS/JS, sans framework obligatoire, fonctionnel sur `file://`.
+**Portfolio + 17 démo-apps + thème partagé (fond animé + dark/light)** — en pur HTML/CSS/JS, sans framework obligatoire, fonctionnel sur `file://`.
 
 ---
 
 ## 🏗 Structure
 
 ```
-portfolio/           → site portfolio (14 projets détaillés, fond animé, thème)
-shared/              → theme.css + theme.js + themes.css (fond animé, thème, 11 palettes)
+portfolio/           → site portfolio (20 projets détaillés, fond animé, thème)
+shared/              → theme.css + theme.js + themes.css (fond animé, thème, 17 palettes)
 python-analyse/      → CLI Python : analyse CSV (stats par colonne)
 tailwind-demo/       → page marketing construite avec Tailwind CSS
 wp-theme-portfolio/  → thème WordPress minimal (index, single, archive, 404)
@@ -27,6 +27,12 @@ mini-sgbd/           → moteur SQL en JS (SELECT, JOIN, GROUP BY, INSERT)
 quiz-culture-generale/ → quiz chronométré (12 questions, explications, score)
 suivi-depenses/      → suivi des dépenses (catégories, graphique, filtre)
 tri-visualiseur/     → visualiseur de 5 algorithmes de tri (pas à pas)
+raytracer/           → moteur de rendu 3D logiciel (ray tracing, Fresnel, Snell)
+lang/                → interpréteur de langage + débogueur visuel (pas à pas)
+chain/               → blockchain (proof-of-work, Merkle, ECDSA, explorateur)
+p2p/                 → messagerie pair à pair chiffrée (WebRTC + WebCrypto)
+whiteboard/          → tableau blanc collaboratif (CRDT OR-Set, undo/redo)
+nn/                  → réseau de neurones (backpropagation, Adam, CNN)
 ```
 
 ---
@@ -43,9 +49,10 @@ tri-visualiseur/     → visualiseur de 5 algorithmes de tri (pas à pas)
 
 ### 2. Thème clair / sombre
 - **Persistance** via `localStorage`, avec une clé isolée par démo
-  (`bootstrap-demo-theme`, `souk-theme`, `quiz-theme`, `tailwind-theme`, `portfolio-theme`…) :
-  les 11 apps ne se marchent pas dessus
-- **Respect de `prefers-color-scheme`** au premier chargement
+  (`bootstrap-demo-theme`, `souk-theme`, `raytracer-theme`, `chain-theme`…) :
+  les 17 apps ne se marchent pas dessus
+- **Appliqué avant le premier rendu** : un script en ligne dans `<body>` pose la classe
+  `sombre` — pas de flash clair au chargement
 - **Un bouton `#theme`** par projet — chaque app conserve son propre mécanisme
   (aucun conflit entre le portfolio et les démos)
 - **Tailwind compatible** : `tailwind-demo` active aussi `html.dark` pour les utilitaires `dark:`
@@ -53,16 +60,26 @@ tri-visualiseur/     → visualiseur de 5 algorithmes de tri (pas à pas)
   posée sur un aplat d'accent (blanc en clair, encre en sombre) — plus de texte illisible
 
 ### 3. Accessibilité
-- **Lien d'évitement** implémenté une seule fois dans `shared/theme.css` (identique dans les 11 démos)
+- **Lien d'évitement** implémenté une seule fois dans `shared/theme.css` (identique dans les 17 démos)
 - **`main#contenu`** unique par page, hiérarchie de titres continue (h1 → h2 → h3)
 - **Contrastes WCAG AA** vérifiés par Lighthouse en mode clair **et** sombre
 - **`aria-pressed` / `aria-label` / `title`** sur chaque bouton de thème
 
 ### 4. Performance
 - **Aucun framework obligé** pour le portfolio — tout en vanilla
-- **Lighthouse 100 / 100 / 100** (accessibilité, bonnes pratiques, SEO) sur **les 12 pages
-  principales et les 14 fiches projet**, en mode clair comme en mode sombre
+- **Lighthouse 100 / 100 / 100** (accessibilité, bonnes pratiques, SEO) sur **les 18 pages
+  principales et les 20 fiches projet**, en mode clair comme en mode sombre
 - **Pas de dépendance externe** au lancement (hors polices Google et Tailwind pour la démo)
+
+### 5. Les six projets « from scratch »
+| Projet | Ce qui est écrit à la main |
+|---|---|
+| `raytracer` | Lancer de rayons, z-buffer, ombres douces, Fresnel, Snell, tone mapping ACES |
+| `lang` | Lexer, analyseur récursif descendant, arbre syntaxique, évaluateur générateur, débogueur |
+| `chain` | Blocs, transactions signées ECDSA, arbre de Merkle, preuve de travail SHA-256 |
+| `p2p` | Signalisation WebRTC, DataChannel, ECDH P-256, AES-GCM 256, empreintes de clés |
+| `whiteboard` | OR-Set, fusion commutative, LWW, undo par sémaphore, convergence vérifiée |
+| `nn` | Forward pass, rétropropagation, Adam, jeu de données synthétiques |
 
 ---
 
@@ -71,6 +88,12 @@ tri-visualiseur/     → visualiseur de 5 algorithmes de tri (pas à pas)
 | Projet | Démo | Source |
 |---|---|---|
 | **Portfolio** | [index.html](portfolio/index.html) | `portfolio/` |
+| **Raytracer 3D** | [raytracer/index.html](raytracer/index.html) | `raytracer/` |
+| **Interpréteur** | [lang/index.html](lang/index.html) | `lang/` |
+| **Blockchain** | [chain/index.html](chain/index.html) | `chain/` |
+| **P2P chiffré** | [p2p/index.html](p2p/index.html) | `p2p/` |
+| **Tableau blanc** | [whiteboard/index.html](whiteboard/index.html) | `whiteboard/` |
+| **Réseau de neurones** | [nn/index.html](nn/index.html) | `nn/` |
 | **Analyse CSV (Python)** | `python-analyse/analyse.py` | `python-analyse/` |
 | **Tailwind** | [tailwind-demo/index.html](tailwind-demo/index.html) | `tailwind-demo/` |
 | **WordPress** | `wp-theme-portfolio/index.php` | `wp-theme-portfolio/` |
@@ -96,6 +119,7 @@ Les pages fonctionnent aussi ouvertes directement en `file://` (stockage protég
 - **Tailwind CSS** (build réel : `npm run build` → `css/output.css`, `npm run watch` en continu)
 - **PHP / WordPress** (`index.php`, `functions.php`, `style.css`)
 - **Bootstrap 5** (démo tableau de bord)
+- **WebCrypto** (ECDSA, ECDH, SHA-256, AES-GCM) et **WebRTC** (DataChannel)
 
 ---
 
