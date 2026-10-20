@@ -77,6 +77,10 @@ print("la variable total vaut", total);
     programme: null,
     execution: null,
     evenements: [],
+    nbEvenements: 0,   // nombre d'événements déjà consommés
+    dernierEvenement: null,
+    rafale: false,     // true pendant une exécution découpée en tranches
+    generation: 0,     // incrémentée à chaque nouveau programme
     curseur: 0,      // index de l'événement courant dans la liste
     arbre: null,
     noeudCourant: null,
@@ -370,6 +374,10 @@ print("la variable total vaut", total);
     });
     etat.execution.demarrer();
     etat.evenements = [];
+    etat.nbEvenements = 0;
+    etat.dernierEvenement = null;
+    etat.rafale = false;
+    etat.generation++;
     etat.curseur = 0;
     etat.noeudCourant = null;
     etat.enCours = true;
@@ -386,7 +394,16 @@ print("la variable total vaut", total);
     if (!etat.execution) return;
     const evenement = etat.execution.pas();
     if (!evenement) return;
-    etat.evenements.push(evenement);
+    etat.nbEvenements++;
+    etat.dernierEvenement = evenement;
+
+    // Pendant une rafale, la trace n'est pas conservée : elle ne serait
+    // jamais rejouée et représenterait des dizaines de milliers d'objets
+    // pour un simple Fibonacci récursif.
+    if (!silencieux) {
+      etat.evenements.push(evenement);
+      if (etat.evenements.length > 2000) etat.evenements.shift();
+    }
 
     if (evenement.noeud) etat.noeudCourant = evenement.noeud;
     if (evenement.evenement === 'erreur') {
@@ -407,26 +424,66 @@ print("la variable total vaut", total);
     }
   }
 
+  /**
+   * Fait tourner le programme jusqu'au bout.
+   *
+   * Le travail est découpé en tranches d'une douzaine de millisecondes,
+   * séparées par une frame : la page reste réactive au lieu de se figer
+   * pendant une seconde entière sur un Fibonacci récursif.
+   */
   function continuer() {
-    if (!etat.execution) return;
-    let garde = 0;
-    while (etat.enCours && garde < 200000) {
-      const avant = etat.evenements.length;
-      avancer(true);
-      garde++;
-      if (etat.evenements.length === avant) break; // terminé
-      const dernier = etat.evenements[etat.evenements.length - 1];
-      // Arrêt à l'entrée d'un nœud portant un point d'arrêt.
-      if (dernier.evenement === 'entree' && etat.pointsArret.has(dernier.noeud)) break;
-    }
-    dessinerArbre();
-    rafraichirVariables();
+    if (!etat.execution || !etat.enCours || etat.rafale) return;
+    etat.rafale = true;
+    const generation = etat.generation;
     majBoutons();
+
+    let precedente = performance.now();
+
+    function tranche() {
+      // Si le programme a été remplacé entre-temps (nouvelle analyse),
+      // cette rafale n'a plus lieu d'être.
+      if (generation !== etat.generation) { etat.rafale = false; majBoutons(); return; }
+
+      const debut = performance.now();
+      let arrete = false;
+      while (etat.enCours && performance.now() - debut < 12) {
+        const avant = etat.nbEvenements;
+        avancer(true);
+        if (etat.nbEvenements === avant) { arrete = true; break; } // terminé
+        const dernier = etat.dernierEvenement;
+        // Arrêt à l'entrée d'un nœud portant un point d'arrêt.
+        if (dernier && dernier.evenement === 'entree' && etat.pointsArret.has(dernier.noeud)) {
+          arrete = true;
+          break;
+        }
+      }
+      if (arrete || !etat.enCours) {
+        etat.rafale = false;
+        dessinerArbre();
+        rafraichirVariables();
+        majBoutons();
+        return;
+      }
+      // On laisse le navigateur peindre entre deux tranches. Si la frame
+      // ne vient pas (onglet masqué, fenêtre occultée), on rebascule sur
+      // un minuteur : le programme doit toujours aller jusqu'au bout.
+      const maintenant = performance.now();
+      if (maintenant - precedente > 120) {
+        precedente = maintenant;
+        setTimeout(tranche, 0);
+      } else {
+        requestAnimationFrame(tranche);
+      }
+    }
+
+    requestAnimationFrame(tranche);
   }
 
   function majBoutons() {
-    $('#bouton-pas').disabled = !etat.enCours;
-    $('#bouton-continuer').disabled = !etat.enCours;
+    // Pendant une rafale, les deux boutons de pilotage sont inactifs :
+    // la rafale possède déjà le programme.
+    $('#bouton-pas').disabled = !etat.enCours || etat.rafale;
+    $('#bouton-continuer').disabled = !etat.enCours || etat.rafale;
     $('#bouton-analyser').disabled = !etat.programme;
   }
 
@@ -475,6 +532,10 @@ print("la variable total vaut", total);
     $('#bouton-reinit').addEventListener('click', () => {
       etat.pointsArret.clear();
       etat.evenements = [];
+      etat.nbEvenements = 0;
+      etat.dernierEvenement = null;
+      etat.rafale = false;
+      etat.generation++;
       etat.noeudCourant = null;
       if (analyse()) preparer();
     });

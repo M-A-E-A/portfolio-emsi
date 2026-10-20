@@ -59,7 +59,7 @@
       html += '<span class="ruban ruban-1"></span><span class="ruban ruban-2"></span>'
         + '<span class="ruban ruban-3"></span>';
     } else if (fond === 'grille') {
-      html += '<span class="trame"></span>';
+      html += '<span class="halo"></span><span class="trame"></span>';
     } else if (fond === 'contours') {
       // Deux roses de lignes de niveau qui tournent, plus un balayage.
       html += '<span class="topo-1"></span><span class="topo-2"></span><span class="topo-rayon"></span>';
@@ -67,7 +67,11 @@
       html += '<span class="plan plan-1"></span><span class="plan plan-2"></span>'
         + '<span class="plan plan-3"></span>';
     }
-    return html + '<span class="grain"></span>';
+    // Le grain passe EN PREMIER : il se melange (mix-blend-mode) au fond
+    // statique du conteneur. Pose au-dessus, son fond d'ecran bougeait
+    // avec les calques animes et le melange etait recalcule a chaque
+    // image — de quoi immobiliser le thread principal en permanence.
+    return '<span class="grain"></span>' + html;
   }
 
   /* --- Bouton thème minimal, utilisé si la page n'en a pas un --- */

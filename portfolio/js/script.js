@@ -426,7 +426,10 @@
         fond.appendChild( element( 'span', 'ruban ' + c ) );
       } );
     } else if ( id === 'grille' ) {
-      // Le quadrillage est porte par un calque enfant deplace en transform.
+      // Le quadrillage et les lueurs sont portes par des calques enfants
+      // deplaces en transform : une animation de background-position
+      // repeindrait l'ecran entier a chaque image.
+      fond.appendChild( element( 'span', 'halo' ) );
       fond.appendChild( element( 'span', 'trame' ) );
     } else if ( id === 'contours' ) {
       // Deux roses de lignes de niveau qui tournent, plus un balayage.
@@ -443,7 +446,11 @@
       arretConstellation = demarrerConstellation( canvas );
     }
 
-    fond.appendChild( element( 'span', 'grain' ) );
+    // Le grain passe EN PREMIER : il se melange (mix-blend-mode) au fond
+    // statique du conteneur. Pose au-dessus, son fond d'ecran bougeait
+    // avec les calques animes et le melange etait recalcule a chaque
+    // image.
+    fond.insertBefore( element( 'span', 'grain' ), fond.firstChild );
   }
 
   function poserFond( id ) {

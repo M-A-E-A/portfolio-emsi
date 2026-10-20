@@ -27,7 +27,7 @@ portfolio/
 │   ├── wordpress.html
 │   └── python.html
 ├── img/photo.svg       portrait (à remplacer par votre photo)
-├── img/m3.png          logo affiché dans l'en-tête
+├── img/m3-3x.png       logo affiché dans l'en-tête (168 × 66 px, 3×)
 ├── img/favicon.svg     icône de l'onglet
 └── README.md
 ```
@@ -177,6 +177,18 @@ tourne sur les dix pages, qui ne diffèrent que par l'attribut `data-fond` posé
 sur `.fond-anime`. Sans JavaScript, la page garde l'aurore d'origine déjà
 écrite dans le HTML, et le mouvement s'arrête sous `prefers-reduced-motion`.
 
+Tous les mouvements sont des `transform` sur des calques enfants : le GPU les
+compose, l'écran n'est jamais repeint. Les halos de la variante « grille »
+sont eux aussi portés par un calque enfant (`.halo`) — les animer avec
+`background-position` repeignait toute la fenêtre à chaque image.
+
+Le logo de l'en-tête est un pavé : sept strates de la même image sont empilées
+sur l'axe Z, ce qui donne de l'épaisseur au volume quand il tourne. Le cycle
+dure 10,8 s — une montée de 0,15 s, un premier tour rapide (419 °/s), un
+second tour qui ralentit jusqu'à l'arrêt, puis cinq secondes de repos. Les
+deux tours s'achèvent sur un multiple de 360° : le pavé se repose toujours de
+face.
+
 ## Accessibilité
 
 - Lien d'évitement clavier, `aria-*` sur les boutons, focus visible soigné
@@ -192,8 +204,10 @@ sur `.fond-anime`. Sans JavaScript, la page garde l'aurore d'origine déjà
   dans `index.html` **et** `js/script.js`.
 - **Couleurs** : variables `:root` en haut de `css/style.css`.
 - **Photo** : remplacez `img/photo.svg` et adaptez le `src`/`alt`.
-- **Logo de l'en-tête** : remplacez `img/m3.png` (image à fond transparent,
+- **Logo de l'en-tête** : remplacez `img/m3-3x.png` (image à fond transparent,
   posée sur une pastille sombre pour rester lisible en clair comme en sombre).
+  L'image fait 168 × 66 px, soit 3× la taille d'affichage (56 × 22 px) : elle
+  reste nette sur les écrans denses en pixels pour 6 Ko.
 - **Fond animé** : réglez les couleurs et l'opacité des halos avec les variables
   `--ciel-*` et `--blob-*` (section 12 de `css/style.css`).
 - **Projets** : les entrées sont dans `index.html` (section *Projets*) ; leur

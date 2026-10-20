@@ -524,10 +524,28 @@
     });
   }
 
+  /**
+   * Démarre le moteur, mais après le premier rendu de la page.
+   *
+   * Construire la scène et le moteur de rendu est un travail de quelques
+   * dizaines de millisecondes. Le faire pendant l'événement
+   * DOMContentLoaded retardait la fin du chargement ET le premier
+   * affichage : la page restait blanche un moment. On attend donc la
+   * première image peinte, puis on s'y met.
+   */
+  function demarrerPlusTard() {
+    const lancer = () => { demarrer(); };
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => setTimeout(lancer, 0));
+    } else {
+      setTimeout(lancer, 0);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', demarrer);
+    document.addEventListener('DOMContentLoaded', demarrerPlusTard, { once: true });
   } else {
-    demarrer();
+    demarrerPlusTard();
   }
 
   global.RTApp = global.RTApp || {};
