@@ -181,28 +181,43 @@ header {
   background: #12161c;
   border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 10px;
-  /* La perspective est portee par le cadre : c'est lui qui donne la
-     profondeur au mouvement de rotation de l'image. */
-  perspective: 480px;
+  /* La perspective est portee par le cadre : c'est elle qui donne la
+     profondeur au volume, et l'épaisseur devient visible en tournant. */
+  perspective: 700px;
   overflow: hidden;
 }
-.logo-marque {
-  height: 22px;            /* l'illustration seule */
-  width: auto;
+
+/* Le logo est un pave : plusieurs strates de la meme image, empilees
+   sur l'axe Z. En tournant, on voit l'epaisseur du materiau — et non
+   une simple image qui s'aplatit. */
+.logo-3d {
+  position: relative;
   display: block;
-  transform-origin: 50% 50%;
+  width: 56px;
+  height: 22px;
+  transform-style: preserve-3d;
   will-change: transform;
-  /* Un tour, puis cinq secondes de repos, puis un tour…
-     Le cycle fait 11 s : 2,5 s de rotation rapide, 3,5 s de freinage,
+  /* Deux tours, puis un repos de cinq secondes, puis deux tours…
+     Le cycle fait 12 s : 3,5 s de rotation rapide, 3,5 s de freinage,
      et 5 s de cooldown. */
-  animation: m3-tourne 11s infinite !important;
+  animation: m3-tourne 12s infinite !important;
+}
+.logo-couche {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 22px;
+  transform: translateZ(var(--z, 0px));
+  filter: brightness(var(--lum, 1));
+  pointer-events: none;
 }
 
-/* Un tour complet en trois temps :
-   1. une phase RAPIDE, à vitesse constante, qui fait les 270 premiers
-      degrés en 2,5 s — le logo part d'un coup et tourne vraiment ;
-   2. un FREINAGE, où les 90 derniers degrés se font lentement, la
-      courbe ease-out cassant franchement la vitesse à l'approche de l'arrêt ;
+/* Deux tours complets en trois temps :
+   1. une phase RAPIDE, a vitesse constante, qui fait les 540 premiers
+      degres en 3,5 s — le pave part d'un coup et tourne vraiment ;
+   2. un FREINAGE, ou les 180 derniers degres se font lentement, la
+      courbe ease-out cassant franchement la vitesse a l'approche de l'arret ;
    3. un REPOS de cinq secondes, avant que le cycle ne recommence. */
 @keyframes m3-tourne {
   0% {
@@ -210,17 +225,20 @@ header {
     /* phase rapide : vitesse constante */
     animation-timing-function: linear;
   }
-  22.73% {
-    transform: rotateY(270deg);
-    /* freinage : la rotation ralentit jusqu'à l'arrêt */
-    animation-timing-function: cubic-bezier(.15, .75, .3, 1);
+  29.17% {
+    transform: rotateY(540deg);
+    /* Freinage : la pente initiale de la courbe (0,6 / 0,2 = 3) est
+       exactement celle de la phase rapide, donc le passage de l'une a
+       l'autre ne donne aucun coup d'acceleration. La rotation ralentit
+       ensuite jusqu'a l'arret (pente finale nulle). */
+    animation-timing-function: cubic-bezier(.2, .6, .4, 1);
   }
-  54.55% {
-    transform: rotateY(360deg);
+  58.33% {
+    transform: rotateY(720deg);
     animation-timing-function: linear;
   }
   100% {
-    transform: rotateY(360deg);
+    transform: rotateY(720deg);
   }
 }
 .logo-nom {

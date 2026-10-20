@@ -467,6 +467,38 @@
     return 'grille';
   }
 
+  /**
+   * Construit le logo M3 en volume.
+   *
+   * Au lieu d'une image unique qui pivote (et s'aplatit au passage), on
+   * empile plusieurs strates de la meme image sur l'axe Z : le logo
+   * devient un pave dont on voit l'epaisseur quand il tourne.
+   * Chaque strate est un peu plus sombre que la precedente, ce qui
+   * donne le relief.
+   */
+  function construireLogo3D() {
+    const image = document.querySelector( '.logo-marque' );
+    if ( ! image ) return;
+    const cadre = image.parentNode;
+    if ( ! cadre || cadre.querySelector( '.logo-3d' ) ) return;
+
+    const volume = element( 'span', 'logo-3d' );
+    volume.setAttribute( 'aria-hidden', 'true' );
+    cadre.appendChild( volume );
+
+    const strates = 7;          // nombre de strates du pave
+    const epaisseur = 1.7;      // distance entre deux strates, en pixels
+
+    for ( let i = 0; i < strates; i++ ) {
+      const couche = i === 0 ? image : image.cloneNode( false );
+      couche.className = 'logo-couche';
+      couche.style.setProperty( '--z', ( i * epaisseur ).toFixed( 2 ) + 'px' );
+      couche.style.setProperty( '--lum', ( 1 - i * 0.05 ).toFixed( 3 ) );
+      volume.appendChild( couche );
+    }
+  }
+
+  construireLogo3D();
   poserFond( fondInitial() );
 
   // --- Le sélecteur : un bouton fixe qui ouvre une liste de radios
