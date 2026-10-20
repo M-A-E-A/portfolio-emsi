@@ -154,3 +154,13 @@ body[data-projet="p2p"].sombre {
   --ciel-haut: #04141f; --ciel-bas: #020a10; --blob-1: #0e7bb5; --blob-2: #1a7fa8; --blob-3: #0a5f86; --blob-4: #57a2c6; --blob-opacite: .42; --halo-a: rgba(108,192,242,.20); --halo-b: rgba(87,162,198,.18);
 }
 
+/* ---------- 16. whiteboard (tableau blanc collaboratif) ---------- */
+body[data-projet="whiteboard"]:not(.sombre) {
+  --accent: #be123c; --accent-fonce: #8c0f2e; --accent-doux: #fde8ee;
+  --ciel-haut: #fdf2f5; --ciel-bas: #f8e4ea; --blob-1: #be123c; --blob-2: #e0476f; --blob-3: #9f1239; --blob-4: #f0a0b6; --blob-opacite: .16; --halo-a: rgba(190,18,60,.15); --halo-b: rgba(240,160,182,.12);
+}
+body[data-projet="whiteboard"].sombre {
+  --accent: #f78ca8; --accent-fonce: #fbafc3; --accent-doux: #3b101d;
+  --ciel-haut: #1e050f; --ciel-bas: #0d0207; --blob-1: #be123c; --blob-2: #9f1239; --blob-3: #881337; --blob-4: #f78ca8; --blob-opacite: .42; --halo-a: rgba(247,140,168,.20); --halo-b: rgba(190,18,60,.18);
+}
+
