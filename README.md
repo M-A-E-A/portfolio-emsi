@@ -52,10 +52,18 @@ nn/                  → réseau de neurones (backpropagation, Adam, CNN)
   - `contours` — les courbes de niveau défilent (calque `.topo`)
   - `plat` — trois plans de lumière dérivent (calques `.plan`)
   - `constellation` (portfolio) — les points pulsent et suivent le curseur
+- **Le fond n'est PAS gelé par `prefers-reduced-motion`** : c'est un écoulement
+  lent (10 px/s) de faible amplitude, qui ne déclenche pas de trouble
+  vestibulaire. Les règles de mouvement réduit de chaque projet (`*`) auraient
+  sinon figé le fond — d'où le `!important` sur les déclarations du fond, qui
+  l'emporte sur la spécificité `0,0,0` du `*`.
+- **Interrupteur « Fond animé »** dans le sélecteur du portfolio : coupe le
+  mouvement et le mémorise sous la clé `lume-fond-anime`, partagée avec toutes
+  les démos.
 - **Une variante par projet**, portée par `data-fond` sur `<body>` et `data-projet` pour la palette
 - **Un seul calque `.fond-anime`** injecté par `shared/theme.js`, commun à toutes les démos
-- **Mouvement réduit** : une règle unique dans `shared/theme.css` neutralise le fond pour
-  tous les projets quand `prefers-reduced-motion: reduce` est actif
+- **Mouvement réduit** : reste appliqué au reste de la page (transitions, effets
+  de la page d'accueil)
 
 ### 2. Thème clair / sombre
 - **Persistance** via `localStorage`, avec une clé isolée par démo

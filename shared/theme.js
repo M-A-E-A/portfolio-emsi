@@ -11,6 +11,10 @@
 (function () {
   'use strict';
 
+  // Clé partagée : l'interrupteur « Fond animé » du portfolio agit aussi
+  // sur toutes les démos du dépôt.
+  const CLE_FOND_ANIME = 'lume-fond-anime';
+
   /* --- Calque .fond-anime : on le crée s'il manque --- */
   function assurerFondAnime() {
     let div = document.querySelector('.fond-anime');
@@ -24,6 +28,19 @@
     div.setAttribute('data-fond', fond);
     // On reconstruit les calques enfants : ils portent le mouvement.
     div.innerHTML = contenuFond(fond);
+    appliquerPreferenceFond(div);
+  }
+
+  /**
+   * L'utilisateur peut arreter le fond anime depuis le selecteur du
+   * portfolio. La preference est memorisee sous une cle commune, donc
+   * partagee avec toutes les demos du depot.
+   */
+  function appliquerPreferenceFond(div) {
+    let etat = 'on';
+    try { etat = localStorage.getItem(CLE_FOND_ANIME) || 'on'; } catch (e) { /* file:// */ }
+    if (etat === 'off') div.setAttribute('data-fond-anime', 'off');
+    else div.removeAttribute('data-fond-anime');
   }
 
   /**

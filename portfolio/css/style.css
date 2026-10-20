@@ -887,10 +887,37 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   .footer-contenu { text-align: left; }
 }
 
+/* Interrupteur « Fond animé » : coupe le mouvement du calque.
+   La préférence est mémorisée sous la clé lume-fond-anime, donc elle
+   s'applique aussi à toutes les démos du dépôt. */
+.fond-anime[data-fond-anime="off"],
+.fond-anime[data-fond-anime="off"] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Interrupteur « Fond animé », sous la liste des variantes */
+.fond-anime-option {
+  display: flex; align-items: center; gap: .5rem;
+  margin-top: .8rem; padding-top: .7rem;
+  border-top: 1px solid var(--trait);
+  font-size: .85rem; color: var(--texte); cursor: pointer;
+}
+.fond-anime-option input { accent-color: var(--accent); cursor: pointer; }
+
 /* Accessibilité : mouvement réduit.
-   Le fond animé (.blob) est lui aussi neutralisé : c'est du décor, et la
-   politique est désormais identique à celle de shared/theme.css pour les
-   11 démos. Le rendu reste visible (les éléments restent à opacité 1). */
+   Le fond décoratif N'EST PAS gelé : c'est un écoulement lent (environ
+   10 px/s) et de faible amplitude, qui ne déclenche pas de trouble
+   vestibulaire — ce n'est pas le type de mouvement que la préférence
+   « mouvement réduit » cherche à supprimer.
+
+   Pour qui trouve le fond trop présent, l'interrupteur « Fond animé »
+   du sélecteur (en bas à gauche) le coupe ; il est mémorisé et
+   partagé avec toutes les démos.
+
+   Les déclarations du fond portent `!important` : la règle globale `*`
+   ci-dessus a une spécificité de 0,0,0, et une règle de classe (0,1,0)
+   l'emporte même quand les deux portent `!important`. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
@@ -900,12 +927,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   }
   .js .hero-texte > *, .js .hero-portrait { opacity: 1 !important; transform: none !important; }
   .point-vif { animation: none; }
-  /* Le fond est décoratif : il s'arrête quand le visiteur demande moins
-     d'animation. La liste doit être COMPLETE — .ruban y manquait, si bien
-     que les rubans continuaient de bouger alors que tout le reste
-     s'était figé. */
-  .fond-anime, .fond-anime *, .blob, .ruban, .trame, .topo, .plan, .grain {
-    animation: none !important;
+  .grain {
     transition: none !important;
   }
 }
@@ -932,35 +954,35 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   border-radius: 50%;
   opacity: var(--blob-opacite);
   will-change: transform;
-  animation: derive 26s ease-in-out infinite;
+  animation: derive 26s ease-in-out infinite !important;
 }
 
 .blob-1 {
   width: 62vmax; height: 62vmax;
   top: -24vmax; left: -20vmax;
   background: radial-gradient(circle at center, var(--blob-1) 0%, transparent 68%);
-  animation-duration: 30s;
+  animation-duration: 30s !important;
 }
 .blob-2 {
   width: 54vmax; height: 54vmax;
   top: 6vmax; right: -18vmax;
   background: radial-gradient(circle at center, var(--blob-3) 0%, transparent 66%);
-  animation-duration: 38s;
-  animation-delay: -14s;
+  animation-duration: 38s !important;
+  animation-delay: -14s !important;
 }
 .blob-3 {
   width: 50vmax; height: 50vmax;
   bottom: -22vmax; left: 4vmax;
   background: radial-gradient(circle at center, var(--blob-2) 0%, transparent 70%);
-  animation-duration: 34s;
-  animation-delay: -26s;
+  animation-duration: 34s !important;
+  animation-delay: -26s !important;
 }
 .blob-4 {
   width: 40vmax; height: 40vmax;
   right: 2vmax; bottom: 4vmax;
   background: radial-gradient(circle at center, var(--blob-4) 0%, transparent 62%);
-  animation-duration: 44s;
-  animation-delay: -8s;
+  animation-duration: 44s !important;
+  animation-delay: -8s !important;
 }
 
 @keyframes derive {
@@ -983,7 +1005,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
     radial-gradient(60% 70% at 12% 112%, var(--halo-b), transparent 65%);
   background-size: 130% 130%, 130% 130%;
   background-repeat: no-repeat, no-repeat;
-  animation: lueurs 18s ease-in-out infinite alternate;
+  animation: lueurs 18s ease-in-out infinite alternate !important;
 }
 .trame {
   position: absolute;
@@ -991,7 +1013,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   background-image: radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px);
   background-size: 22px 22px;
   will-change: transform;
-  animation: trame 11s linear infinite;
+  animation: trame 11s linear infinite !important;
 }
 
 /* --- Variante « soie » : trois nappes allongées qui tournent lentement.
@@ -1007,7 +1029,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   border-radius: 50%;
   opacity: var(--ruban-opacite);
   will-change: transform;
-  animation: soie 24s ease-in-out infinite alternate;
+  animation: soie 24s ease-in-out infinite alternate !important;
 }
 .ruban-1 {
   width: 70vmax; height: 70vmax; left: -22vmax; top: -34vmax;
@@ -1016,12 +1038,12 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
 .ruban-2 {
   width: 64vmax; height: 64vmax; right: -20vmax; top: 4vmax;
   background: radial-gradient(circle at center, var(--blob-3) 0%, transparent 66%);
-  animation-delay: -11s;
+  animation-delay: -11s !important;
 }
 .ruban-3 {
   width: 58vmax; height: 58vmax; left: 18vmax; bottom: -38vmax;
   background: radial-gradient(circle at center, var(--blob-2) 0%, transparent 70%);
-  animation-delay: -19s;
+  animation-delay: -19s !important;
 }
 
 /* --- Variante « contours » : deux foyers de cercles concentriques qui se
@@ -1032,7 +1054,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   background-image: radial-gradient(90% 80% at 70% -12%, var(--halo-a), transparent 65%);
   background-size: 130% 130%;
   background-repeat: no-repeat;
-  animation: lueurs 20s ease-in-out infinite alternate;
+  animation: lueurs 20s ease-in-out infinite alternate !important;
 }
 .topo {
   position: absolute;
@@ -1041,7 +1063,7 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
     repeating-radial-gradient(circle at 26% 34%, transparent 0 17px, var(--contour) 17px 18px),
     repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px);
   will-change: transform;
-  animation: topo 14s linear infinite;
+  animation: topo 14s linear infinite !important;
 }
 
 /* --- Variante « plat » : trois plans de lumière qui glissent.
@@ -1057,17 +1079,17 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
 .plan-1 {
   width: 120vmax; height: 120vmax; left: 20vmax; top: -70vmax;
   background: radial-gradient(circle at center, var(--halo-a), transparent 58%);
-  animation: plan1 18s ease-in-out infinite alternate;
+  animation: plan1 18s ease-in-out infinite alternate !important;
 }
 .plan-2 {
   width: 110vmax; height: 110vmax; left: -60vmax; top: 40vmax;
   background: radial-gradient(circle at center, var(--halo-b), transparent 62%);
-  animation: plan2 20s ease-in-out infinite alternate;
+  animation: plan2 20s ease-in-out infinite alternate !important;
 }
 .plan-3 {
   width: 140vmax; height: 140vmax; left: -20vmax; top: 60vmax;
   background: radial-gradient(circle at center, var(--halo-a), transparent 72%);
-  animation: plan3 16s ease-in-out infinite alternate;
+  animation: plan3 16s ease-in-out infinite alternate !important;
 }
 
 /* --- Variante « étoiles » : constellation dessinée sur un canvas par

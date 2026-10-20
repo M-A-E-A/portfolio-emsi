@@ -259,6 +259,26 @@
   // calques : aucun fichier HTML n'est modifié, la même source tourne donc
   // sur les neuf pages. Sans JavaScript, la page garde l'aurore d'origine.
   const CLE_FOND = 'portfolio-fond';
+  const CLE_FOND_ANIME = 'lume-fond-anime';
+
+  /** L'animation du fond est-elle active ? (cle partagee avec les demos) */
+  function fondAnimeActif() {
+    try {
+      return localStorage.getItem( CLE_FOND_ANIME ) !== 'off';
+    } catch ( e ) {
+      return true;
+    }
+  }
+
+  /** Active ou coupe le mouvement du fond, et le memorise. */
+  function appliquerFondAnime( actif ) {
+    if ( ! fond ) return;
+    if ( actif ) fond.removeAttribute( 'data-fond-anime' );
+    else fond.setAttribute( 'data-fond-anime', 'off' );
+    try {
+      localStorage.setItem( CLE_FOND_ANIME, actif ? 'on' : 'off' );
+    } catch ( e ) { /* stockage indisponible */ }
+  }
   const FONDS = [
     { id: 'grille',   nom: 'Grille de points',   note: 'Quadrillage fin et lueur lente' },
     { id: 'soie',     nom: 'Rubans d’aurore', note: 'Nappes indigo qui tournent' },
@@ -284,9 +304,10 @@
     const ctx = canvas.getContext( '2d' );
     if ( ! ctx ) return null;
 
-    const reduit = !!( window.matchMedia &&
-      window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
-
+    // Le fond décoratif reste animé même quand le système demande moins
+    // d'animation : c'est un écoulement lent (10 px/s) de faible
+    // amplitude, qui ne déclenche pas de trouble vestibulaire. Le
+    // mouvement réduit reste appliqué au reste de la page.
     let points = [];
     let boucle = 0;
     const curseur = { x: -9999, y: -9999 };
@@ -319,7 +340,7 @@
 
       for ( let i = 0; i < n; i++ ) {
         const p = points[ i ];
-        if ( ! reduit ) { p.x += p.vx; p.y += p.vy; }
+        p.x += p.vx; p.y += p.vy;
         if ( p.x < 0 || p.x > canvas.width )  p.vx *= -1;
         if ( p.y < 0 || p.y > canvas.height ) p.vy *= -1;
 
@@ -351,7 +372,7 @@
 
         // Scintillement : chaque point pulse, ce qui rend le mouvement
         // immediatement perceptible meme quand les points sont fixes.
-        const pulse = reduit ? .8 : .62 + .38 * Math.sin( instant * 1.7 + p.phase );
+        const pulse = .62 + .38 * Math.sin( instant * 1.7 + p.phase );
         ctx.fillStyle = actif
           ? 'rgba(' + cAccent + ',.9)'
           : 'rgba(' + cPoint + ',' + ( sombre ? ( .3 + .35 * pulse ) : ( .22 + .3 * pulse ) ).toFixed( 3 ) + ')';
@@ -360,7 +381,7 @@
         ctx.fill();
       }
 
-      if ( ! reduit ) boucle = requestAnimationFrame( dessiner );
+      boucle = requestAnimationFrame( dessiner );
     }
 
     ajuster();
@@ -376,8 +397,9 @@
     window.addEventListener( 'blur', quitter );
     window.addEventListener( 'resize', recalculer );
 
-    // Animation figée : le dessin ne se refait que si le thème change.
-    redessinerFond = reduit ? dessiner : null;
+    // Le fond est animé en continu : le redessiner à chaque changement de
+    // thème suffit (la boucle requestAnimationFrame s'en charge).
+    redessinerFond = dessiner;
 
     return function () {
       cancelAnimationFrame( boucle );
@@ -428,6 +450,9 @@
     if ( ! connu ) id = 'grille';
     fond.setAttribute( 'data-fond', id );
     poserCalques( id );
+    // On conserve l'etat de l'interrupteur quand la variante change.
+    if ( fondAnimeActif() ) fond.removeAttribute( 'data-fond-anime' );
+    else fond.setAttribute( 'data-fond-anime', 'off' );
     try { localStorage.setItem( CLE_FOND, id ); } catch ( e ) { /* stockage indisponible */ }
     return id;
   }
@@ -502,6 +527,21 @@
     } );
 
     panneau.appendChild( fs );
+
+    // Interrupteur : le fond bouge-t-il ?
+    const ligneOption = element( 'label', 'fond-anime-option' );
+    const caseAnime = document.createElement( 'input' );
+    caseAnime.type = 'checkbox';
+    caseAnime.id = 'fond-anime-case';
+    caseAnime.checked = fondAnimeActif();
+    caseAnime.addEventListener( 'change', function () {
+      appliquerFondAnime( caseAnime.checked );
+    });
+    const texteAnime = element( 'span' );
+    texteAnime.textContent = 'Fond animé';
+    ligneOption.appendChild( caseAnime );
+    ligneOption.appendChild( texteAnime );
+    panneau.appendChild( ligneOption );
 
     function fermer() {
       panneau.hidden = true;
