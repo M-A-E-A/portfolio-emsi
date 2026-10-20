@@ -11,22 +11,45 @@
 (function () {
   'use strict';
 
-  /* --- Calque .fond-anime : on le recrée si absent --- */
+  /* --- Calque .fond-anime : on le crée s'il manque --- */
   function assurerFondAnime() {
-    if (document.querySelector('.fond-anime')) return;
-    const div = document.createElement('div');
-    div.className = 'fond-anime';
-    div.setAttribute('aria-hidden', 'true');
-    div.innerHTML =
-      (function () {
-        const f = document.body.getAttribute('data-fond') || 'aurore';
-        if (f === 'aurore') return '<span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span><span class="blob blob-4"></span>';
-        if (f === 'ruban' || f === 'soie') return '<span class="ruban ruban-1"></span><span class="ruban ruban-2"></span><span class="ruban ruban-3"></span>';
-        return '';
-      })() + '<span class="grain"></span>';
+    let div = document.querySelector('.fond-anime');
     const fond = document.body.getAttribute('data-fond') || 'aurore';
+    if (!div) {
+      div = document.createElement('div');
+      div.className = 'fond-anime';
+      div.setAttribute('aria-hidden', 'true');
+      document.body.insertBefore(div, document.body.firstChild);
+    }
     div.setAttribute('data-fond', fond);
-    document.body.insertBefore(div, document.body.firstChild);
+    // On reconstruit les calques enfants : ils portent le mouvement.
+    div.innerHTML = contenuFond(fond);
+  }
+
+  /**
+   * Contenu du calque selon la variante.
+   * Toutes les variantes sont animees par des calques ENFANTS deplaces en
+   * transform : le mouvement est compose par le GPU et reste fluide, alors
+   * qu'une animation de background-position repeint l'ecran entier a chaque
+   * image. Les vitesses sont choisies pour etre visibles (10 a 14 px/s).
+   */
+  function contenuFond(fond) {
+    let html = '';
+    if (fond === 'aurore') {
+      html += '<span class="blob blob-1"></span><span class="blob blob-2"></span>'
+        + '<span class="blob blob-3"></span><span class="blob blob-4"></span>';
+    } else if (fond === 'soie' || fond === 'ruban') {
+      html += '<span class="ruban ruban-1"></span><span class="ruban ruban-2"></span>'
+        + '<span class="ruban ruban-3"></span>';
+    } else if (fond === 'grille') {
+      html += '<span class="trame"></span>';
+    } else if (fond === 'contours') {
+      html += '<span class="topo"></span>';
+    } else if (fond === 'plat') {
+      html += '<span class="plan plan-1"></span><span class="plan plan-2"></span>'
+        + '<span class="plan plan-3"></span>';
+    }
+    return html + '<span class="grain"></span>';
   }
 
   /* --- Bouton thème minimal, utilisé si la page n'en a pas un --- */

@@ -59,7 +59,7 @@
   border-radius: 50%;
   opacity: var(--blob-opacite);
   will-change: transform;
-  animation: derive 34s ease-in-out infinite;
+  animation: derive 26s ease-in-out infinite;
 }
 .blob-1 {
   width: 62vmax; height: 62vmax;
@@ -90,25 +90,38 @@
 }
 @keyframes derive {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  33%  { transform: translate3d(11%, -8%, 0) scale(1.22); }
-  66%  { transform: translate3d(-9%, 10%, 0) scale(.88); }
+  33%  { transform: translate3d(17%, -12%, 0) scale(1.24); }
+  66%  { transform: translate3d(-14%, 15%, 0) scale(.86); }
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
 
-/* Variante « grille » : quadrillage fin + lueurs qui respirent.
-   Point technique : les lueurs sont posees en background-size 130 % et
-   background-repeat: no-repeat. Sans cela, leur position en pourcentage
-   n'aurait aucune place residuelle a parcourir — le decalage serait
-   exactement nul et l'animation ne bougerait rien. */
+/* ---------------------------------------------------------------------
+   Variante « grille » : quadrillage fin + lueurs qui respirent.
+
+   Deux decisions techniques :
+   - le quadrillage est porte par un calque ENFANT (.trame) deplace en
+     transform. Un transform est compose par le GPU : le rendu reste
+     fluide, alors qu'une animation de background-position sur un calque
+     fixe plein ecran repeint tout l'ecran a chaque image ;
+   - la trame depasse les bords (inset negatif) pour qu'un deplacement
+     ne laisse jamais de bande vide.
+   --------------------------------------------------------------------- */
 .fond-anime[data-fond="grille"] {
   background: var(--ciel-haut);
   background-image:
-    radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px),
     radial-gradient(110% 90% at 82% -20%, var(--halo-a), transparent 62%),
     radial-gradient(60% 70% at 12% 112%, var(--halo-b), transparent 65%);
-  background-size: 22px 22px, 130% 130%, 130% 130%;
-  background-repeat: repeat, no-repeat, no-repeat;
-  animation: respire 26s ease-in-out infinite alternate;
+  background-size: 130% 130%, 130% 130%;
+  background-repeat: no-repeat, no-repeat;
+  animation: lueurs 18s ease-in-out infinite alternate;
+}
+.trame {
+  position: absolute;
+  inset: -14%;
+  background-image: radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  will-change: transform;
+  animation: trame 11s linear infinite;
 }
 .fond-anime[data-fond="soie"] {
   background: var(--ciel-haut);
@@ -120,7 +133,7 @@
   border-radius: 50%;
   opacity: var(--ruban-opacite);
   will-change: transform;
-  animation: soie 30s ease-in-out infinite alternate;
+  animation: soie 24s ease-in-out infinite alternate;
 }
 .ruban-1 {
   width: 70vmax; height: 70vmax; left: -22vmax; top: -34vmax;
@@ -137,29 +150,53 @@
   animation-delay: -19s;
 }
 
-/* Variante « contours » : cartes topographiques */
+/* ---------------------------------------------------------------------
+   Variante « contours » : cartes topographiques.
+   Les anneaux vivent sur un calque enfant (.topo) deplace en transform.
+   --------------------------------------------------------------------- */
 .fond-anime[data-fond="contours"] {
   background: var(--ciel-haut);
+  background-image: radial-gradient(90% 80% at 70% -12%, var(--halo-a), transparent 65%);
+  background-size: 130% 130%;
+  background-repeat: no-repeat;
+  animation: lueurs 20s ease-in-out infinite alternate;
+}
+.topo {
+  position: absolute;
+  inset: -30%;
   background-image:
     repeating-radial-gradient(circle at 26% 34%, transparent 0 17px, var(--contour) 17px 18px),
-    repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px),
-    radial-gradient(90% 80% at 70% -12%, var(--halo-a), transparent 65%);
-  animation: contours 60s linear infinite;
+    repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px);
+  will-change: transform;
+  animation: topo 14s linear infinite;
 }
 
-/* Variante « plat » : deux plans de lumiere qui glissent lentement.
-   Meme technique que « grille » : des plans plus grands que le calque
-   et sans repetition, pour que le deplacement en pourcentage ait une
-   portee reelle. */
+/* ---------------------------------------------------------------------
+   Variante « plat » : trois plans de lumiere qui glissent.
+   Un plan = un calque enfant (.plan) deplace en transform.
+   --------------------------------------------------------------------- */
 .fond-anime[data-fond="plat"] {
   background: var(--ciel-haut);
-  background-image:
-    radial-gradient(95% 75% at 88% -18%, var(--halo-a), transparent 58%),
-    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%),
-    radial-gradient(70% 55% at 50% 125%, var(--halo-a), transparent 72%);
-  background-size: 130% 130%, 130% 130%, 140% 140%;
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  animation: platon 48s ease-in-out infinite alternate;
+}
+.plan {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+.plan-1 {
+  width: 120vmax; height: 120vmax; left: 20vmax; top: -70vmax;
+  background: radial-gradient(circle at center, var(--halo-a), transparent 58%);
+  animation: plan1 18s ease-in-out infinite alternate;
+}
+.plan-2 {
+  width: 110vmax; height: 110vmax; left: -60vmax; top: 40vmax;
+  background: radial-gradient(circle at center, var(--halo-b), transparent 62%);
+  animation: plan2 20s ease-in-out infinite alternate;
+}
+.plan-3 {
+  width: 140vmax; height: 140vmax; left: -20vmax; top: 60vmax;
+  background: radial-gradient(circle at center, var(--halo-a), transparent 72%);
+  animation: plan3 16s ease-in-out infinite alternate;
 }
 
 /* Variante « ruban » : nappes indigo qui tournent lentement.
@@ -173,23 +210,46 @@
 /* ========== Animations des variantes ========== */
 /* Ces keyframes sont indispensables : sans elles, « grille », « contours »
    et « ruban » ne bougent pas (le navigateur ignore l'animation inconnue). */
-@keyframes respire {
-  /* Le quadrillage rampe de 33 px : un multiple de 22 px (la tuile) serait
-     strictement identique et donc invisible. */
-  from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 33px 17px, 6% 4%, -5% 3%; }
+/* ========== Animations des variantes ==========
+   Toutes les variantes bougent a une vitesse PERCEPTIBLE : 10 a 14 px
+   par seconde environ. Les decalages en pourcentage n'etaient pas
+   suffisants (2 a 6 px/s : invisible a l'oeil), et les animations de
+   background-position sur un calque fixe plein ecran repeintaient
+   l'ecran entier a chaque image. Les calques enfants, deplaces en
+   transform, sont composes par le GPU. */
+@keyframes derive {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(17%, -12%, 0) scale(1.24); }
+  66%  { transform: translate3d(-14%, 15%, 0) scale(.86); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
 }
-@keyframes platon {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 7% 5%, -6% -4%, 3% 2%; }
+@keyframes trame {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(144px, 72px, 0); }
+}
+@keyframes topo {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(160px, 80px, 0); }
+}
+@keyframes lueurs {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 11% 7%, -10% -6%; }
+}
+@keyframes plan1 {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(10%, 7%, 0); }
+}
+@keyframes plan2 {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-11%, -8%, 0); }
+}
+@keyframes plan3 {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(7%, 5%, 0); }
 }
 @keyframes soie {
   from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(7%, 5%, 0) scale(1.14); }
-}
-@keyframes contours {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 360px 180px, -360px 180px, 0 0; }
+  to   { transform: translate3d(14%, 11%, 0) scale(1.22); }
 }
 
 /* Grain subtil */

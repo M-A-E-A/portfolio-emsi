@@ -301,8 +301,9 @@
         points.push( {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: ( Math.random() - .5 ) * .22,
-          vy: ( Math.random() - .5 ) * .22
+          vx: ( Math.random() - .5 ) * .9,
+          vy: ( Math.random() - .5 ) * .9,
+          phase: Math.random() * Math.PI * 2
         } );
       }
     }
@@ -312,6 +313,7 @@
       const cAccent = sombre ? '125,160,255' : '27,77,228';
       const cPoint  = sombre ? '255,255,255' : '18,22,28';
       const n = points.length;
+      const instant = performance.now() / 1000;
 
       ctx.clearRect( 0, 0, canvas.width, canvas.height );
 
@@ -347,11 +349,14 @@
           ctx.stroke();
         }
 
+        // Scintillement : chaque point pulse, ce qui rend le mouvement
+        // immediatement perceptible meme quand les points sont fixes.
+        const pulse = reduit ? .8 : .62 + .38 * Math.sin( instant * 1.7 + p.phase );
         ctx.fillStyle = actif
           ? 'rgba(' + cAccent + ',.9)'
-          : 'rgba(' + cPoint + ',' + ( sombre ? '.45' : '.32' ) + ')';
+          : 'rgba(' + cPoint + ',' + ( sombre ? ( .3 + .35 * pulse ) : ( .22 + .3 * pulse ) ).toFixed( 3 ) + ')';
         ctx.beginPath();
-        ctx.arc( p.x, p.y, actif ? 2.8 : 1.8, 0, Math.PI * 2 );
+        ctx.arc( p.x, p.y, ( actif ? 2.8 : 1.8 ) * ( .82 + .3 * pulse ), 0, Math.PI * 2 );
         ctx.fill();
       }
 
@@ -398,13 +403,21 @@
       [ 'ruban-1', 'ruban-2', 'ruban-3' ].forEach( function ( c ) {
         fond.appendChild( element( 'span', 'ruban ' + c ) );
       } );
+    } else if ( id === 'grille' ) {
+      // Le quadrillage est porte par un calque enfant deplace en transform.
+      fond.appendChild( element( 'span', 'trame' ) );
+    } else if ( id === 'contours' ) {
+      // Les anneaux, eux aussi, sur un calque enfant.
+      fond.appendChild( element( 'span', 'topo' ) );
+    } else if ( id === 'plat' ) {
+      [ 'plan-1', 'plan-2', 'plan-3' ].forEach( function ( c ) {
+        fond.appendChild( element( 'span', 'plan ' + c ) );
+      } );
     } else if ( id === 'etoiles' ) {
       const canvas = element( 'canvas', 'etoiles' );
       fond.appendChild( canvas );
       arretConstellation = demarrerConstellation( canvas );
     }
-    // La grille, les contours et le fond plat tiennent dans le fond du
-    // conteneur : aucun calque enfant, donc rien à construire ici.
 
     fond.appendChild( element( 'span', 'grain' ) );
   }
