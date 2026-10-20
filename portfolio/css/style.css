@@ -197,10 +197,13 @@ header {
   height: 22px;
   transform-style: preserve-3d;
   will-change: transform;
-  /* Deux tours, puis un repos de cinq secondes, puis deux tours…
-     Le cycle fait 11 s : 3,5 s de rotation rapide (620 degrés, soit
-     177 deg/s), 2,5 s de freinage sur les 110 derniers degrés, et
-     5 s de cooldown. */
+  /* Un repos de cinq secondes, puis on recommence.
+     Le cycle fait 11 s. La rotation se fait en cinq temps :
+       0 s    -> 1,2 s   demarrage, la rotation s'enclenche doucement
+       1,2 s  -> 1,5 s   coup de fouet : on passe d'un coup a grande vitesse
+       1,5 s  -> 3 s     phase tres rapide, a vitesse constante (450 deg/s)
+       3 s    -> 6 s     freinage jusqu'a l'arret
+       6 s    -> 11 s    repos (5 s de cooldown) */
   animation: m3-tourne 11s infinite !important;
 }
 .logo-couche {
@@ -214,32 +217,45 @@ header {
   pointer-events: none;
 }
 
-/* Deux tours complets en trois temps :
-   1. une phase RAPIDE, a vitesse constante, qui fait les 620 premiers
-      degres en 3,5 s — le pave part d'un coup et tourne vraiment ;
-   2. un FREINAGE, ou les 110 derniers degres se font lentement, la
-      courbe cassant franchement la vitesse a l'approche de l'arret ;
-   3. un REPOS de cinq secondes, avant que le cycle ne recommence. */
+/* La rotation en cinq temps.
+   1. DEMARRAGE : la rotation s'enclenche doucement (0 -> 90 degres en
+      1,2 s), comme une roue qu'on lance.
+   2. COUP DE FOUET : en 0,3 s, on passe de ~135 a 450 degres/s. C'est
+      le moment « tres rapide » demande.
+   3. PHASE TRES RAPIDE : 450 degres/s constant pendant 1,5 s, soit
+      pres de deux tours et demi qu'on voit filer.
+   4. FREINAGE : on retombe de 450 a 0 degres/s en 3 s. La pente
+      initiale de la courbe (0,6 / 0,3 = 2) vaut exactement celle de la
+      phase rapide : le passage de l'une a l'autre ne donne aucun coup
+      d'acceleration.
+   5. REPOS : cinq secondes, puis le cycle recommence. */
 @keyframes m3-tourne {
   0% {
     transform: rotateY(0deg);
-    /* phase rapide : vitesse constante */
+    /* demarrage : la rotation s'enclenche doucement */
+    animation-timing-function: cubic-bezier(.45, 0, .7, .45);
+  }
+  10.91% {
+    transform: rotateY(90deg);
+    /* coup de fouet : passage brutal a la grande vitesse */
     animation-timing-function: linear;
   }
-  31.82% {
-    transform: rotateY(620deg);
-    /* Freinage : la pente initiale de la courbe (0,66 / 0,15 = 4,4) est
-       exactement celle de la phase rapide, donc le passage de l'une a
-       l'autre ne donne aucun coup d'acceleration. La rotation ralentit
-       ensuite jusqu'a l'arret (pente finale nulle). */
-    animation-timing-function: cubic-bezier(.15, .66, .35, 1);
+  13.64% {
+    transform: rotateY(225deg);
+    /* phase tres rapide, a vitesse constante */
+    animation-timing-function: linear;
+  }
+  27.27% {
+    transform: rotateY(900deg);
+    /* freinage : la pente initiale vaut celle de la phase rapide */
+    animation-timing-function: cubic-bezier(.3, .6, .4, 1);
   }
   54.55% {
-    transform: rotateY(720deg);
+    transform: rotateY(1575deg);
     animation-timing-function: linear;
   }
   100% {
-    transform: rotateY(720deg);
+    transform: rotateY(1575deg);
   }
 }
 .logo-nom {
