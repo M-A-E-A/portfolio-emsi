@@ -169,33 +169,49 @@ header {
   text-decoration: none;
   color: var(--encre);
 }
-.logo-marque {
-  height: 40px;            /* boîte totale : 22px de logo + 2 x 8px de marge interne + 2px de bordure */
-  width: auto;
+/* La plaque sombre reste immobile ; c'est l'illustration M3, à
+   l'intérieur, qui tourne. */
+.logo-cadre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
+  height: 40px;            /* 22px d'image + 2 x 8px de marge interne + 2px de bordure */
   padding: 8px 10px;
   background: #12161c;
   border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 10px;
+  /* La perspective est portee par le cadre : c'est lui qui donne la
+     profondeur au mouvement de rotation de l'image. */
+  perspective: 480px;
+  overflow: hidden;
+}
+.logo-marque {
+  height: 22px;            /* l'illustration seule */
+  width: auto;
+  display: block;
   transform-origin: 50% 50%;
   will-change: transform;
-  /* De temps en temps, le logo fait un tour complet. La perspective donne
-     la profondeur : sans elle, rotateY aplatirait simplement le logo. */
-  animation: m3-tourne 16s ease-in-out infinite !important;
+  /* Un tour, puis cinq secondes de repos, puis un tour…
+     Le cycle fait 6,5 s : 1,5 s de rotation + 5 s de cooldown. */
+  animation: m3-tourne 6.5s infinite !important;
 }
 
-/* Un tour de temps en temps : le logo reste immobile la plupart du temps,
-   puis pivote de 360° sur l'axe vertical — le mouvement se fait donc
-   dans le sens horizontal, comme une roue qui tourne. */
+/* Un tour complet, lancé vite puis freiné jusqu'à l'arrêt, suivi d'un
+   repos de cinq secondes. L'accélération est forte (courbe ease-out
+   marquée) : le logo part d'un coup, puis se pose en douceur. */
 @keyframes m3-tourne {
-  0%, 78% {
-    transform: perspective(480px) rotateY(0deg);
+  0% {
+    transform: rotateY(0deg);
+    /* départ rapide, puis ralentissement marqué */
+    animation-timing-function: cubic-bezier(.12, .78, .25, 1);
   }
-  96% {
-    transform: perspective(480px) rotateY(360deg);
+  23.08% {
+    transform: rotateY(360deg);
+    animation-timing-function: linear;
   }
   100% {
-    transform: perspective(480px) rotateY(360deg);
+    transform: rotateY(360deg);
   }
 }
 .logo-nom {
