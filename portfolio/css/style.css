@@ -177,6 +177,26 @@ header {
   background: #12161c;
   border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 10px;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  /* De temps en temps, le logo fait un tour complet. La perspective donne
+     la profondeur : sans elle, rotateY aplatirait simplement le logo. */
+  animation: m3-tourne 16s ease-in-out infinite !important;
+}
+
+/* Un tour de temps en temps : le logo reste immobile la plupart du temps,
+   puis pivote de 360° sur l'axe vertical — le mouvement se fait donc
+   dans le sens horizontal, comme une roue qui tourne. */
+@keyframes m3-tourne {
+  0%, 78% {
+    transform: perspective(480px) rotateY(0deg);
+  }
+  96% {
+    transform: perspective(480px) rotateY(360deg);
+  }
+  100% {
+    transform: perspective(480px) rotateY(360deg);
+  }
 }
 .logo-nom {
   display: flex;
