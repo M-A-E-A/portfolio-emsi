@@ -193,20 +193,29 @@ header {
   transform-origin: 50% 50%;
   will-change: transform;
   /* Un tour, puis cinq secondes de repos, puis un tour…
-     Le cycle fait 6,5 s : 1,5 s de rotation + 5 s de cooldown. */
-  animation: m3-tourne 6.5s infinite !important;
+     Le cycle fait 11 s : 2,5 s de rotation rapide, 3,5 s de freinage,
+     et 5 s de cooldown. */
+  animation: m3-tourne 11s infinite !important;
 }
 
-/* Un tour complet, lancé vite puis freiné jusqu'à l'arrêt, suivi d'un
-   repos de cinq secondes. L'accélération est forte (courbe ease-out
-   marquée) : le logo part d'un coup, puis se pose en douceur. */
+/* Un tour complet en trois temps :
+   1. une phase RAPIDE, à vitesse constante, qui fait les 270 premiers
+      degrés en 2,5 s — le logo part d'un coup et tourne vraiment ;
+   2. un FREINAGE, où les 90 derniers degrés se font lentement, la
+      courbe ease-out cassant franchement la vitesse à l'approche de l'arrêt ;
+   3. un REPOS de cinq secondes, avant que le cycle ne recommence. */
 @keyframes m3-tourne {
   0% {
     transform: rotateY(0deg);
-    /* départ rapide, puis ralentissement marqué */
-    animation-timing-function: cubic-bezier(.12, .78, .25, 1);
+    /* phase rapide : vitesse constante */
+    animation-timing-function: linear;
   }
-  23.08% {
+  22.73% {
+    transform: rotateY(270deg);
+    /* freinage : la rotation ralentit jusqu'à l'arrêt */
+    animation-timing-function: cubic-bezier(.15, .75, .3, 1);
+  }
+  54.55% {
     transform: rotateY(360deg);
     animation-timing-function: linear;
   }
