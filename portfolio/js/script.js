@@ -263,7 +263,7 @@
     { id: 'grille',   nom: 'Grille de points',   note: 'Quadrillage fin et lueur lente' },
     { id: 'soie',     nom: 'Rubans d’aurore', note: 'Nappes indigo qui tournent' },
     { id: 'contours', nom: 'Lignes de niveau',   note: 'Carte topographique' },
-    { id: 'plat',     nom: 'Plat et lumière',    note: 'Deux halos, aucun mouvement' },
+    { id: 'plat',     nom: 'Plat et lumière',    note: 'Deux plans qui glissent' },
     { id: 'etoiles',  nom: 'Constellation',      note: 'Points reliés, suit le curseur' },
     { id: 'aurore',   nom: 'Aurore (d’origine)', note: 'Les quatre taches qui dérivent' }
   ];

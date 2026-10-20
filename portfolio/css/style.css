@@ -963,16 +963,19 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
 
-/* --- Variante « grille » : quadrillage fin de 22 px + une lueur qui respire.
-   Aucun calque enfant : tout tient dans le background du conteneur. --- */
+/* --- Variante « grille » : quadrillage fin de 22 px + deux lueurs qui
+   respirent. Les lueurs sont posees en background-size 130 % et
+   background-repeat: no-repeat : sans cette place residuelle, leur
+   position en pourcentage resterait nulle et rien ne bougerait. --- */
 .fond-anime[data-fond="grille"] {
   background: var(--ciel-haut);
   background-image:
     radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px),
     radial-gradient(110% 90% at 82% -20%, var(--halo-a), transparent 62%),
     radial-gradient(60% 70% at 12% 112%, var(--halo-b), transparent 65%);
-  background-size: 22px 22px, 100% 100%, 100% 100%;
-  animation: respire 24s ease-in-out infinite alternate;
+  background-size: 22px 22px, 130% 130%, 130% 130%;
+  background-repeat: repeat, no-repeat, no-repeat;
+  animation: respire 26s ease-in-out infinite alternate;
 }
 
 /* --- Variante « soie » : trois nappes allongées qui tournent lentement.
@@ -1017,13 +1020,18 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
   animation: contours 60s linear infinite;
 }
 
-/* --- Variante « plat » : deux halos fixes en diagonale, aucun mouvement.
-   C'est la version la plus sobre, et la plus rapide à rendre. --- */
+/* --- Variante « plat » : deux plans de lumière qui glissent lentement.
+   Même technique que « grille » : des plans plus grands que le calque,
+   sans répétition, pour que le déplacement ait une portée réelle. --- */
 .fond-anime[data-fond="plat"] {
   background: var(--ciel-haut);
   background-image:
     radial-gradient(95% 75% at 88% -18%, var(--halo-a), transparent 58%),
-    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%);
+    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%),
+    radial-gradient(70% 55% at 50% 125%, var(--halo-a), transparent 72%);
+  background-size: 130% 130%, 130% 130%, 140% 140%;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  animation: platon 48s ease-in-out infinite alternate;
 }
 
 /* --- Variante « étoiles » : constellation dessinée sur un canvas par
@@ -1037,8 +1045,14 @@ body.sombre .form-message.erreur { background: #341614; border-color: #6b2a24; c
 }
 
 @keyframes respire {
+  /* Le quadrillage rampe de 33 px : un multiple de 22 px (la tuile) serait
+     strictement identique et donc invisible. */
   from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 0 0, 0 0, -4% 3%; }
+  to   { background-position: 33px 17px, 6% 4%, -5% 3%; }
+}
+@keyframes platon {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: 7% 5%, -6% -4%, 3% 2%; }
 }
 @keyframes soie {
   from { transform: translate3d(0, 0, 0) scale(1); }

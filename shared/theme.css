@@ -95,15 +95,20 @@
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
 
-/* Variante « grille » : quadrillage fin + lueur qui respire */
+/* Variante « grille » : quadrillage fin + lueurs qui respirent.
+   Point technique : les lueurs sont posees en background-size 130 % et
+   background-repeat: no-repeat. Sans cela, leur position en pourcentage
+   n'aurait aucune place residuelle a parcourir — le decalage serait
+   exactement nul et l'animation ne bougerait rien. */
 .fond-anime[data-fond="grille"] {
   background: var(--ciel-haut);
   background-image:
     radial-gradient(circle at center, var(--grille-point) 1px, transparent 1.4px),
     radial-gradient(110% 90% at 82% -20%, var(--halo-a), transparent 62%),
     radial-gradient(60% 70% at 12% 112%, var(--halo-b), transparent 65%);
-  background-size: 22px 22px, 100% 100%, 100% 100%;
-  animation: respire 24s ease-in-out infinite alternate;
+  background-size: 22px 22px, 130% 130%, 130% 130%;
+  background-repeat: repeat, no-repeat, no-repeat;
+  animation: respire 26s ease-in-out infinite alternate;
 }
 .fond-anime[data-fond="soie"] {
   background: var(--ciel-haut);
@@ -142,12 +147,19 @@
   animation: contours 60s linear infinite;
 }
 
-/* Variante « plat » : deux halos fixes */
+/* Variante « plat » : deux plans de lumiere qui glissent lentement.
+   Meme technique que « grille » : des plans plus grands que le calque
+   et sans repetition, pour que le deplacement en pourcentage ait une
+   portee reelle. */
 .fond-anime[data-fond="plat"] {
   background: var(--ciel-haut);
   background-image:
     radial-gradient(95% 75% at 88% -18%, var(--halo-a), transparent 58%),
-    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%);
+    radial-gradient(80% 70% at -10% 108%, var(--halo-b), transparent 62%),
+    radial-gradient(70% 55% at 50% 125%, var(--halo-a), transparent 72%);
+  background-size: 130% 130%, 130% 130%, 140% 140%;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  animation: platon 48s ease-in-out infinite alternate;
 }
 
 /* Variante « ruban » : nappes indigo qui tournent lentement.
@@ -162,8 +174,14 @@
 /* Ces keyframes sont indispensables : sans elles, « grille », « contours »
    et « ruban » ne bougent pas (le navigateur ignore l'animation inconnue). */
 @keyframes respire {
+  /* Le quadrillage rampe de 33 px : un multiple de 22 px (la tuile) serait
+     strictement identique et donc invisible. */
   from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 0 0, 0 0, -4% 3%; }
+  to   { background-position: 33px 17px, 6% 4%, -5% 3%; }
+}
+@keyframes platon {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: 7% 5%, -6% -4%, 3% 2%; }
 }
 @keyframes soie {
   from { transform: translate3d(0, 0, 0) scale(1); }

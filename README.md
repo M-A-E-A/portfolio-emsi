@@ -42,6 +42,13 @@ nn/                  → réseau de neurones (backpropagation, Adam, CNN)
 
 ### 1. Fond animé partagé (`shared/theme.css` + `shared/theme.js`)
 - **6 variantes** : `grille`, `soie`, `contours`, `plat`, `ruban`, `aurore` (blobs + grain)
+- **Toutes les variantes sont animées** : chacune a été mesurée en forçant l'horloge
+  d'animation et en comparant les styles calculés — aucune ne reste figée
+  - `aurore` — les quatre taches dérivent (`transform`)
+  - `soie` / `ruban` — les nappes tournent lentement (`transform`)
+  - `grille` — le quadrillage rampe de 33 px, les lueurs glissent
+  - `contours` — les courbes de niveau défilent
+  - `plat` — deux plans de lumière dérivent
 - **Animation CSS pure** : `@keyframes derive` (30–44 s) — pas de JS, pas de filtre blur
 - **Une variante par projet**, portée par `data-fond` sur `<body>` et `data-projet` pour la palette
 - **Un seul calque `.fond-anime`** injecté par `shared/theme.js`, commun à toutes les démos
