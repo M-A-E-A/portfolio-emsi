@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Express « Contacts » — aperçu statique de l’API</title>
+  <meta name="description" content="Aperçu statique de l’API REST Contacts écrite en Express.js : mêmes routes, mêmes validations, mêmes codes HTTP, exécutés directement dans le navigateur.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="css/apercu.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/apercu.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="api-express" data-fond="grille">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('api-express-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-serveur" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/>
+        <path d="M7 7.5h.01M7 16.5h.01"/>
+      </symbol>
+      <symbol id="i-envoyer" viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4-6Z"/><path d="m12 14 8-10"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-serveur"></use></svg>
+        <span class="marque-nom">API Express</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">Node.js &amp; Express</p>
+      <h1>Une API REST, jouable dans le navigateur</h1>
+      <p class="intro-texte">
+        Le vrai serveur tourne en Node (<code>npm install &amp;&amp; npm start</code>, puis
+        <code>localhost:3000</code>). Cette page en reprend la logique à l’identique —
+        mêmes routes, mêmes validations, mêmes codes HTTP — pour que vous puissiez
+        la parcourir sans installer quoi que ce soit.
+      </p>
+    </section>
+
+    <section class="encart">
+      <svg class="encart-ico" aria-hidden="true" focusable="false"><use href="#i-serveur"></use></svg>
+      <div>
+        <p class="encart-titre">Ceci est un aperçu statique</p>
+        <p class="encart-texte">
+          Les réponses ci-dessous sont produites par une réimplémentation JavaScript du
+          <code>server.js</code>, pas par un serveur. Le code source du vrai serveur
+          Express se trouve dans <code>api-express/</code>.
+        </p>
+      </div>
+    </section>
+
+    <div class="grille">
+
+      <!-- ------------------------- Console ------------------------- -->
+      <section class="carte" aria-labelledby="titre-console">
+        <h2 class="carte-titre" id="titre-console">Console</h2>
+
+        <form id="form-console" class="console">
+          <div class="console-ligne-haut">
+            <label class="sr-only" for="methode">Méthode HTTP</label>
+            <select id="methode" class="select-methode">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+            <label class="sr-only" for="chemin">Chemin de la requête</label>
+            <input type="text" id="chemin" class="champ-chemin" value="/api/contacts" spellcheck="false" autocomplete="off">
+            <button type="submit" class="bouton bouton--primaire">
+              <svg class="icone" aria-hidden="true" focusable="false"><use href="#i-envoyer"></use></svg>
+              <span>Envoyer</span>
+            </button>
+          </div>
+
+          <div class="console-corps" id="corps-requete" hidden>
+            <label class="corps-lbl" for="corps">Corps de la requête (JSON)</label>
+            <textarea id="corps" class="champ-corps" rows="4" spellcheck="false">{"nom":"Berrada Salma","email":"salma.berrada@example.com","ville":"Marrakech"}</textarea>
+          </div>
+        </form>
+
+        <div class="reponse">
+          <div class="reponse-tete">
+            <span class="reponse-etiquette">Réponse</span>
+            <span class="code-etat" id="code-etat">—</span>
+            <span class="reponse-duree" id="duree"></span>
+          </div>
+          <pre class="code-json" id="code-json" tabindex="0">Envoyez une requête pour voir la réponse.</pre>
+        </div>
+      </section>
+
+      <!-- -------------------------- Routes -------------------------- -->
+      <section class="carte" aria-labelledby="titre-routes">
+        <h2 class="carte-titre" id="titre-routes">Routes</h2>
+        <p class="note">Cliquez sur une route pour l’appeler.</p>
+        <ul class="routes" id="routes"></ul>
+      </section>
+    </div>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Ce que le serveur fait vraiment</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>Middleware</h3>
+          <p>
+            <code>express.json()</code> pour lire les corps de requête, une journalisation
+            qui chronomètre chaque appel, et un gestionnaire d’erreurs qui renvoie du
+            JSON plutôt qu’une page HTML d’erreur.
+          </p>
+        </article>
+        <article>
+          <h3>Validation</h3>
+          <p>
+            Chaque écriture passe par la même fonction : nom d’au moins deux caractères,
+            e-mail au format attendu, ville cohérente. Sinon la réponse est un
+            <code>400</code> listant les champs fautifs.
+          </p>
+        </article>
+        <article>
+          <h3>Codes HTTP</h3>
+          <p>
+            <code>200</code> lecture, <code>201</code> création, <code>204</code>
+            suppression, <code>400</code> validation, <code>404</code> contact
+            introuvable, <code>500</code> erreur inattendue.
+          </p>
+        </article>
+        <article>
+          <h3>Sans base de données</h3>
+          <p>
+            Les contacts vivent en mémoire. L’API démarre sans configuration ni base à
+            installer : la démonstration porte sur Express, pas sur l’infrastructure.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — API REST Contacts en Express.js, aperçu statique dans le navigateur.</p>
+  </footer>
+
+</body>
+</html>

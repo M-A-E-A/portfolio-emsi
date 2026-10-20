@@ -95,8 +95,9 @@ nn/                  → réseau de neurones (backpropagation, Adam, CNN)
 | **P2P chiffré** | [p2p/index.html](p2p/index.html) | `p2p/` |
 | **Tableau blanc** | [whiteboard/index.html](whiteboard/index.html) | `whiteboard/` |
 | **Réseau de neurones** | [nn/index.html](nn/index.html) | `nn/` |
-| **Analyse CSV (Python)** | `python-analyse/analyse.py` | `python-analyse/` |
-| **API Express (Node.js)** | `cd api-express && npm install && npm start` | `api-express/` |
+| **Analyse CSV (Python)** | [apercu.html](python-analyse/apercu.html) | `python-analyse/` |
+| **API Express (Node.js)** | [apercu.html](api-express/apercu.html) | `api-express/` |
+| **Thème WordPress** | [apercu.html](wp-theme-portfolio/apercu.html) | `wp-theme-portfolio/` |
 | **Tailwind** | [tailwind-demo/index.html](tailwind-demo/index.html) | `tailwind-demo/` |
 | **WordPress** | `wp-theme-portfolio/index.php` | `wp-theme-portfolio/` |
 | **API Contacts** | [api-contacts/index.html](api-contacts/index.html) | `api-contacts/` |
@@ -111,6 +112,18 @@ python -m http.server 8000
 ```
 
 Les pages fonctionnent aussi ouvertes directement en `file://` (stockage protégé par `try/catch`).
+
+### Les trois projets qui ne sont pas des pages web
+
+`api-express/`, `python-analyse/` et `wp-theme-portfolio/` sont un serveur Node, un script
+Python et un thème PHP. Chacun a une **page d'aperçu** dans le navigateur, qui rejoue le
+comportement réel :
+
+| Projet | Aperçu | Pour le lancer pour de vrai |
+|---|---|---|
+| `api-express` | [apercu.html](api-express/apercu.html) | `cd api-express && npm install && npm start` |
+| `python-analyse` | [apercu.html](python-analyse/apercu.html) | `python analyse.py donnees.csv --groupe ville` |
+| `wp-theme-portfolio` | [apercu.html](wp-theme-portfolio/apercu.html) | copier le dossier dans `wp-content/themes/` |
 
 ---
 

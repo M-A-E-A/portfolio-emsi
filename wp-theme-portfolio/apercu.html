@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thème WordPress « Portfolio » — aperçu du rendu</title>
+  <meta name="description" content="Aperçu du thème WordPress « Portfolio » : en-tête, boucle d’articles, article unique, page, archive, barre latérale et 404, rendus dans le navigateur.">
+  <meta name="author" content="Abderrahmane El ADNANI">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1319" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/apercu.css">
+  <script src="../shared/theme.js" defer></script>
+  <script src="js/apercu.js" defer></script>
+  <link rel="stylesheet" href="../shared/themes.css">
+</head>
+<body data-projet="wp-theme-portfolio" data-fond="soie">
+
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('wp-theme-theme');
+        var sombre = pref
+          ? pref === 'sombre'
+          : !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (sombre) document.body.classList.add('sombre');
+      } catch (e) { /* localStorage indisponible (file://) */ }
+    })();
+  </script>
+
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lune" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+      </symbol>
+      <symbol id="i-wordpress" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/><path d="M8 8.5h8M12 8.5V18M6.5 12.5 8 8.5M17.5 12.5 16 8.5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="entete">
+    <div class="entete-interieur">
+      <a class="marque" href="#contenu">
+        <svg class="marque-icone" aria-hidden="true" focusable="false"><use href="#i-wordpress"></use></svg>
+        <span class="marque-nom">Thème WordPress</span>
+      </a>
+      <button type="button" class="btn-theme" id="theme" aria-label="Passer au thème sombre" aria-pressed="false">
+        <svg class="icone icone-lune" aria-hidden="true" focusable="false"><use href="#i-lune"></use></svg>
+        <svg class="icone icone-soleil" aria-hidden="true" focusable="false"><use href="#i-soleil"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenu">
+
+    <section class="intro">
+      <p class="sur-titre">PHP · WordPress</p>
+      <h1>Le thème, rendu</h1>
+      <p class="intro-texte">
+        Un thème WordPress minimal mais complet : en-tête, boucle, article unique,
+        page, archive, barre latérale, 404 et pagination. Cette page reproduit
+        le rendu de chaque gabarit — avec <code>style.css</code>, la feuille de
+        style réelle du thème.
+      </p>
+    </section>
+
+    <section class="encart">
+      <svg class="encart-ico" aria-hidden="true" focusable="false"><use href="#i-wordpress"></use></svg>
+      <div>
+        <p class="encart-titre">Ceci est un aperçu statique</p>
+        <p class="encart-texte">
+          WordPress n’est pas installé ici : le contenu est simulé en HTML, mais la
+          mise en page vient bien de <code>wp-theme-portfolio/style.css</code>. Les
+          gabarits <code>.php</code> du thème sont dans le dossier du projet.
+        </p>
+      </div>
+    </section>
+
+    <section class="gabarits" aria-labelledby="titre-gabarits">
+      <h2 class="gabarits-titre" id="titre-gabarits">Choisir un gabarit</h2>
+      <div class="puces" id="gabarits" role="group" aria-label="Gabarit du thème"></div>
+    </section>
+
+    <div class="cadre">
+      <div class="cadre-barre" aria-hidden="true">
+        <span class="cadre-points"><span></span><span></span><span></span></span>
+        <span class="cadre-url">portfolio-emsi.local</span>
+      </div>
+      <div class="cadre-corps theme-rendu" id="rendu"></div>
+    </div>
+
+    <section class="bloc-explication" aria-labelledby="titre-comment">
+      <h2 id="titre-comment">Les gabarits du thème</h2>
+      <div class="grille-explication">
+        <article>
+          <h3>index.php</h3>
+          <p>
+            La boucle principale : <code>have_posts()</code> et
+            <code>the_post()</code> parcourent les articles, chacun suivi de la
+            pagination générée par <code>the_posts_pagination()</code>.
+          </p>
+        </article>
+        <article>
+          <h3>single.php</h3>
+          <p>
+            Un article seul, avec ses métadonnées (date, auteur, catégories) et
+            la navigation entre article précédent et suivant.
+          </p>
+        </article>
+        <article>
+          <h3>archive.php</h3>
+          <p>
+            Les pages d’archive : titre de l’archive, description, puis la même
+            boucle que l’index, avec un en-tête propre à l’archive.
+          </p>
+        </article>
+        <article>
+          <h3>functions.php</h3>
+          <p>
+            Les supports, les menus, les vignettes et un petit script pour le
+            menu mobile. Rien de plus : le thème reste lisible d’un bout à
+            l’autre.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Abderrahmane El ADNANI — thème WordPress « Portfolio », aperçu du rendu dans le navigateur.</p>
+  </footer>
+
+</body>
+</html>

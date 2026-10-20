@@ -1,0 +1,233 @@
+/* =====================================================================
+   Aperçu du thème WordPress — feuille de style complémentaire.
+   ---------------------------------------------------------------------
+   style.css (le vrai thème) est chargé AVANT ce fichier. On y ajoute
+   uniquement ce qui concerne l'aperçu : la coquille, les onglets de
+   gabarits, et l'adaptation en mode sombre (le thème lui-même est clair).
+   ===================================================================== */
+
+:root {
+  --largeur: 78rem;
+  --r-s: 8px;
+  --r-m: 14px;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --texte-ff: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--texte-ff);
+  font-size: 1rem; line-height: 1.6;
+  color: var(--texte); background: var(--papier);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--display); color: var(--encre); line-height: 1.15; margin: 0; }
+p { margin: 0 0 1rem; }
+code { font-family: var(--mono); font-size: .88em; }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ============================== En-tête ============================== */
+.entete {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--trait);
+}
+.entete-interieur {
+  max-width: var(--largeur); margin: 0 auto; padding: .7rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.marque {
+  display: inline-flex; align-items: center; gap: .55rem;
+  color: var(--encre); text-decoration: none;
+  font-family: var(--display); font-weight: 700; letter-spacing: -.01em;
+}
+.marque-icone { width: 1.5rem; height: 1.5rem; color: var(--accent); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.btn-theme {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; flex: none;
+  border: 1px solid var(--trait); border-radius: 50%;
+  background: var(--surface); color: var(--encre); cursor: pointer;
+  transition: border-color .15s ease;
+}
+.btn-theme:hover { border-color: var(--accent); }
+.btn-theme .icone { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icone-soleil { display: none; }
+body.sombre .icone-lune { display: none; }
+body.sombre .icone-soleil { display: block; }
+
+/* ============================== Contenu ============================== */
+main { max-width: var(--largeur); margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+
+.intro { max-width: 48rem; margin-bottom: 1.2rem; }
+.sur-titre {
+  font-family: var(--display); font-size: .78rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: .45rem;
+}
+.intro h1 { font-size: clamp(1.9rem, 4.2vw, 2.8rem); letter-spacing: -.02em; margin-bottom: .7rem; }
+.intro-texte { font-size: 1.05rem; color: var(--texte); max-width: 44rem; }
+
+/* ============================== Encart ============================== */
+.encart {
+  display: flex; align-items: flex-start; gap: .8rem;
+  padding: .9rem 1rem; margin-bottom: 1.1rem;
+  border: 1px solid var(--accent); border-radius: var(--r-m);
+  background: var(--accent-doux);
+}
+.encart-ico { width: 1.4rem; height: 1.4rem; flex: none; color: var(--accent); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.encart-titre { font-family: var(--display); font-weight: 600; color: var(--encre); margin: 0 0 .2rem; }
+.encart-texte { font-size: .87rem; color: var(--texte); margin: 0; }
+.encart-texte code { background: var(--surface); padding: .05rem .3rem; border: 1px solid var(--trait); border-radius: 4px; }
+
+/* ============================ Gabarits ============================ */
+.gabarits { margin-bottom: 1rem; }
+.gabarits-titre { font-size: .95rem; margin-bottom: .55rem; }
+.puces { display: flex; flex-wrap: wrap; gap: .4rem; }
+.puce {
+  font: inherit; font-size: .85rem; font-weight: 500;
+  padding: .35rem .75rem;
+  border: 1px solid var(--trait); border-radius: 99px;
+  background: var(--surface); color: var(--texte); cursor: pointer;
+  transition: all .15s ease;
+}
+.puce:hover { border-color: var(--accent); color: var(--accent); }
+.puce[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--sur-accent); }
+
+/* ============================== Cadre ============================== */
+.cadre {
+  border: 1px solid var(--trait); border-radius: var(--r-m);
+  overflow: hidden; background: var(--surface);
+  box-shadow: var(--ombre);
+}
+.cadre-barre {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .5rem .8rem;
+  background: var(--papier);
+  border-bottom: 1px solid var(--trait);
+}
+.cadre-points { display: flex; gap: .3rem; }
+.cadre-points span {
+  width: .6rem; height: .6rem; border-radius: 50%;
+  background: var(--trait);
+}
+.cadre-url {
+  font-family: var(--mono); font-size: .74rem; color: var(--sourdine);
+  background: var(--surface); padding: .15rem .6rem;
+  border: 1px solid var(--trait); border-radius: 99px;
+}
+.cadre-corps { padding: 0; }
+
+/* ---------------------------------------------------------------------
+   Le rendu du thème : on rejoue les classes de style.css.
+   Le thème est un thème clair : en mode sombre, on adapte les couleurs
+   via un bloc dédié plus bas.
+   --------------------------------------------------------------------- */
+.theme-rendu {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--pt-text);
+  background: var(--pt-bg);
+  line-height: 1.65;
+}
+.theme-rendu a { color: var(--pt-accent); text-decoration: none; }
+.theme-rendu a:hover { text-decoration: underline; }
+.theme-rendu .site-header {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.theme-rendu .site-title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+.theme-rendu .site-title a { color: inherit; }
+.theme-rendu .site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem; }
+.theme-rendu .site-nav a { color: var(--pt-muted); font-size: 0.9rem; }
+.theme-rendu .site-main {
+  max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem;
+  display: grid; grid-template-columns: 1fr 18rem; gap: 2rem;
+}
+.theme-rendu .entry { margin-bottom: 2.5rem; }
+.theme-rendu .entry-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
+.theme-rendu .entry-meta { color: var(--pt-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.theme-rendu .entry-content p { margin: 0 0 1rem; }
+.theme-rendu .sidebar { font-size: 0.9rem; }
+.theme-rendu .sidebar h2 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+.theme-rendu .sidebar ul { list-style: none; padding: 0; margin: 0; }
+.theme-rendu .sidebar li { margin-bottom: 0.4rem; }
+.theme-rendu .site-footer {
+  border-top: 1px solid #e2e8f0; padding: 1.5rem; text-align: center;
+  color: var(--pt-muted); font-size: 0.85rem;
+}
+.theme-rendu .pagination { display: flex; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+.theme-rendu .pagination a, .theme-rendu .pagination span {
+  padding: 0.4rem 0.8rem; border: 1px solid #e2e8f0; border-radius: 0.4rem;
+}
+.theme-rendu .not-found { text-align: center; padding: 4rem 1rem; }
+.theme-rendu .not-found h1 { font-size: 4rem; margin: 0; color: var(--pt-accent); }
+.theme-rendu .post-navigation {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.9rem;
+}
+.theme-rendu .archive-header { margin-bottom: 1.5rem; }
+.theme-rendu .archive-header h1 { font-size: 1.75rem; margin-bottom: 0.35rem; }
+.theme-rendu .archive-header p { color: var(--pt-muted); margin: 0; }
+.theme-rendu .page-title { font-size: 1.75rem; margin: 0 0 0.5rem; }
+.theme-rendu .comment-list { list-style: none; padding: 0; margin: 2rem 0 0; }
+.theme-rendu .comment-list li { border-top: 1px solid #e2e8f0; padding: 1rem 0; }
+.theme-rendu .comment-meta { font-size: 0.8rem; color: var(--pt-muted); margin-bottom: 0.3rem; }
+
+@media (max-width: 48rem) {
+  .theme-rendu .site-main { grid-template-columns: 1fr; }
+}
+
+/* Mode sombre : le thème est clair, on l'adapte */
+body.sombre .theme-rendu {
+  --pt-accent: #86a6ff; --pt-text: #c6ccd4; --pt-bg: #141920; --pt-muted: #8b95a3;
+}
+body.sombre .theme-rendu .site-header { border-bottom-color: #2a313b; }
+body.sombre .theme-rendu .site-footer { border-top-color: #2a313b; }
+body.sombre .theme-rendu .pagination a,
+body.sombre .theme-rendu .pagination span { border-color: #2a313b; }
+body.sombre .theme-rendu .post-navigation { border-top-color: #2a313b; }
+body.sombre .theme-rendu .comment-list li { border-top-color: #2a313b; }
+
+/* ============================ Explication ============================ */
+.bloc-explication { margin-top: 2.25rem; padding-top: 1.6rem; border-top: 1px solid var(--trait); }
+.bloc-explication h2 { font-size: 1.35rem; letter-spacing: -.01em; margin-bottom: .9rem; }
+.grille-explication {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.grille-explication article {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--trait); border-radius: var(--r-m);
+  background: var(--surface);
+}
+.grille-explication h3 { font-size: 1rem; margin-bottom: .4rem; }
+.grille-explication p { font-size: .9rem; color: var(--texte); margin: 0; }
+.grille-explication code {
+  background: var(--papier); padding: .05rem .3rem;
+  border: 1px solid var(--trait); border-radius: 4px;
+}
+
+/* ================================ Pied ================================ */
+.pied { border-top: 1px solid var(--trait); background: var(--surface); }
+.pied p {
+  max-width: var(--largeur); margin: 0 auto; padding: 1.2rem 1.25rem;
+  font-size: .85rem; color: var(--sourdine);
+}
+
+/* ============================== Réactif ============================== */
+@media (max-width: 58rem) {
+  .intro-texte { font-size: 1rem; }
+}

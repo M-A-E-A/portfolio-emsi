@@ -174,3 +174,33 @@ body[data-projet="nn"].sombre {
   --ciel-haut: #03150e; --ciel-bas: #010a06; --blob-1: #047857; --blob-2: #10b981; --blob-3: #065f46; --blob-4: #6ee7b7; --blob-opacite: .42; --halo-a: rgba(110,231,183,.20); --halo-b: rgba(16,185,129,.18);
 }
 
+/* ---------- 18. api-express (API REST Express.js) ---------- */
+body[data-projet="api-express"]:not(.sombre) {
+  --accent: #15803d; --accent-fonce: #0b5326; --accent-doux: #e3f3e8;
+  --ciel-haut: #eff8f1; --ciel-bas: #e5f2e9; --blob-1: #15803d; --blob-2: #3fa06a; --blob-3: #1f7a3c; --blob-4: #79b98e; --blob-opacite: .17; --halo-a: rgba(21,128,61,.15); --halo-b: rgba(121,185,142,.12);
+}
+body[data-projet="api-express"].sombre {
+  --accent: #74d69f; --accent-fonce: #a3e8bf; --accent-doux: #102c1b;
+  --ciel-haut: #04160b; --ciel-bas: #020a05; --blob-1: #15803d; --blob-2: #22a35a; --blob-3: #166534; --blob-4: #74d69f; --blob-opacite: .42; --halo-a: rgba(116,214,159,.20); --halo-b: rgba(34,163,90,.18);
+}
+
+/* ---------- 19. python-analyse (analyse CSV) ---------- */
+body[data-projet="python-analyse"]:not(.sombre) {
+  --accent: #7c3aed; --accent-fonce: #5b21b6; --accent-doux: #efe9fd;
+  --ciel-haut: #f4f1fd; --ciel-bas: #ebe6fa; --blob-1: #7c3aed; --blob-2: #9d7cf0; --blob-3: #5b21b6; --blob-4: #c3b1f6; --blob-opacite: .17; --halo-a: rgba(124,58,237,.15); --halo-b: rgba(195,177,246,.12);
+}
+body[data-projet="python-analyse"].sombre {
+  --accent: #bfa3fb; --accent-fonce: #d6c4fd; --accent-doux: #241a44;
+  --ciel-haut: #100722; --ciel-bas: #070312; --blob-1: #7c3aed; --blob-2: #6d28d9; --blob-3: #4c1d95; --blob-4: #bfa3fb; --blob-opacite: .42; --halo-a: rgba(191,163,251,.20); --halo-b: rgba(124,58,237,.18);
+}
+
+/* ---------- 20. wp-theme-portfolio (thème WordPress) ---------- */
+body[data-projet="wp-theme-portfolio"]:not(.sombre) {
+  --accent: #0e7490; --accent-fonce: #0b5566; --accent-doux: #e0f2f5;
+  --ciel-haut: #ecf7fa; --ciel-bas: #e0f0f5; --blob-1: #0e7490; --blob-2: #2a9dbe; --blob-3: #0f6a82; --blob-4: #6bb9cd; --blob-opacite: .16; --halo-a: rgba(14,116,144,.15); --halo-b: rgba(107,185,205,.12);
+}
+body[data-projet="wp-theme-portfolio"].sombre {
+  --accent: #67d3e6; --accent-fonce: #9ae3ef; --accent-doux: #0d2c33;
+  --ciel-haut: #031a20; --ciel-bas: #010d11; --blob-1: #0e7490; --blob-2: #17a2bd; --blob-3: #0b5c6d; --blob-4: #67d3e6; --blob-opacite: .42; --halo-a: rgba(103,211,230,.20); --halo-b: rgba(23,162,189,.18);
+}
+

@@ -1,0 +1,182 @@
+/* =====================================================================
+   Aperçu de l'analyse CSV — feuille de style
+   Socle : jetons partagés de shared/theme.css + shared/themes.css
+   ===================================================================== */
+
+:root {
+  --largeur: 78rem;
+  --r-s: 8px;
+  --r-m: 14px;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --texte-ff: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--texte-ff);
+  font-size: 1rem; line-height: 1.6;
+  color: var(--texte); background: var(--papier);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--display); color: var(--encre); line-height: 1.15; margin: 0; }
+p { margin: 0 0 1rem; }
+code { font-family: var(--mono); font-size: .88em; }
+em { font-style: normal; color: var(--accent); font-weight: 600; }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ============================== En-tête ============================== */
+.entete {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--trait);
+}
+.entete-interieur {
+  max-width: var(--largeur); margin: 0 auto; padding: .7rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.marque {
+  display: inline-flex; align-items: center; gap: .55rem;
+  color: var(--encre); text-decoration: none;
+  font-family: var(--display); font-weight: 700; letter-spacing: -.01em;
+}
+.marque-icone { width: 1.5rem; height: 1.5rem; color: var(--accent); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.btn-theme {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; flex: none;
+  border: 1px solid var(--trait); border-radius: 50%;
+  background: var(--surface); color: var(--encre); cursor: pointer;
+  transition: border-color .15s ease;
+}
+.btn-theme:hover { border-color: var(--accent); }
+.btn-theme .icone { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icone-soleil { display: none; }
+body.sombre .icone-lune { display: none; }
+body.sombre .icone-soleil { display: block; }
+
+/* ============================== Contenu ============================== */
+main { max-width: var(--largeur); margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+
+.intro { max-width: 48rem; margin-bottom: 1.2rem; }
+.sur-titre {
+  font-family: var(--display); font-size: .78rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: .45rem;
+}
+.intro h1 { font-size: clamp(1.9rem, 4.2vw, 2.8rem); letter-spacing: -.02em; margin-bottom: .7rem; }
+.intro-texte { font-size: 1.05rem; color: var(--texte); max-width: 44rem; }
+
+/* ============================== Encart ============================== */
+.encart {
+  display: flex; align-items: flex-start; gap: .8rem;
+  padding: .9rem 1rem; margin-bottom: 1.1rem;
+  border: 1px solid var(--accent); border-radius: var(--r-m);
+  background: var(--accent-doux);
+}
+.encart-ico { width: 1.4rem; height: 1.4rem; flex: none; color: var(--accent); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.encart-titre { font-family: var(--display); font-weight: 600; color: var(--encre); margin: 0 0 .2rem; }
+.encart-texte { font-size: .87rem; color: var(--texte); margin: 0; }
+.encart-texte code { background: var(--surface); padding: .05rem .3rem; border: 1px solid var(--trait); border-radius: 4px; }
+
+/* =============================== Grille =============================== */
+.grille {
+  display: grid; gap: 1.1rem;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: start;
+}
+.carte {
+  border: 1px solid var(--trait); border-radius: var(--r-m);
+  background: var(--surface);
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+.carte-tete {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; margin-bottom: .8rem;
+}
+.carte-titre { font-size: 1.1rem; letter-spacing: -.01em; }
+.terminal-nom { font-family: var(--mono); font-size: .78rem; color: var(--sourdine); }
+
+/* ============================= Terminal ============================= */
+.terminal {
+  margin: 0; padding: 1rem 1.1rem;
+  min-height: 18rem; max-height: 32rem; overflow: auto;
+  border: 1px solid var(--trait); border-radius: var(--r-s);
+  background: #0d1117; color: #c9d1d9;
+  font-family: var(--mono); font-size: .8rem; line-height: 1.6;
+  white-space: pre; tab-size: 2;
+}
+.terminal .invite { color: #7ee787; }
+.terminal .erreur { color: #ff7b72; }
+.terminal .titre { color: #79c0ff; }
+.terminal .valeur { color: #ffa657; }
+
+/* ============================== Champs ============================== */
+.champ { margin-bottom: .85rem; }
+.champ label {
+  display: block; font-size: .84rem; font-weight: 500;
+  color: var(--encre); margin-bottom: .3rem;
+}
+.aide { font-weight: 400; color: var(--sourdine); }
+.champ select, .champ textarea {
+  width: 100%; font: inherit; font-size: .88rem;
+  padding: .45rem .6rem;
+  border: 1px solid var(--trait); border-radius: var(--r-s);
+  background: var(--papier); color: var(--encre);
+}
+.champ textarea {
+  font-family: var(--mono); font-size: .8rem; resize: vertical;
+}
+.bouton {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  font: inherit; font-size: .87rem; font-weight: 500;
+  padding: .45rem .85rem;
+  border: 1px solid var(--trait); border-radius: var(--r-s);
+  background: var(--papier); color: var(--encre); cursor: pointer;
+  transition: all .15s ease;
+}
+.bouton:hover { border-color: var(--accent); color: var(--accent); }
+.bouton--primaire { background: var(--accent); border-color: var(--accent); color: var(--sur-accent); }
+.bouton--primaire:hover { color: var(--sur-accent); filter: brightness(1.08); }
+
+/* ============================ Explication ============================ */
+.bloc-explication { margin-top: 2.25rem; padding-top: 1.6rem; border-top: 1px solid var(--trait); }
+.bloc-explication h2 { font-size: 1.35rem; letter-spacing: -.01em; margin-bottom: .9rem; }
+.grille-explication {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.grille-explication article {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--trait); border-radius: var(--r-m);
+  background: var(--surface);
+}
+.grille-explication h3 { font-size: 1rem; margin-bottom: .4rem; }
+.grille-explication p { font-size: .9rem; color: var(--texte); margin: 0; }
+.grille-explication code {
+  background: var(--papier); padding: .05rem .3rem;
+  border: 1px solid var(--trait); border-radius: 4px;
+}
+
+/* ================================ Pied ================================ */
+.pied { border-top: 1px solid var(--trait); background: var(--surface); }
+.pied p {
+  max-width: var(--largeur); margin: 0 auto; padding: 1.2rem 1.25rem;
+  font-size: .85rem; color: var(--sourdine);
+}
+
+/* ============================== Réactif ============================== */
+@media (max-width: 58rem) {
+  .grille { grid-template-columns: minmax(0, 1fr); }
+}
