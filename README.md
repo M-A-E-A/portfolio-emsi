@@ -16,6 +16,7 @@
 portfolio/           → site portfolio (20 projets détaillés, fond animé, thème)
 shared/              → theme.css + theme.js + themes.css (fond animé, thème, 17 palettes)
 python-analyse/      → CLI Python : analyse CSV (stats par colonne)
+api-express/         → API REST Express.js (routes, validation, codes HTTP)
 tailwind-demo/       → page marketing construite avec Tailwind CSS
 wp-theme-portfolio/  → thème WordPress minimal (index, single, archive, 404)
 api-contacts/        → API REST simulée (recherche, tri, pagination)
@@ -95,6 +96,7 @@ nn/                  → réseau de neurones (backpropagation, Adam, CNN)
 | **Tableau blanc** | [whiteboard/index.html](whiteboard/index.html) | `whiteboard/` |
 | **Réseau de neurones** | [nn/index.html](nn/index.html) | `nn/` |
 | **Analyse CSV (Python)** | `python-analyse/analyse.py` | `python-analyse/` |
+| **API Express (Node.js)** | `cd api-express && npm install && npm start` | `api-express/` |
 | **Tailwind** | [tailwind-demo/index.html](tailwind-demo/index.html) | `tailwind-demo/` |
 | **WordPress** | `wp-theme-portfolio/index.php` | `wp-theme-portfolio/` |
 | **API Contacts** | [api-contacts/index.html](api-contacts/index.html) | `api-contacts/` |

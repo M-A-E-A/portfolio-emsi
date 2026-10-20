@@ -34,7 +34,9 @@ function trouver(id) {
 function valider(corps) {
   const erreurs = [];
   if (!corps.nom || String(corps.nom).trim().length < 2) erreurs.push('nom : au moins 2 caractères');
-  if (!corps.email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(corps.email)) erreurs.push('email : format invalide');
+  // Attention : dans un littéral de regex, un seul antislash suffit.
+  // « \\s » exigerait un antislash littéral dans l'adresse e-mail.
+  if (!corps.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(corps.email)) erreurs.push('email : format invalide');
   if (corps.ville && String(corps.ville).trim().length < 2) erreurs.push('ville : au moins 2 caractères');
   return erreurs;
 }
