@@ -49,7 +49,8 @@ nn/                  → réseau de neurones (backpropagation, Adam, CNN)
   - `aurore` — les quatre taches dérivent et changent d'échelle
   - `soie` / `ruban` — les nappes glissent et respirent
   - `grille` — le quadrillage rampe (calque `.trame`)
-  - `contours` — les courbes de niveau défilent (calque `.topo`)
+  - `contours` — deux roses de lignes de niveau **tournent** en sens opposés, plus un
+    balayage type radar (calques `.topo-1`, `.topo-2`, `.topo-rayon`)
   - `plat` — trois plans de lumière dérivent (calques `.plan`)
   - `constellation` (portfolio) — les points pulsent et suivent le curseur
 - **Le fond n'est PAS gelé par `prefers-reduced-motion`** : c'est un écoulement

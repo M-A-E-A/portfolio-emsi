@@ -151,24 +151,42 @@
 }
 
 /* ---------------------------------------------------------------------
-   Variante « contours » : cartes topographiques.
-   Les anneaux vivent sur un calque enfant (.topo) deplace en transform.
+   Variante « contours » : deux roses de lignes de niveau qui TOURNENT.
+
+   Les anneaux etant concentriques, les deplacer ne faisait que les
+   faire glisser. Les faire tourner autour d'un point excentre les fait
+   ORBITER : on voit les cercles tourner, pas translater. La rotation se
+   fait sur deux roses en sens opposes, plus un balayage type radar tres
+   discret qui rend le mouvement immediatement lisible.
    --------------------------------------------------------------------- */
 .fond-anime[data-fond="contours"] {
   background: var(--ciel-haut);
   background-image: radial-gradient(90% 80% at 70% -12%, var(--halo-a), transparent 65%);
   background-size: 130% 130%;
   background-repeat: no-repeat;
-  animation: lueurs 20s ease-in-out infinite alternate !important;
 }
-.topo {
+.topo-1,
+.topo-2,
+.topo-rayon {
   position: absolute;
   inset: -30%;
-  background-image:
-    repeating-radial-gradient(circle at 26% 34%, transparent 0 17px, var(--contour) 17px 18px),
-    repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px);
   will-change: transform;
-  animation: topo 14s linear infinite !important;
+}
+.topo-1 {
+  background-image: repeating-radial-gradient(circle at 26% 34%, transparent 0 17px, var(--contour) 17px 18px);
+  animation: tourner 46s linear infinite !important;
+}
+.topo-2 {
+  background-image: repeating-radial-gradient(circle at 82% 76%, transparent 0 23px, var(--contour) 23px 24px);
+  animation: tourner-inverse 68s linear infinite !important;
+}
+.topo-rayon {
+  background-image: conic-gradient(from 0deg,
+    transparent 0 17deg,
+    var(--contour) 17deg 17.7deg,
+    transparent 17.7deg 36deg);
+  opacity: .55;
+  animation: tourner 92s linear infinite !important;
 }
 
 /* ---------------------------------------------------------------------
@@ -227,9 +245,14 @@
   from { transform: translate3d(0, 0, 0); }
   to   { transform: translate3d(144px, 72px, 0); }
 }
-@keyframes topo {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(160px, 80px, 0); }
+/* Rotation des roses de lignes de niveau : un tour complet par cycle. */
+@keyframes tourner {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes tourner-inverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
 }
 @keyframes lueurs {
   from { background-position: 0 0, 0 0; }

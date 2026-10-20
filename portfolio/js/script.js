@@ -429,8 +429,10 @@
       // Le quadrillage est porte par un calque enfant deplace en transform.
       fond.appendChild( element( 'span', 'trame' ) );
     } else if ( id === 'contours' ) {
-      // Les anneaux, eux aussi, sur un calque enfant.
-      fond.appendChild( element( 'span', 'topo' ) );
+      // Deux roses de lignes de niveau qui tournent, plus un balayage.
+      [ 'topo-1', 'topo-2', 'topo-rayon' ].forEach( function ( c ) {
+        fond.appendChild( element( 'span', c ) );
+      } );
     } else if ( id === 'plat' ) {
       [ 'plan-1', 'plan-2', 'plan-3' ].forEach( function ( c ) {
         fond.appendChild( element( 'span', 'plan ' + c ) );

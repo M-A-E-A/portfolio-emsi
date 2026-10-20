@@ -61,7 +61,8 @@
     } else if (fond === 'grille') {
       html += '<span class="trame"></span>';
     } else if (fond === 'contours') {
-      html += '<span class="topo"></span>';
+      // Deux roses de lignes de niveau qui tournent, plus un balayage.
+      html += '<span class="topo-1"></span><span class="topo-2"></span><span class="topo-rayon"></span>';
     } else if (fond === 'plat') {
       html += '<span class="plan plan-1"></span><span class="plan plan-2"></span>'
         + '<span class="plan plan-3"></span>';
