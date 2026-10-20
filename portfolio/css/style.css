@@ -198,9 +198,10 @@ header {
   transform-style: preserve-3d;
   will-change: transform;
   /* Deux tours, puis un repos de cinq secondes, puis deux tours…
-     Le cycle fait 12 s : 3,5 s de rotation rapide, 3,5 s de freinage,
-     et 5 s de cooldown. */
-  animation: m3-tourne 12s infinite !important;
+     Le cycle fait 11 s : 3,5 s de rotation rapide (620 degrés, soit
+     177 deg/s), 2,5 s de freinage sur les 110 derniers degrés, et
+     5 s de cooldown. */
+  animation: m3-tourne 11s infinite !important;
 }
 .logo-couche {
   position: absolute;
@@ -214,10 +215,10 @@ header {
 }
 
 /* Deux tours complets en trois temps :
-   1. une phase RAPIDE, a vitesse constante, qui fait les 540 premiers
+   1. une phase RAPIDE, a vitesse constante, qui fait les 620 premiers
       degres en 3,5 s — le pave part d'un coup et tourne vraiment ;
-   2. un FREINAGE, ou les 180 derniers degres se font lentement, la
-      courbe ease-out cassant franchement la vitesse a l'approche de l'arret ;
+   2. un FREINAGE, ou les 110 derniers degres se font lentement, la
+      courbe cassant franchement la vitesse a l'approche de l'arret ;
    3. un REPOS de cinq secondes, avant que le cycle ne recommence. */
 @keyframes m3-tourne {
   0% {
@@ -225,15 +226,15 @@ header {
     /* phase rapide : vitesse constante */
     animation-timing-function: linear;
   }
-  29.17% {
-    transform: rotateY(540deg);
-    /* Freinage : la pente initiale de la courbe (0,6 / 0,2 = 3) est
+  31.82% {
+    transform: rotateY(620deg);
+    /* Freinage : la pente initiale de la courbe (0,66 / 0,15 = 4,4) est
        exactement celle de la phase rapide, donc le passage de l'une a
        l'autre ne donne aucun coup d'acceleration. La rotation ralentit
        ensuite jusqu'a l'arret (pente finale nulle). */
-    animation-timing-function: cubic-bezier(.2, .6, .4, 1);
+    animation-timing-function: cubic-bezier(.15, .66, .35, 1);
   }
-  58.33% {
+  54.55% {
     transform: rotateY(720deg);
     animation-timing-function: linear;
   }
