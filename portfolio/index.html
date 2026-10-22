@@ -347,7 +347,7 @@
             </div>
             <p class="projet-desc">Un site marchand complet : catalogue, fiches produit, avis clients, favoris et panier.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p1" data-cible="details-p1">
@@ -366,7 +366,8 @@
               caractéristiques, disponibilité — avec les avis des clients et une note moyenne,
               plus une liste de favoris. Le tout en JavaScript, sans framework : les frais de
               livraison sont calculés et le panier, les avis et les favoris survivent à un
-              rechargement de la page.
+              rechargement. Un serveur Node.js + SQLite prend le relais quand il tourne —
+              catalogue, avis et commandes partent alors en base — sinon tout reste en localStorage.
             </p>
           </div>
         </li>
@@ -380,7 +381,7 @@
             </div>
             <p class="projet-desc">Une API « Contacts » complète : recherche, tri et pagination, avec sa console de test.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p2" data-cible="details-p2">
@@ -398,9 +399,9 @@
               validation des données et vrais codes de statut (200, 201, 204, 400, 404). On peut
               rechercher un contact (sans se soucier des accents), trier par identifiant, nom ou
               ville, et paginer la liste ; les réponses renvoient une enveloppe avec les
-              métadonnées (page, total, pages). L'API est simulée dans la page : elle fonctionne
-              sans serveur et se teste depuis une console intégrée, qui affiche la réponse, le
-              statut et la durée.
+              métadonnées (page, total, pages). L'API tourne sur Node.js + SQLite ; ouverte
+              sans serveur, elle bascule sur un simulateur localStorage et se teste toujours
+              depuis la console intégrée, qui affiche la réponse, le statut et la durée.
             </p>
           </div>
         </li>
@@ -414,7 +415,7 @@
             </div>
             <p class="projet-desc">Des messages instantanés entre les onglets, avec réactions, réponses citées et édition.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>BroadcastChannel</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>BroadcastChannel</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p3" data-cible="details-p3">
@@ -432,7 +433,8 @@
               à un message avec un emoji, répondre en citant le message d'origine et modifier son
               propre message (marqué « modifié »). Chaque message est diffusé aux autres onglets
               via <code>BroadcastChannel</code>, avec un repli sur l'événement
-              <code>storage</code> — et sans aucun serveur.
+              <code>storage</code>. Un serveur Node.js + SQLite avec flux SSE relie aussi
+              plusieurs machines — ou rien du tout, si aucun serveur ne tourne.
             </p>
           </div>
         </li>
@@ -446,7 +448,7 @@
             </div>
             <p class="projet-desc">Un carnet de dépenses avec totaux par catégorie et par mois, budgets et répartition.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>localStorage</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p4" data-cible="details-p4">
@@ -463,8 +465,9 @@
               Ajout et suppression d'une dépense, filtres par mois et par catégorie, graphique
               des 6 derniers mois et export CSV. On fixe un budget mensuel par catégorie : chaque
               jauge signale l'approche du plafond puis son dépassement, et un graphique en anneau
-              montre la répartition du mois. Les données restent dans le navigateur
-              (<code>localStorage</code>), sans base de données ni compte à créer.
+              montre la répartition du mois. Sans compte à créer : les données vivent dans une
+              base SQLite dès que le serveur Node tourne, ou dans le navigateur
+              (<code>localStorage</code>) sinon.
             </p>
           </div>
         </li>
@@ -478,7 +481,7 @@
             </div>
             <p class="projet-desc">Une carte interactive pour placer, déplacer et filtrer des lieux, sans bibliothèque.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>SVG</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>SVG</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p5" data-cible="details-p5">
@@ -510,7 +513,7 @@
             </div>
             <p class="projet-desc">Un quiz à choix multiples, par thème et difficulté, avec un score commenté et une révision des erreurs.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>localStorage</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p6" data-cible="details-p6">
@@ -527,8 +530,8 @@
               12 questions tirées au hasard, correction immédiate avec explication, barre de
               progression et récapitulatif à la fin. On choisit un thème et une difficulté qui
               règle le temps par question, et un mode « Revoir mes erreurs » rejoue les questions
-              ratées. Le meilleur score est conservé dans le navigateur
-              (<code>localStorage</code>).
+              ratées. Le meilleur score est enregistré en base SQLite côté serveur, ou dans le
+              navigateur (<code>localStorage</code>) sans serveur.
             </p>
           </div>
         </li>
@@ -574,7 +577,7 @@
             </div>
             <p class="projet-desc">Un moteur SQL écrit à la main : analyse lexicale, arbre syntaxique, puis exécution réelle.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>localStorage</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p8" data-cible="details-p8">
@@ -593,7 +596,8 @@
               WHERE, GROUP BY, HAVING, ORDER BY, DISTINCT et LIMIT, jointures internes ou à
               gauche, agrégats, puis INSERT, UPDATE, DELETE et CREATE TABLE. L'erreur s'affiche
               à la ligne et à la colonne exactes, et la requête se déroule en trois panneaux —
-              jetons, arbre, phases d'exécution.
+              jetons, arbre, phases d'exécution. L'état de la base se persiste en SQLite dès
+              que le serveur Node est lancé, en localStorage sinon.
             </p>
           </div>
         </li>
@@ -672,7 +676,7 @@
             </div>
             <p class="projet-desc">Vraie API REST en Express.js : routes CRUD, validation, pagination, tri, recherche et codes HTTP réels.</p>
             <ul class="stack">
-              <li>Node.js</li><li>Express</li><li>JavaScript</li><li>REST</li><li>JSON</li>
+              <li>Node.js</li><li>Express</li><li>JavaScript</li><li>REST</li><li>JSON</li><li>SQLite</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p11" data-cible="details-p11">
@@ -692,8 +696,9 @@
               Une API complète de gestion de contacts, avec GET, POST, PUT et DELETE,
               recherche, tri, pagination, validation des entrées et codes HTTP réels
               (200, 201, 204, 400, 404, 500). Middleware de journalisation et
-              gestionnaire d'erreurs global. Données en mémoire : l'API se lance avec
-              <code>npm install && npm start</code>, sans base de données. C'est la
+              gestionnaire d'erreurs global. Les contacts sont persistés en base SQLite
+              (<code>node:sqlite</code>, aucune dépendance de plus) : l'API se lance avec
+              <code>npm install && npm start</code> et survit aux redémarrages. C'est la
               preuve réelle derrière la compétence Node.js &amp; Express.
             </p>
           </div>
@@ -869,7 +874,7 @@
             </div>
             <p class="projet-desc">Proof-of-work SHA-256, arbre de Merkle, signatures ECDSA et portefeuille — une chaîne de blocs écrite à la main.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p17" data-cible="details-p17">
@@ -883,7 +888,7 @@
               </a>
             </div>
             <p class="projet-details" id="details-p17" hidden>
-              Proof-of-work SHA-256, arbre de Merkle, signatures ECDSA et portefeuille — une chaîne de blocs écrite à la main.
+              Proof-of-work SHA-256, arbre de Merkle, signatures ECDSA et portefeuille — une chaîne de blocs écrite à la main, persistée en SQLite côté serveur (le portefeuille, lui, ne quitte jamais le navigateur).
             </p>
           </div>
         </li>
@@ -923,7 +928,7 @@
             </div>
             <p class="projet-desc">Dessiner à plusieurs en temps réel : les opérations sont incrémentales et commutatives — la propriété d’un CRDT.</p>
             <ul class="stack">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li>
             </ul>
             <div class="projet-actions">
               <button class="lien" type="button" aria-expanded="false" aria-controls="details-p19" data-cible="details-p19">
@@ -937,7 +942,7 @@
               </a>
             </div>
             <p class="projet-details" id="details-p19" hidden>
-              Dessiner à plusieurs en temps réel : les opérations sont incrémentales et commutatives — la propriété d’un CRDT.
+              Dessiner à plusieurs en temps réel : les opérations sont incrémentales et commutatives — la propriété d’un CRDT. Synchronisé via <code>BroadcastChannel</code> entre onglets, ou via serveur Node.js + SQLite et flux SSE entre machines.
             </p>
           </div>
         </li>

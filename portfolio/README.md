@@ -150,9 +150,44 @@ directement, en double-cliquant son `index.html` (aucun serveur n'est requis).
 Chaque application mémorise ses données dans le navigateur (`localStorage`) :
 le panier, les contacts, les messages, les dépenses, les lieux, le meilleur
 score, les réglages de visualisation et la base de démonstration sont conservés
-d'une visite à l'autre.
-Aucune donnée n'est envoyée à un serveur : tout se passe côté client. Le
-contenu des projets (articles, contacts, lieux…) est un jeu de démonstration.
+d'une visite à l'autre. Le contenu des projets (articles, contacts, lieux…) est
+un jeu de démonstration.
+
+## Mode full-stack (10 applications sur 20)
+
+Dix applications existent aussi en version full-stack : une API écrite en
+Node.js natif (`node:http`) et une vraie base **SQLite** (`node:sqlite`),
+**zéro dépendance npm**, lancée depuis le dossier de l'application :
+
+```bash
+cd api-contacts
+node server.js        # → http://localhost:3101
+```
+
+| Application | Dossier | Port |
+|-------------|---------|------|
+| API « Contacts » | `api-contacts/` | 3101 |
+| Suivi de dépenses | `suivi-depenses/` | 3102 |
+| Boutique « Souk » | `boutique-souk/` | 3103 |
+| Messagerie (SSE) | `messagerie-temps-reel/` | 3104 |
+| Carte des points d'intérêt | `carte-points-interet/` | 3105 |
+| Quiz | `quiz-culture-generale/` | 3106 |
+| Mini-SGBD | `mini-sgbd/` | 3107 |
+| Blockchain | `chain/` | 3108 |
+| Tableau blanc (SSE) | `whiteboard/` | 3109 |
+| API Express | `api-express/` | 3000 (`npm install && npm start`) |
+
+Le mode **double** est la règle : ouverte en `file://` ou servie statiquement,
+chaque application détecte l'absence de backend (en-tête `X-Serveur` posé par
+`serveur/commun.js`) et repasse automatiquement sur `localStorage` — mêmes
+écrans, mêmes fonctionnalités, mêmes messages. L'interface de l'API
+« Contacts » affiche le moteur réellement utilisé (Node.js · node:sqlite ou
+localStorage).
+
+Les bases sont écrites dans des dossiers `donnees*` placés à la racine du
+dépôt, ignorés par Git et jamais servis en statique. Spécification complète
+dans `serveur/MODELE.md`, bibliothèque serveur partagée dans
+`serveur/commun.js`, détection côté client dans `shared/api-client.js`.
 
 ## Interactions JavaScript (10)
 

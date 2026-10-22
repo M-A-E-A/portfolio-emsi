@@ -107,15 +107,16 @@
 
     <p class="stack-titre">Technologies</p>
     <ul class="stack">
-      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>localStorage</li>
+      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>localStorage</li>
     </ul>
 
     <section class="bloc">
       <h2>Le point de départ</h2>
       <p>
-        Je cherchais un projet utile au quotidien et entièrement côté navigateur : pas de
-        serveur, pas de compte à créer, et des données qui restent sur l'appareil. Le suivi
-        de dépenses s'y prêtait bien.
+        Je cherchais un projet utile au quotidien et sans compte à créer, avec des
+        données qui restent sur l'appareil. Le suivi de dépenses s'y prêtait bien —
+        et l'app s'est dotée depuis d'un repli serveur Node.js + SQLite, tout en
+        gardant localStorage quand aucun serveur ne tourne.
       </p>
       <p>
         C'était aussi l'occasion de travailler la logique pure plutôt que l'affichage :
@@ -140,7 +141,7 @@
         <li>Graphique des 6 derniers mois, chaque barre décrivant son mois</li>
         <li>Filtres par mois et par catégorie, combinables</li>
         <li>Export des dépenses au format CSV</li>
-        <li>Données conservées dans le navigateur (<code>localStorage</code>)</li>
+        <li>Données persistées en base SQLite côté serveur, avec repli <code>localStorage</code> hors serveur</li>
         <li>Budget mensuel par catégorie, avec jauge qui signale l'approche du plafond puis le dépassement</li>
         <li>Graphique en anneau de la répartition du mois, avec sa légende et ses pourcentages</li>
       </ul>
@@ -240,7 +241,8 @@
       <h2>Ce que j'en retiens</h2>
       <p>
         J'y ai travaillé la logique pure en JavaScript : filtrer, additionner, regrouper.
-        Et j'ai appris à structurer des données côté client, sans base de données.
+        Et j'ai appris à structurer des données — d'abord côté client, puis dans une
+        vraie base SQLite avec une API REST en Node.js.
       </p>
     </section>
 

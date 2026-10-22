@@ -18,6 +18,7 @@
 
   <link rel="stylesheet" href="css/style.css">
   <script src="../shared/theme.js" defer></script>
+  <script src="../shared/api-client.js" defer></script>
   <script src="js/script.js" defer></script>
   <link rel="stylesheet" href="../shared/themes.css">
 </head>
@@ -240,11 +241,13 @@ ORDER BY moyenne DESC;</textarea>
           ni vrai ni faux.
         </p>
         <p class="avertissement">
-          <strong>À savoir :</strong> il n'y a pas de serveur, pas de réseau, et vos
-          requêtes ne sont envoyées nulle part. Les tables vivent dans le
-          <code>localStorage</code> de votre navigateur, et le contenu de démonstration
-          est un jeu d'exemple écrit pour cette page. Ce moteur est une réalisation
-          pédagogique, pas un SGBD de production.
+          <strong>À savoir :</strong> le moteur — analyse, arbre, exécution — s'exécute
+          entièrement dans votre navigateur, et le contenu de démonstration est un jeu
+          d'exemple écrit pour cette page. En mode local, les tables vivent dans le
+          <code>localStorage</code> de votre navigateur, sans réseau ni serveur. En mode
+          full-stack (lancement via <code>node server.js</code>), seul l'état du moteur
+          (base + historique) est persisté dans une base SQLite : le moteur lui-même ne
+          bouge pas. Ce moteur est une réalisation pédagogique, pas un SGBD de production.
         </p>
       </div>
     </section>

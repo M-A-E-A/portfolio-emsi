@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>API REST « Contacts » — Abderrahmane El ADNANI</title>
-  <meta name="description" content="API REST « Contacts » : une API simulée dans le navigateur, avec recherche, tri, pagination et console de test. Projet d'Abderrahmane El ADNANI.">
+  <meta name="description" content="API REST « Contacts » en Node.js et SQLite : recherche, tri, pagination et console de test, avec mode local hors serveur. Projet d'Abderrahmane El ADNANI.">
   <meta name="author" content="Abderrahmane El ADNANI">
   <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
@@ -107,7 +107,7 @@
 
     <p class="stack-titre">Technologies</p>
     <ul class="stack">
-      <li>HTML</li><li>CSS</li><li>JavaScript</li>
+      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li>
     </ul>
 
     <section class="bloc">
@@ -139,7 +139,9 @@
         <li>Routes <code>GET</code>, <code>POST</code>, <code>PUT</code> et <code>DELETE</code></li>
         <li>Codes de statut réels : 200, 201, 204, 400, 404</li>
         <li>Validation des champs (nom et e-mail obligatoires) avant écriture</li>
-        <li>Délai réseau simulé pour rendre l'attente réaliste</li>
+        <li>Délai réseau simulé pour rendre l'attente réaliste en mode local</li>
+        <li>Bascule automatique : serveur Node.js + SQLite quand il répond, simulateur en localStorage sinon</li>
+        <li>Persistance réelle en base SQLite, avec recherche insensible aux accents gérée en SQL</li>
         <li>Console de test : choix de la route, corps JSON, statut et durée de la réponse</li>
         <li>Tableau des contacts avec création, modification et suppression en deux temps</li>
         <li>Retour au jeu de données d'origine en un clic</li>

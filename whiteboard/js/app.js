@@ -3,6 +3,8 @@
    ---------------------------------------------------------------------
    La synchronisation passe par un BroadcastChannel : chaque onglet diffuse
    ses opérations. Un pair qui arrive demande l'état complet et fusionne.
+   En mode full-stack (serveur Node + SQLite), le tableau est persisté et
+   les opérations sont relayées en plus par Server-Sent Events (/api/flux).
 
    Le rendu est volontairement simple : on redessine tout le tableau à
    chaque changement. À cette échelle (quelques centaines d'éléments),
@@ -42,6 +44,7 @@
     operations: [],      // journal des opérations (pour le test de convergence)
     curseurs: new Map(), // id → {x, y, nom}
     presence: new Map(),
+    moteurDistant: false // true si un serveur Node + SQLite répond à la sonde
   };
 
   /* ---------------------------------------------------------------- */
@@ -122,6 +125,65 @@
   function nomLisible(auteur) {
     const info = etat.presence.get(auteur);
     return info ? info.nom : auteur;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Mode full-stack (serveur Node + SQLite + SSE)                      */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * Quand un serveur Node répond à la sonde (en-tête X-Serveur), le
+   * tableau est persisté dans une vraie base SQLite :
+   *  • à l'arrivée, GET /api/etat hydrate le CRDT (fusion, jamais réécriture) ;
+   *  • chaque opération publiée est aussi PUT côté serveur (upsert) ;
+   *  • le flux SSE /api/flux retransmet chaque opération aux autres
+   *    clients — qui l'appliquent par le chemin CRDT existant.
+   * Le BroadcastChannel reste actif : les onglets d'un même navigateur
+   * se synchronisent comme avant, en plus du serveur. Sans serveur
+   * (file:// ou hébergement statique), rien ne change.
+   */
+  async function brancherServeur() {
+    etat.moteurDistant = true;
+
+    // Hydratation : on fusionne l'état complet au lieu de repartir de zéro.
+    const etatInitial = await window.LumeAPI.appeler('GET', 'api/etat');
+    if (etatInitial.statut === 200 && etatInitial.corps && Array.isArray(etatInitial.corps.donnees)) {
+      for (const element of etatInitial.corps.donnees) {
+        etat.tableau.fusionner({ element });
+        etat.operations.push(element);
+      }
+      redessiner();
+      journaliser('Tableau chargé depuis le serveur (' + etatInitial.corps.donnees.length + ' élément(s)).', 'succes');
+    }
+
+    // Flux temps réel.
+    if (typeof EventSource !== 'function') return;
+    const flux = new EventSource('api/flux');
+
+    flux.addEventListener('operation', (e) => {
+      let paquet = null;
+      try { paquet = JSON.parse(e.data); } catch (err) { return; }
+      if (!paquet || !paquet.element) return;
+      if (paquet.auteur === etat.auteur) return; // nos opérations nous reviennent en écho : la fusion est déjà faite
+      etat.tableau.fusionner(paquet);
+      etat.operations.push(paquet.element);
+      redessiner();
+      journaliser('Opération reçue de ' + nomLisible(paquet.auteur) + ' (serveur).', 'info');
+    });
+
+    // « état » : rechargement complet (réinitialisation du tableau partagé).
+    flux.addEventListener('etat', () => { rechargerEtat(); });
+  }
+
+  /** Recharge l'état complet depuis le serveur et le fusionne. */
+  async function rechargerEtat() {
+    try {
+      const reponse = await window.LumeAPI.appeler('GET', 'api/etat');
+      if (reponse.statut !== 200 || !reponse.corps || !Array.isArray(reponse.corps.donnees)) return;
+      for (const element of reponse.corps.donnees) etat.tableau.fusionner({ element });
+      redessiner();
+      journaliser('État complet reçu du serveur (' + reponse.corps.donnees.length + ' élément(s)).', 'info');
+    } catch (e) { /* ignoré */ }
   }
 
   /* ---------------------------------------------------------------- */
@@ -334,8 +396,16 @@
 
   /** Diffuse une opération vers les autres pairs. */
   function publier(element) {
-    etat.operations.push(element.serialiser());
-    diffuser({ type: 'operation', auteur: etat.auteur, element: element.serialiser() });
+    const serialise = element.serialiser();
+    etat.operations.push(serialise);
+    diffuser({ type: 'operation', auteur: etat.auteur, element: serialise });
+
+    /* Mode full-stack : l'opération est aussi persistée côté serveur
+       (upsert CRDT), qui la retransmet à tous les autres clients en SSE. */
+    if (etat.moteurDistant) {
+      window.LumeAPI.appeler('PUT', 'api/elements/' + encodeURIComponent(element.id), serialise)
+        .catch(() => { /* la UI reste correcte même si le PUT échoue */ });
+    }
   }
 
   /**
@@ -544,7 +614,7 @@
   /* Démarrage                                                         */
   /* ---------------------------------------------------------------- */
 
-  function demarrer() {
+  async function demarrer() {
     etat.auteur = auteurAleatoire();
     etat.tableau = new CRDT.Tableau(etat.auteur);
     global.WB = etat; // utile pour l'inspection depuis la console
@@ -555,6 +625,14 @@
     $('#moi').textContent = 'Vous êtes « ' + nomCourt() + ' »';
     majPresence();
     redessiner();
+
+    // Détection du moteur : un serveur Node (node:http + node:sqlite)
+    // répond-il ? Sinon, on reste en BroadcastChannel seul.
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) {
+      try { await brancherServeur(); }
+      catch (e) { journaliser('Serveur injoignable : fonctionnement local.', 'erreur'); etat.moteurDistant = false; }
+    }
 
     diffuser({ type: 'presence', auteur: etat.auteur, nom: nomCourt() });
     diffuser({ type: 'etat', auteur: etat.auteur, elements: etat.tableau.serialiser() });

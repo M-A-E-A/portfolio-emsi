@@ -36,20 +36,22 @@
      refusé par le navigateur (certains contextes « file:// »). */
   let cache = null;
 
-  function charger() {
+  let charger = function () {
     if (cache) return cache;
     const donnees = stockage.lire(CLE, null);
     cache = Array.isArray(donnees) ? donnees : EXEMPLES.map(copie);
     stockage.ecrire(CLE, cache);
     return cache;
-  }
-  function sauvegarder(liste) {
+  };
+  let sauvegarder = function (liste) {
     cache = liste;
     stockage.ecrire(CLE, liste);
-  }
-  function reinitialiserDonnees() {
+  };
+  /* Variable (et non fonction) : en mode full-stock, elle est remplacée
+     par une requête POST /api/reinitialiser vers le serveur. */
+  let reinitialiserDonnees = function () {
     sauvegarder(EXEMPLES.map(copie));
-  }
+  };
 
   /* ---------------------------------------------------------
      2. Le « serveur » simulé
@@ -265,6 +267,72 @@
     }
   };
 
+  /* ---------------------------------------------------------
+     2bis. Moteur distant (mode full-stack)
+     Quand un serveur Node (node:http + node:sqlite) répond à la
+     sonde /api/sante, les six points d'API ci-dessus sont remplacés
+     par de véritables requêtes HTTP. La forme des réponses
+     ({ statut, corps }) est identique : le reste de l'application —
+     console, annuaire, journal — fonctionne sans modification.
+     Sans serveur (file:// ou hébergement statique), tout reste en
+     localStorage : le mode local n'est jamais dégradé.
+     --------------------------------------------------------- */
+  let moteurDistant = false;
+
+  function brancherMoteurDistant() {
+    moteurDistant = true;
+    const base = 'api/contacts';
+
+    /* Construction de la query string à partir des paramètres acceptés. */
+    function construireQuery(p) {
+      const qs = new URLSearchParams();
+      ['q', 'tri', 'sens', 'page', 'limit'].forEach(function (cle) {
+        if (p[cle] !== undefined && p[cle] !== null && String(p[cle]) !== '') qs.set(cle, p[cle]);
+      });
+      const chaine = qs.toString();
+      return chaine ? '?' + chaine : '';
+    }
+
+    api.lister = function (parametres) {
+      const p = typeof parametres === 'string'
+        ? analyserParametres(parametres)
+        : (parametres && typeof parametres === 'object' ? parametres : {});
+      return window.LumeAPI.appeler('GET', base + construireQuery(p));
+    };
+    api.lire = function (id) {
+      return window.LumeAPI.appeler('GET', base + '/' + encodeURIComponent(id));
+    };
+    api.creer = function (donnees) {
+      return window.LumeAPI.appeler('POST', base, donnees);
+    };
+    api.modifier = function (id, donnees) {
+      return window.LumeAPI.appeler('PUT', base + '/' + encodeURIComponent(id), donnees);
+    };
+    api.patcher = function (id, donnees) {
+      return window.LumeAPI.appeler('PATCH', base + '/' + encodeURIComponent(id), donnees);
+    };
+    api.supprimer = function (id) {
+      return window.LumeAPI.appeler('DELETE', base + '/' + encodeURIComponent(id));
+    };
+
+    /* La réinitialisation vide la vraie base puis réinsère les exemples. */
+    reinitialiserDonnees = function () {
+      return window.LumeAPI.appeler('POST', 'api/reinitialiser');
+    };
+  }
+
+  /* Met à jour l'indicateur de moteur affiché en intro. */
+  function afficherMoteur() {
+    const chipStockage = document.getElementById('chip-stockage');
+    const chipMoteur = document.getElementById('chip-moteur');
+    if (moteurDistant) {
+      if (chipStockage) chipStockage.innerHTML = 'base <b>SQLite</b>';
+      if (chipMoteur) chipMoteur.innerHTML = 'moteur <b>Node.js · node:sqlite</b>';
+    } else {
+      if (chipMoteur) chipMoteur.innerHTML = 'moteur <b>local (localStorage)</b>';
+    }
+  }
+
   /* Point de passage unique vers le serveur simulé : la console, l'annuaire
      et le rejeu après une mutation passent tous par ici. On y mesure la durée
      et l'on trace la requête au journal, si bien que les deux vues ne peuvent
@@ -283,19 +351,26 @@
     return motif.indexOf(':id') === -1 ? motif : motif.replace(':id', String(args[0]));
   }
 
-  Object.keys(POINTS_API).forEach(function (cle) {
-    const point = POINTS_API[cle];
-    const brut = api[cle];
-    api[cle] = function () {
-      const args = Array.prototype.slice.call(arguments);
-      const debut = performance.now();
-      return brut.apply(api, args).then(function (reponse) {
-        consignerRequete(point.methode, cheminAppele(point.motif, args), reponse.statut,
-          Math.round(performance.now() - debut));
-        return reponse;
-      });
-    };
-  });
+  /* Enveloppe les 6 points d'API avec la journalisation des requêtes.
+     Appelée UNE FOIS dans init(), après la détection du moteur, si
+     bien qu'elle enveloppe soit le simulateur local, soit les
+     requêtes HTTP réelles — le journal reste alimenté dans les deux
+     cas. Double enrobage évité : on ne l'appelle qu'une seule fois. */
+  function envelopperJournal() {
+    Object.keys(POINTS_API).forEach(function (cle) {
+      const point = POINTS_API[cle];
+      const brut = api[cle];
+      api[cle] = function () {
+        const args = Array.prototype.slice.call(arguments);
+        const debut = performance.now();
+        return Promise.resolve(brut.apply(api, args)).then(function (reponse) {
+          consignerRequete(point.methode, cheminAppele(point.motif, args), reponse.statut,
+            Math.round(performance.now() - debut));
+          return reponse;
+        });
+      };
+    });
+  }
 
   /* ---------------------------------------------------------
      3. Utilitaires DOM (construction sûre : jamais d'innerHTML)
@@ -821,7 +896,7 @@
   }
 
   async function surReinitialisation() {
-    reinitialiserDonnees();
+    await reinitialiserDonnees();
     suppressionEnAttente = null;
     if (idEnEdition !== null) arreterEdition();
     etat = Object.assign({}, ETAT_DEFAUT);
@@ -965,6 +1040,13 @@
      Démarrage
      --------------------------------------------------------- */
   async function init() {
+    /* Détection du moteur : si un serveur Node répond, on bascule en
+       mode full-stock (SQLite) ; sinon on reste en localStorage. */
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) brancherMoteurDistant();
+    envelopperJournal();  // journalise le moteur effectivement retenu
+    afficherMoteur();
+
     brancherTheme();
     document.getElementById('annee').textContent = new Date().getFullYear();
 
@@ -976,7 +1058,7 @@
     synchroniserControles();  // aligne tri, sens et taille de page sur l'état initial
     afficherJournal();        // journal vide au premier rendu
 
-    charger();               // garantit la présence des exemples
+    if (!moteurDistant) charger();   // en mode local, garantit la présence des exemples
     await rafraichirTableau();
     await envoyerRequete();  // la console affiche d'emblée GET /contacts
   }

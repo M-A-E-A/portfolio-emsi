@@ -1,6 +1,9 @@
 /* ======================================================================
    Suivi de dépenses — logique de l'application (JavaScript classique)
-   Aucun module, aucune dépendance : fonctionne en file://
+   Aucun module, aucune dépendance : fonctionne en file://.
+   Mode full-stack facultatif (voir § 1 bis) : si un serveur Node
+   (node:http + node:sqlite) répond à la sonde de shared/api-client.js,
+   les dépenses et les budgets vivent dans une vraie base SQLite.
    ====================================================================== */
 
 (function () {
@@ -14,6 +17,77 @@
     ecrire(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) {} },
     supprimer(cle) { try { localStorage.removeItem(cle); } catch (e) {} }
   };
+
+  /* ------------------------------------------------------------------
+     1 bis. Mode full-stack (facultatif, détecté au démarrage)
+     Quand un serveur Node (node:http + node:sqlite) répond à la sonde,
+     les collections passent par l'API REST et chaque écriture est
+     répercutée en HTTP (écriture-transit, § 4 du modèle). Sans serveur —
+     page ouverte en file:// ou servie en statique — tout reste en
+     localStorage : le mode local n'est jamais dégradé.
+     ------------------------------------------------------------------ */
+
+  /* Table de correspondance : clé localStorage -> chemin REST.
+     Le thème (« depenses-theme ») reste volontairement local. */
+  const SERVEUR = {
+    depenses: 'api/depenses',
+    'depenses-budgets': 'api/budgets'
+  };
+
+  /* Cache mémoire : l'application est synchrone, le serveur est asynchrone.
+     En mode full-stack, les collections préchargées vivent ici ; la couche
+     `stockage` les lira de façon synchrone, avant de retomber sur
+     localStorage pour tout ce qui n'est pas servi (le thème). */
+  const caches = {};
+
+  /* Préchargement puis branchement de l'écriture-transit (une seule fois,
+     avant le premier affichage). */
+  async function brancherModeServeur() {
+    // 1. Préchargement : la base est la source de vérité. Une réponse
+    //    autre qu'un tableau (serveur statique qui stamp X-Serveur, API
+    //    absente…) signifie qu'aucun backend n'est branché : on reste en
+    //    localStorage, exactement comme en file://.
+    const reponseDepenses = await window.LumeAPI.appeler('GET', SERVEUR.depenses);
+    if (reponseDepenses.statut !== 200 || !reponseDepenses.corps || !Array.isArray(reponseDepenses.corps.donnees)) {
+      window.LumeAPI.actif = false;
+      return;
+    }
+    caches[CLE_DEPENSES] = reponseDepenses.corps.donnees;
+    const reponseBudgets = await window.LumeAPI.appeler('GET', SERVEUR['depenses-budgets']);
+    if (reponseBudgets.statut === 200 && reponseBudgets.corps && typeof reponseBudgets.corps.donnees === 'object') {
+      caches[CLE_BUDGETS] = reponseBudgets.corps.donnees;
+    }
+
+    // 2. Lecture : le cache d'abord, localStorage ensuite.
+    const lireLocal = stockage.lire;
+    stockage.lire = function (cle, defaut) {
+      if (Object.prototype.hasOwnProperty.call(caches, cle)) return caches[cle];
+      return lireLocal(cle, defaut);
+    };
+
+    // 3. Écriture-transit : localStorage + cache, puis PUT sans attendre
+    //    (l'interface reste juste même si la requête échoue).
+    const ecrireLocal = stockage.ecrire;
+    stockage.ecrire = function (cle, valeur) {
+      ecrireLocal(cle, valeur);              // cache + localStorage (file://)
+      if (!SERVEUR[cle]) return;             // thème et clés locales : rien à pousser
+      caches[cle] = valeur;
+      window.LumeAPI.appeler('PUT', SERVEUR[cle], valeur)
+        .catch(function () { /* la UI reste correcte même si le PUT échoue */ });
+    };
+
+    // 4. Suppression : vide la collection côté serveur (budgets sans
+    //    enveloppe, dépendances effacées) — équivalent de PUT avec [] / {}.
+    const supprimerLocal = stockage.supprimer;
+    stockage.supprimer = function (cle) {
+      supprimerLocal(cle);
+      if (!SERVEUR[cle]) return;
+      const vide = cle === CLE_BUDGETS ? {} : [];
+      caches[cle] = vide;
+      window.LumeAPI.appeler('PUT', SERVEUR[cle], vide)
+        .catch(function () { /* la UI reste correcte même si le PUT échoue */ });
+    };
+  }
 
   /* ------------------------------------------------------------------
      2. Constantes
@@ -175,10 +249,12 @@
 
   /* ------------------------------------------------------------------
      6. État de l'application
+     Dépenses et budgets sont lus au démarrage (voir « initialiser »),
+     une fois le moteur de données tranché : cache serveur ou localStorage.
      ------------------------------------------------------------------ */
   const etat = {
-    depenses: chargerDepenses(),
-    budgets: chargerBudgets(),  // { catégorie: montant mensuel }
+    depenses: [],
+    budgets: {},  // { catégorie: montant mensuel }
     categorie: null,   // null = toutes les catégories
     mois: null         // null = tous les mois
   };
@@ -220,7 +296,7 @@
   /* ------------------------------------------------------------------
      8. Lecture des données
      ------------------------------------------------------------------ */
-  function sauver() { stockage.ecrire(CLE_DEPENSES, etat.depenses); }
+  function sauver() { stockage.ecrire(CLE_DEPENSES, etat.depenses); }  // en mode full-stack : écriture-transit vers SQLite
 
   /** Tri : date décroissante, puis id décroissant (les plus récentes d'abord). */
   function depensesTriees() {
@@ -1136,7 +1212,21 @@
   /* ------------------------------------------------------------------
      20. Initialisation
      ------------------------------------------------------------------ */
-  function initialiser() {
+  async function initialiser() {
+    // Détection du moteur : si un serveur Node répond à la sonde, les
+    // données viennent de SQLite ; sinon on reste en localStorage
+    // (page ouverte en file:// ou servie en statique).
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) {
+      try { await brancherModeServeur(); }
+      catch (e) { window.LumeAPI.actif = false; }  // serveur injoignable : mode local
+    }
+
+    // Les données ne sont lues qu'une fois le mode tranché : chargerDepenses
+    // et chargerBudgets passeront par le cache du serveur s'il y en a un.
+    etat.depenses = chargerDepenses();
+    etat.budgets = chargerBudgets();
+
     $('annee').textContent = String(new Date().getFullYear());
 
     appliquerTheme(themeInitial(), false);

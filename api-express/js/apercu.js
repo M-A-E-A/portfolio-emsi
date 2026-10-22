@@ -1,9 +1,14 @@
 /* =====================================================================
-   Aperçu statique de l'API Express.
+   Aperçu de l'API Express — mode double (MODELE.md §4).
    ---------------------------------------------------------------------
-   Ce fichier rejoue, dans le navigateur, la logique de server.js :
-   mêmes données, mêmes filtres, mêmes validations, mêmes codes HTTP.
-   Aucune requête réseau n'est émise : tout se passe en mémoire.
+   • Sans serveur (file:// ou servi statiquement) : ce fichier rejoue,
+     dans le navigateur, la logique de server.js — mêmes données, mêmes
+     filtres, mêmes validations, mêmes codes HTTP, aucune requête réseau.
+   • Avec le serveur Express (localhost:3000) : la détection
+     (shared/api-client.js) bascule les appels vers la vraie API,
+     qui renvoie exactement les mêmes formes de réponse.
+   Le routeur de rejeu ci-dessous n'est jamais modifié : il reste le
+   moteur local de secours.
    ===================================================================== */
 (function (global) {
   'use strict';
@@ -145,6 +150,57 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Mode double : API réelle ou rejeu local (MODELE.md §4)           */
+  /* ---------------------------------------------------------------- */
+
+  /* true uniquement si le serveur Express de cette app a répondu à la
+     sonde ; sinon (file://, serveur statique de test) on garde le rejeu. */
+  let serveurReel = false;
+
+  /* §4.1 — Détection, appelée une seule fois avant le premier affichage.
+     shared/api-client.js pose une requête HEAD et lit l'en-tête
+     X-Serveur. Le serveur statique de test (port 8913) porte aussi cet
+     en-tête : on exige donc le nom du serveur Express de cette app pour
+     basculer en mode réel — sinon on reste, à tort, en mode serveur. */
+  function detecterMode() {
+    if (!window.LumeAPI) return Promise.resolve(false);   // script absent → rejeu
+    return window.LumeAPI.detecter()
+      .then(function () {
+        const nom = window.LumeAPI.nomServeur || '';
+        serveurReel = !!(window.LumeAPI.actif && /express/i.test(nom));
+        if (serveurReel) signalerServeurReel();
+        return serveurReel;
+      })
+      .catch(function () { return false; });              // sonde échouée → rejeu
+  }
+
+  /* §4.5 — Indicateur d'interface : l'encart annonce le moteur
+     effectivement utilisé. Aucun changement de design (mêmes
+     éléments, mêmes styles), uniquement le texte devient exact. */
+  function signalerServeurReel() {
+    const titre = document.querySelector('.encart-titre');
+    const texte = document.querySelector('.encart-texte');
+    if (titre) titre.textContent = 'Connecté au serveur Express';
+    if (texte) {
+      texte.textContent = 'Les réponses ci-dessous viennent du vrai serveur Express et de sa base SQLite ' +
+        '(donnees-express/bdd.sqlite). Ouvrez cette page sans serveur et tout repasse en rejou local, à l\'identique.';
+    }
+  }
+
+  /* Appel réel de l'API : même forme { code, corps } que le routeur de
+     rejeu, donc l'affichage reste strictement le même. */
+  function appelerServeur(methode, chemin, corps) {
+    /* Un GET ou un HEAD ne doit jamais porter de corps (fetch le refuse),
+       et le rejeu local n'en tient pas compte non plus : seules les
+       écritures (POST, PUT, PATCH) en envoient un. */
+    const avecCorps = methode === 'POST' || methode === 'PUT' || methode === 'PATCH';
+    const charge = avecCorps && corps !== null && corps !== undefined ? corps : undefined;
+    return window.LumeAPI.appeler(methode, chemin, charge).then(function (r) {
+      return { code: r.statut, corps: r.corps };
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Interface                                                        */
   /* ---------------------------------------------------------------- */
 
@@ -171,11 +227,15 @@
     }).join('');
   }
 
-  function envoyer(methode, chemin, corps) {
+  /* Envoi d'une requête : réelle (serveur Express) ou rejeuée localement.
+     Le rendu est identique dans les deux cas. */
+  async function envoyer(methode, chemin, corps) {
     const debut = performance.now();
     let resultat;
     try {
-      resultat = traiter(methode, chemin, corps);
+      resultat = serveurReel
+        ? await appelerServeur(methode, chemin, corps)
+        : traiter(methode, chemin, corps);
     } catch (e) {
       resultat = { code: 500, corps: { erreur: 'Erreur interne', message: e.message } };
     }
@@ -259,10 +319,13 @@
   /* Démarrage                                                         */
   /* ---------------------------------------------------------------- */
 
-  function demarrer() {
+  async function demarrer() {
     afficherRoutes();
     brancherUI();
     initialiserTheme();
+    /* §4.1 — la détection précède le premier affichage : les réponses
+       affichées viennent soit de l'API réelle, soit du rejeu local. */
+    await detecterMode();
     envoyer('GET', '/api/contacts', null);
   }
 

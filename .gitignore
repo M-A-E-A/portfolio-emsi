@@ -2,6 +2,12 @@
 node_modules/
 *.log
 
+# Bases de données SQLite (dossiers de données des apps full-stack)
+donnees*
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
 # Build artifacts
 *.min.js
 *.min.css

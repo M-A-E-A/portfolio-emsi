@@ -3,7 +3,10 @@
    Synchronisation entre les onglets d'un même navigateur :
    1) BroadcastChannel("messagerie") quand il existe ;
    2) repli sur l'événement `storage` sinon.
-   Aucun serveur, aucune requête réseau, aucune dépendance externe.
+   En mode full-stack (serveur Node + SQLite), les salons et les messages
+   vivent dans la base et un flux SSE (/api/flux) relaye les changements
+   d'un navigateur à l'autre — le mécanisme local reste intact.
+   Aucune dépendance externe.
    Tout est protégé : l'application fonctionne même si localStorage ou le
    canal de diffusion sont indisponibles (au pire, en mémoire pour l'onglet).
    ========================================================================= */
@@ -542,6 +545,12 @@
           jeton: Date.now() + Math.random()
         }));
       } catch (e) { /* ignoré */ }
+    }
+
+    // En mode serveur, l'indicateur de saisie est aussi relayé par le serveur :
+    // il traverse alors les navigateurs, et pas seulement les onglets.
+    if (moteurDistant && donnees && donnees.type === 'saisie') {
+      window.LumeAPI.appeler('POST', 'api/saisie', donnees).catch(sansErreur);
     }
   }
 
@@ -1772,9 +1781,177 @@
     ];
   }
 
+  /* ---------------------------------------------------------
+     Mode full-stack (serveur Node + SQLite)
+     Quand un serveur Node répond à la sonde (X-Serveur), les deux
+     collections partagées — salons et messages — vivent dans une
+     vraie base SQLite :
+       • lecture  : préchargement dans un cache mémoire, relu
+                    synchrone­ment par la couche `stockage` ;
+       • écriture : écriture-transit (write-through) — à chaque
+                    sauvegarde, le différentiel avec le dernier état
+                    connu du serveur est appliqué en REST (POST /
+                    PUT / DELETE par identifiant) ;
+       • temps réel : un EventSource sur /api/flux reçoit les
+                    événements « message » du serveur ; à chaque
+                    événement on recharge le cache puis on réutilise
+                    la fonction synchroniser() existante.
+     Le mécanisme BroadcastChannel / storage reste intact : les
+     onglets d'un même navigateur se synchronisent comme avant,
+     en plus du serveur. Sans serveur (file://), rien ne change.
+     --------------------------------------------------------- */
+
+  let moteurDistant = false;
+  const cache = { salons: null, messages: null };   // dernière réponse du serveur
+  let miroirSalons = {};    // id → dernier état connu du serveur (pour le diff)
+  let miroirMessages = {};
+
+  function sansErreur() { /* feu-oublie : l'UI reste correcte même si la requête échoue */ }
+
+  function brancherModeServeur() {
+    moteurDistant = true;
+    return rechargerDonnees().then(function () {
+      indexMiroirs();
+      brancherEcritureTransit();
+      ouvrirFluxServeur();
+      afficherMoteur();
+    });
+  }
+
+  // Met le cache à jour avec l'état actuel de la base (source de vérité).
+  function rechargerDonnees() {
+    return Promise.all([
+      window.LumeAPI.appeler('GET', 'api/salons'),
+      window.LumeAPI.appeler('GET', 'api/messages')
+    ]).then(function (reponses) {
+      const rSalons = reponses[0];
+      const rMessages = reponses[1];
+      if (rSalons.statut === 200 && rSalons.corps && Array.isArray(rSalons.corps.donnees)) {
+        cache.salons = rSalons.corps.donnees;
+      }
+      if (rMessages.statut === 200 && rMessages.corps && Array.isArray(rMessages.corps.donnees)) {
+        cache.messages = rMessages.corps.donnees;
+      }
+    });
+    // En cas d'échec, le cache précédent reste servable.
+  }
+
+  // Copie les caches dans les miroirs (comparaison par JSON.stringify).
+  function indexMiroirs() {
+    miroirSalons = {};
+    (cache.salons || []).forEach(function (salon) {
+      if (salon && salon.id) miroirSalons[salon.id] = JSON.parse(JSON.stringify(salon));
+    });
+    miroirMessages = {};
+    (cache.messages || []).forEach(function (message) {
+      if (message && message.id) miroirMessages[message.id] = JSON.parse(JSON.stringify(message));
+    });
+  }
+
+  /* Écriture-transit : le différentiel entre la liste sauvegardée et le
+     dernier état du serveur est traduit en verbes REST par identifiant. */
+  function brancherEcritureTransit() {
+    const ecrireLocal = stockage.ecrire;
+    stockage.ecrire = function (cle, valeur) {
+      ecrireLocal(cle, valeur); // localStorage : le mode file:// reste nourri
+      if (cle === CLE_SALONS) pousserSalons(valeur);
+      else if (cle === CLE_MESSAGES) pousserMessages(valeur);
+    };
+
+    // Les lectures des deux collections partagées viennent du cache serveur.
+    const lireLocal = stockage.lire;
+    stockage.lire = function (cle, defaut) {
+      if (cle === CLE_SALONS && cache.salons) return cache.salons;
+      if (cle === CLE_MESSAGES && cache.messages) return cache.messages;
+      return lireLocal(cle, defaut);
+    };
+  }
+
+  function pousserSalons(liste) {
+    if (!moteurDistant || !Array.isArray(liste)) return;
+    const presents = {};
+    liste.forEach(function (salon) {
+      if (!salon || !salon.id) return;
+      presents[salon.id] = true;
+      const connu = miroirSalons[salon.id];
+      if (!connu) {
+        window.LumeAPI.appeler('POST', 'api/salons', salon).catch(sansErreur);
+      } else if (JSON.stringify(connu) !== JSON.stringify(salon)) {
+        window.LumeAPI.appeler('PUT', 'api/salons/' + encodeURIComponent(salon.id), salon).catch(sansErreur);
+      }
+      miroirSalons[salon.id] = JSON.parse(JSON.stringify(salon));
+    });
+    Object.keys(miroirSalons).forEach(function (id) {
+      if (presents[id]) return;
+      window.LumeAPI.appeler('DELETE', 'api/salons/' + encodeURIComponent(id)).catch(sansErreur);
+      delete miroirSalons[id];
+    });
+  }
+
+  function pousserMessages(liste) {
+    if (!moteurDistant || !Array.isArray(liste)) return;
+    const presents = {};
+    liste.forEach(function (message) {
+      if (!message || !message.id) return;
+      presents[message.id] = true;
+      const connu = miroirMessages[message.id];
+      if (!connu) {
+        window.LumeAPI.appeler('POST', 'api/messages', message).catch(sansErreur);
+      } else if (JSON.stringify(connu) !== JSON.stringify(message)) {
+        window.LumeAPI.appeler('PUT', 'api/messages/' + encodeURIComponent(message.id), message).catch(sansErreur);
+      }
+      miroirMessages[message.id] = JSON.parse(JSON.stringify(message));
+    });
+    Object.keys(miroirMessages).forEach(function (id) {
+      if (presents[id]) return;
+      window.LumeAPI.appeler('DELETE', 'api/messages/' + encodeURIComponent(id)).catch(sansErreur);
+      delete miroirMessages[id];
+    });
+  }
+
+  /* Temps réel serveur : à chaque événement « message » du serveur, on
+     recharge le cache puis on réutilise la synchronisation existante. */
+  function ouvrirFluxServeur() {
+    try {
+      if (typeof EventSource !== 'function') return;
+      const flux = new EventSource('api/flux');
+
+      flux.addEventListener('message', function (evenement) {
+        let donnees = null;
+        try { donnees = JSON.parse(evenement.data); } catch (e) { donnees = { type: 'message' }; }
+        if (!donnees || typeof donnees !== 'object') return;
+
+        if (donnees.type === 'message') {
+          // Les données ont changé ailleurs : on recharge puis on rafraîchit.
+          rechargerDonnees().then(planifierSynchro).catch(sansErreur);
+          return;
+        }
+        traiterSignal(donnees); // « saisie » et compagnie passent par le traitement commun
+      });
+    } catch (e) { /* navigateur sans EventSource : le mode local suffit */ }
+  }
+
+  // Indicateur d'interface : mention du moteur réellement actif.
+  function afficherMoteur() {
+    const aide = document.querySelector('.aide');
+    if (!aide) return;
+    if (moteurDistant) {
+      aide.textContent = 'La synchronisation passe par le serveur Node + SQLite : ' +
+        'ouvrez cette page dans un second onglet ou un autre navigateur, ' +
+        'tout se met à jour en direct.';
+    }
+  }
+
   /* ------------------------------ Initialisation ------------------------------ */
 
-  function initialiser() {
+  async function initialiser() {
+    // Détection du moteur : si un serveur Node répond, on bascule en mode
+    // full-stock (SQLite + SSE) ; sinon on reste en localStorage.
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) {
+      try { await brancherModeServeur(); } catch (e) { /* on reste en mode local */ }
+    }
+
     // Année du pied de page
     if (el.annee) el.annee.textContent = String(new Date().getFullYear());
 
@@ -1826,8 +2003,10 @@
 
   // Démarrage : le script est chargé en fin de <body>.
   try {
-    initialiser();
+    initialiser().catch(function () {
+      // Aucun plantage visible : on échoue silencieusement si le DOM est incomplet.
+    });
   } catch (e) {
-    // Aucun plantage visible : on échoue silencieusement si le DOM est incomplet.
+    // Idem pour une erreur de synchronisation avant le premier await.
   }
 })();

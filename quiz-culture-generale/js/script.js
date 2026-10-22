@@ -1,6 +1,14 @@
 /* =========================================================
    Quiz de culture générale — JavaScript vanilla (file://)
-   Aucune dépendance, aucun module ES, aucun fetch.
+   Aucune dépendance, aucun module ES.
+   Deux modes de données (dual-mode) :
+     • local      : page ouverte en file:// ou servie statiquement
+                    → tout reste en localStorage, comme avant ;
+     • full-stack : un serveur Node (node:http + node:sqlite)
+                    répond sur le même hôte → la banque de questions
+                    et le meilleur score vivent dans SQLite.
+   La bascule est transparente : shared/api-client.js est chargé
+   avant ce script et détecte le serveur au démarrage.
    ========================================================= */
 (function () {
   "use strict";
@@ -52,7 +60,9 @@
 
   /* ---------- Banque de questions (12) ---------- */
   // Index de la bonne réponse répartis volontairement : 1,2,0,2,1,3,2,0,3,1,0,2
-  const BANQUE = [
+  // En mode full-stack, ce tableau de repli est remplacé par la banque
+  // servie par le serveur (GET /api/questions) — voir brancherModeServeur().
+  let BANQUE = [
     {
       theme: "Maroc",
       question: "Quelle est la capitale du Maroc ?",
@@ -943,14 +953,92 @@
     afficherEcran(ecranAccueil, el("titre-accueil"));
   });
 
-  /* ---------- Initialisation ---------- */
-  annee.textContent = String(new Date().getFullYear());
-  initialiserTheme();
-  initialiserChoix();
-  majNbQuestions();
-  majMeilleurAccueil();
+  /* ---------- Mode full-stack (dual-mode) ----------
+     Quand un serveur Node (node:http + node:sqlite) répond à la sonde,
+     la banque de questions est lue dans SQLite et chaque nouveau record
+     est envoyé au serveur en écriture-transit. La partie reste jouée en
+     mémoire côté client : sans serveur (file:// ou hébergement
+     statique), tout fonctionne exactement comme avant en localStorage.
+     --------------------------------------------------------- */
 
-  // Un lien de partage valide ouvre directement l'écran du score reçu.
-  const partageInitial = lirePartage();
-  if (partageInitial !== null) afficherPartage(partageInitial);
+  // Clés localStorage confiées au serveur (le thème reste local).
+  const SERVEUR = {};
+  SERVEUR[CLE_MEILLEUR] = 'api/records';
+
+  // Copie de la fonction d'origine : elle continuera d'écrire le cache
+  // local même après installation de l'adaptateur.
+  const ecrireLocal = stockage.ecrire;
+
+  // Une question serveur n'est acceptée que si elle respecte le modèle
+  // du front (4 propositions, index de bonne réponse, explication).
+  function questionValide(q) {
+    return q && typeof q === 'object'
+      && typeof q.theme === 'string' && q.theme !== ''
+      && typeof q.question === 'string' && q.question !== ''
+      && Array.isArray(q.options) && q.options.length === 4
+      && q.options.every(function (o) { return typeof o === 'string' && o !== ''; })
+      && Number.isInteger(q.bonne) && q.bonne >= 0 && q.bonne <= 3
+      && typeof q.explication === 'string';
+  }
+
+  // Appel REST tolérant : une panne réseau ne doit jamais faire échouer
+  // le démarrage ni polluer la console (on renvoie un statut « 0 »).
+  function appelerSansCrash(methode, chemin, corps) {
+    return window.LumeAPI.appeler(methode, chemin, corps)
+      .catch(function () { return { statut: 0, corps: null }; });
+  }
+
+  async function brancherModeServeur() {
+    // 1) La banque de questions vient de la base (source de vérité).
+    const rq = await appelerSansCrash('GET', 'api/questions');
+    if (rq.statut === 200 && rq.corps && Array.isArray(rq.corps.donnees)) {
+      const valides = rq.corps.donnees.filter(questionValide);
+      if (valides.length) BANQUE = valides;
+    }
+
+    // 2) Meilleur score courant : peuplé AVANT l'adaptateur, pour ne pas
+    //    rejouer un POST inutile au chargement.
+    const rr = await appelerSansCrash('GET', 'api/records');
+    if (rr.statut === 200 && rr.corps) {
+      const m = rr.corps.meilleur;
+      ecrireLocal(CLE_MEILLEUR, m ? { score: m.score, total: m.total } : null);
+    }
+
+    // 3) Écriture-transit : chaque record mémorisé part au serveur
+    //    (feu-oublie — la UI reste juste même si l'envoi échoue).
+    stockage.ecrire = function (cle, valeur) {
+      ecrireLocal(cle, valeur);
+      if (SERVEUR[cle]) {
+        const corps = (cle === CLE_MEILLEUR && valeur && typeof valeur === 'object')
+          ? { score: valeur.score, total: valeur.total, theme: themeJoue }
+          : valeur;
+        window.LumeAPI.appeler('POST', SERVEUR[cle], corps)
+          .catch(function () { /* la UI reste correcte même si le POST échoue */ });
+      }
+    };
+  }
+
+  /* ---------- Initialisation ---------- */
+  async function init() {
+    // Détection du moteur : serveur Node → mode full-stack (SQLite),
+    // sinon on reste en localStorage (file:// ou serveur statique).
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) await brancherModeServeur();
+
+    annee.textContent = String(new Date().getFullYear());
+    initialiserTheme();
+    initialiserChoix();
+    majNbQuestions();
+    majMeilleurAccueil();
+
+    // Un lien de partage valide ouvre directement l'écran du score reçu.
+    const partageInitial = lirePartage();
+    if (partageInitial !== null) afficherPartage(partageInitial);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

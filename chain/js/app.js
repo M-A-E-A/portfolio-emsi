@@ -1,5 +1,8 @@
 /* =====================================================================
    Application — portefeuille, minage, explorateur, mini-marché.
+   La chaîne de blocs est persistée dans localStorage — ou, en mode
+   full-stack, dans une base SQLite via le serveur fourni (server.js).
+   La clé privée du portefeuille ne quitte jamais le navigateur.
    ===================================================================== */
 (function (global) {
   'use strict';
@@ -16,6 +19,7 @@
     chaine: new Chain.Chaine(2),
     portefeuille: null,
     clePortefeuille: null,
+    portefeuilleEnCours: false,
     enMinage: false,
     transactionsEnAttente: [],
     produits: [
@@ -31,36 +35,75 @@
   /* Persistance                                                       */
   /* ---------------------------------------------------------------- */
 
+  /* Mode full-stack : quand un serveur Node répond à la sonde, la chaîne
+     de blocs (publique par nature) est persistée dans une base SQLite,
+     en écriture-transit (*write-through*). En mode local, tout reste dans
+     localStorage. Le portefeuille — clé privée ECDSA — n'est JAMAIS
+     envoyé au serveur : il reste strictement local. */
+  let serveurActif = false;
+
+  /* Applique une chaîne { blocs, difficulte, compteur } à l'état.
+     Même forme exacte que l'objet écrit dans localStorage. */
+  function appliquerChaine(donnees) {
+    if (!donnees || !Array.isArray(donnees.blocs)) return false;
+    etat.chaine.blocs = donnees.blocs;
+    etat.chaine.difficulte = donnees.difficulte || 2;
+    etat.chaine.compteurEncheres = donnees.compteur || 0;
+    return true;
+  }
+
+  function etatCourant() {
+    return {
+      blocs: etat.chaine.blocs,
+      difficulte: etat.chaine.difficulte,
+      compteur: etat.chaine.compteurEncheres
+    };
+  }
+
   function sauvegarder() {
-    try {
-      localStorage.setItem(CLE_CHAINE, JSON.stringify({
-        blocs: etat.chaine.blocs,
-        difficulte: etat.chaine.difficulte,
-        compteur: etat.chaine.compteurEncheres
-      }));
-    } catch (e) { /* file:// */ }
+    const donnees = etatCourant();
+    try { localStorage.setItem(CLE_CHAINE, JSON.stringify(donnees)); } catch (e) { /* file:// */ }
+    /* Écriture-transit : le PUT est en feu-oublie, l'interface reste
+       correcte même s'il échoue. */
+    if (serveurActif && window.LumeAPI) {
+      window.LumeAPI.appeler('PUT', 'api/chaine', donnees)
+        .catch(() => { /* la UI reste correcte même si le PUT échoue */ });
+    }
   }
 
   function charger() {
+    /* En mode serveur, la chaîne provient déjà du préchargement :
+       localStorage ne doit pas l'écraser (données potentiellement
+       obsolètes). */
+    if (serveurActif) return;
     try {
       const brut = localStorage.getItem(CLE_CHAINE);
       if (!brut) return;
-      const donnees = JSON.parse(brut);
-      if (!donnees || !Array.isArray(donnees.blocs)) return;
-      etat.chaine.blocs = donnees.blocs;
-      etat.chaine.difficulte = donnees.difficulte || 2;
-      etat.chaine.compteurEncheres = donnees.compteur || 0;
+      appliquerChaine(JSON.parse(brut));
     } catch (e) { /* file:// */ }
   }
 
+  /* Préchargement : la base SQLite est la source de vérité. Si le
+     serveur ne répond pas (200) — hébergement statique, serveur de
+     test… — on reste entièrement en localStorage. */
+  async function brancherModeServeur() {
+    const r = await window.LumeAPI.appeler('GET', 'api/chaine');
+    if (r.statut !== 200 || !r.corps) { serveurActif = false; return; }
+    appliquerChaine(r.corps);
+  }
+
+  /* Le portefeuille est et reste LOCAL : la clé privée (JWK) ne quitte
+     jamais ce navigateur, il n'existe aucune route serveur pour elle. */
   async function chargerPortefeuille() {
     try {
       const brut = localStorage.getItem(CLE_PORTEFEUILLE);
       if (!brut) return;
       const cle = JSON.parse(brut);
+      etat.portefeuilleEnCours = true;
       etat.portefeuille = await Chain.Portefeuille.restaurer(cle);
       etat.clePortefeuille = cle;
     } catch (e) { /* file:// */ }
+    etat.portefeuilleEnCours = false;
   }
 
   /* ---------------------------------------------------------------- */
@@ -94,7 +137,11 @@
   function rafraichirPortefeuille() {
     const zone = $('#portefeuille');
     if (!etat.portefeuille) {
-      zone.innerHTML = '<p class="vide">Aucun portefeuille. Créez-en un pour miner et transférer.</p>';
+      /* Restauration en cours (WebCrypto est asynchrone) : on affiche un
+         message neutre plutôt que « aucun portefeuille », qui serait faux. */
+      zone.innerHTML = etat.portefeuilleEnCours
+        ? '<p class="vide">Restauration du portefeuille…</p>'
+        : '<p class="vide">Aucun portefeuille. Créez-en un pour miner et transférer.</p>';
       return;
     }
     const solde = soldeAffiche();
@@ -321,13 +368,24 @@
 
   async function demarrer() {
     etat.transactionsEnAttente = [];
+
+    /* Détection du moteur : si un serveur Node répond à la sonde, on
+       précharge la chaîne depuis SQLite ; sinon on reste en localStorage
+       (mode file:// garanti). Le portefeuille, lui, n'est jamais concerné. */
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI && window.LumeAPI.actif) {
+      serveurActif = true;
+      try { await brancherModeServeur(); } catch (e) { serveurActif = false; /* on lit localStorage */ }
+    }
+
     brancherUI();
     initialiserTheme();
     charger();
     await chargerPortefeuille();
     $('#difficulte').value = String(etat.chaine.difficulte);
     rafraichirTout();
-    journaliser('Chaîne chargée : ' + etat.chaine.blocs.length + ' bloc(s).', 'info');
+    journaliser('Chaîne chargée : ' + etat.chaine.blocs.length + ' bloc(s)' +
+      (serveurActif ? ' (base SQLite).' : '.'), 'info');
   }
 
   if (document.readyState === 'loading') {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Messagerie en temps réel — Abderrahmane El ADNANI</title>
-  <meta name="description" content="Messagerie en temps réel entre les onglets du navigateur : salons, réactions, réponses citées et édition des messages. Projet d'Abderrahmane El ADNANI.">
+  <meta name="description" content="Messagerie en temps réel : salons, réactions, réponses citées et édition des messages, entre onglets ou entre machines via serveur Node.js et SSE. Projet d'Abderrahmane El ADNANI.">
   <meta name="author" content="Abderrahmane El ADNANI">
   <meta name="theme-color" content="#12161C" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1319" media="(prefers-color-scheme: dark)">
@@ -107,7 +107,7 @@
 
     <p class="stack-titre">Technologies</p>
     <ul class="stack">
-      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>BroadcastChannel</li>
+      <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li><li>SQLite</li><li>BroadcastChannel</li>
     </ul>
 
     <section class="bloc">
@@ -118,9 +118,12 @@
         navigateur sait déjà faire pour faire dialoguer plusieurs onglets entre eux.
       </p>
       <p>
-        C'est donc un projet entièrement côté client : un canal <code>BroadcastChannel</code>
+        C'est d'abord un projet côté client : un canal <code>BroadcastChannel</code>
         diffuse chaque message aux autres onglets, avec un repli sur l'événement
-        <code>storage</code> pour les navigateurs qui ne le proposent pas.
+        <code>storage</code> pour les navigateurs qui ne le proposent pas. Depuis,
+        un serveur Node.js + SQLite prend le relais quand il tourne : les salons et
+        les messages vivent alors en base, et un flux SSE les diffuse entre
+        plusieurs fenêtres.
       </p>
     </section>
 
@@ -142,7 +145,7 @@
         <li>Messages diffusés en direct à tous les onglets ouverts</li>
         <li>Indicateur « est en train d'écrire… », masqué pour soi-même</li>
         <li>Vidage d'un salon en deux temps, avec confirmation</li>
-        <li>Salons et historique conservés dans le navigateur</li>
+        <li>Salons et historique persistés en SQLite côté serveur, avec repli localStorage hors serveur</li>
         <li>Réactions aux messages, avec un sélecteur d'emoji</li>
         <li>Réponse citée, qui rappelle le message d'origine</li>
         <li>Édition de ses propres messages, avec la mention « modifié »</li>

@@ -66,16 +66,20 @@
 
     /** Restaure un portefeuille depuis une clé privée exportée (JWK). */
     static async restaurer(cleJwk) {
-      const paire = await crypto.subtle.importKey(
+      const privee = await crypto.subtle.importKey(
         'jwk',
         cleJwk,
         { name: 'ECDSA', namedCurve: 'P-256' },
         true,
         ['sign']
       );
-      const publicJwk = await crypto.subtle.exportKey('jwk', paire.publicKey);
+      /* importKey renvoie UNE clé (la privée), pas une paire : on
+         reconstitue la clé publique à partir de ses composantes x / y,
+         dans la même forme canonique que creer(). L'adresse restaurée
+         est alors identique à l'adresse d'origine. */
+      const publicJwk = { crv: cleJwk.crv, ext: cleJwk.ext, key_ops: ['verify'], kty: cleJwk.kty, x: cleJwk.x, y: cleJwk.y };
       const empreinte = await sha256(canonique(publicJwk));
-      return new Portefeuille(paire, '0x' + empreinte.slice(0, 40));
+      return new Portefeuille({ privateKey: privee, publicKey: null }, '0x' + empreinte.slice(0, 40));
     }
 
     async exporterCle() {

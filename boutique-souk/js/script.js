@@ -1,6 +1,12 @@
 /* =====================================================================
    Souk — logique de la boutique
    JavaScript « vanilla », sans module ni dépendance. Fonctionne en file://.
+   Deux modes de données (dual-mode) :
+     • local      : file:// ou hébergement statique → localStorage ;
+     • full-stack : serveur Node (node:http + node:sqlite) → SQLite
+                    (catalogue, avis, panier, favoris, commandes).
+   La bascule est transparente : shared/api-client.js est chargé avant
+   ce script et détecte le serveur au démarrage.
    Sommaire :
      1. Utilitaires
      2. Données du catalogue
@@ -12,7 +18,8 @@
      8. Panier (rendu, quantités, totaux)
      9. Tiroir (ouverture, fermeture, piège de focus)
     10. Commande et confirmation
-    11. Démarrage
+    11. Mode full-stack (détection, préchargement, écriture-transit)
+    12. Démarrage
    ===================================================================== */
 
 (function () {
@@ -112,7 +119,9 @@
 
   // Chaque article : nom, prix, catégorie, accroche (carte), description
   // détaillée (fiche), caractéristiques et stock disponible.
-  const ARTICLES = [
+  // En mode full-stack, ce tableau de repli est remplacé par le catalogue
+  // servi par le serveur (GET /api/articles) — voir section 11.
+  let ARTICLES = [
     {
       id: 'theiere', nom: 'Théière en cuivre', prix: 180, categorie: 'Cuisine', stock: 8,
       accroche: "Cuivre martelé à la main, bec verseur fin et poignée torsadée.",
@@ -219,9 +228,14 @@
     }
   ];
 
-  // Index id -> article.
-  const PAR_ARTICLE = {};
-  ARTICLES.forEach((a) => { PAR_ARTICLE[a.id] = a; });
+  // Index id -> article. Reconstruit si le catalogue vient du serveur.
+  let PAR_ARTICLE = {};
+
+  function construireIndex() {
+    PAR_ARTICLE = {};
+    ARTICLES.forEach((a) => { PAR_ARTICLE[a.id] = a; });
+  }
+  construireIndex();
 
   /* ----------------------------- 3. État ---------------------------- */
 
@@ -554,14 +568,23 @@
   function ajouterAvis(id, auteur, note, texte) {
     if (!PAR_ARTICLE[id]) return;
     if (!avis[id]) avis[id] = [];
-    avis[id].push({
+    const n = {
       id: nouvelId('avis'),
       auteur: auteur.trim().slice(0, 40),
       note: note,
       texte: texte.trim().slice(0, 500),
       date: new Date().toISOString()
-    });
+    };
+    avis[id].push(n);
     enregistrerAvis();
+
+    // Mode full-stack : création de la même ligne côté serveur (feu-oublie).
+    // Le rendu reste immédiat, SQLite reçoit l'avis avec le même identifiant.
+    if (window.LumeAPI && window.LumeAPI.actif) {
+      window.LumeAPI.appeler('POST', 'api/avis', {
+        article_id: id, id: n.id, auteur: n.auteur, note: n.note, texte: n.texte, date: n.date
+      }).catch(function () { /* la UI reste correcte même si le POST échoue */ });
+    }
   }
 
   /* --------------------- 7. Fiche produit --------------------------- */
@@ -1040,13 +1063,28 @@
     const lignes = calculerLignes();
     const sousTotal = lignes.reduce((s, l) => s + l.sousTotal, 0);
     const t = calculerTotaux(sousTotal);
+    const numero = genererNumero();
 
     // Remplissage de la vue de confirmation.
-    confNumero.textContent = genererNumero();
+    confNumero.textContent = numero;
     confLignes.innerHTML = recapLignesHTML(lignes);
     confSousTotal.textContent = formaterPrix(t.sousTotal);
     confLivraison.textContent = texteLivraison(t);
     confTotal.textContent = formaterPrix(t.total);
+
+    // Mode full-stack : la commande est journalisée côté serveur AVANT de
+    // vider le panier (feu-oublie — le parcours client n'attend pas le réseau).
+    if (window.LumeAPI && window.LumeAPI.actif) {
+      window.LumeAPI.appeler('POST', 'api/commandes', {
+        numero: numero,
+        nom: $('nom').value.trim(),
+        email: $('email').value.trim(),
+        adresse: $('adresse').value.trim(),
+        lignes: lignes.map(function (l) {
+          return { id: l.id, nom: l.nom, prix: l.prix, qte: l.qte, sousTotal: l.sousTotal };
+        })
+      }).catch(function () { /* le parcours client reste intact même si l'envoi échoue */ });
+    }
 
     afficherVue('confirmation');
     confRetour.focus();
@@ -1122,7 +1160,87 @@
   const ficheCat = $('fiche-cat');
   const ficheFermer = $('fiche-fermer');
 
-  /* -------------------------- 11. Démarrage ------------------------- */
+  /* ----------------------- 11. Mode full-stack ---------------------- */
+  /* Quand un serveur Node (node:http + node:sqlite) répond à la sonde de
+     shared/api-client.js, le catalogue, les avis, le panier et les favoris
+     sont lus dans SQLite au démarrage, puis chaque modification part au
+     serveur en écriture-transit. Le thème reste en localStorage.
+     Sans serveur (file:// ou hébergement statique) : rien ne change.  */
+
+  // Clés localStorage confiées au serveur (le thème reste local).
+  // Le remplacement intégral (PUT) correspond aux opérations mono-utilisateur
+  // du panier et des favoris.
+  const SERVEUR = {};
+  SERVEUR[CLE_PANIER] = 'api/panier';
+  SERVEUR[CLE_FAVORIS] = 'api/favoris';
+
+  // Copie de la fonction d'origine : elle continuera d'écrire le cache
+  // local même après installation de l'adaptateur.
+  const ecrireLocal = stockage.ecrire;
+
+  // Un article servi par le backend n'est accepté que s'il respecte le
+  // modèle du front : identité, carte, catégorie connue, caractéristiques
+  // tabulées — sinon on conserve le catalogue local de repli.
+  function articleValide(a) {
+    return a && typeof a === 'object'
+      && typeof a.id === 'string' && a.id !== ''
+      && typeof a.nom === 'string' && a.nom !== ''
+      && Number.isFinite(a.prix) && a.prix >= 0
+      && CATEGORIES.indexOf(a.categorie) !== -1
+      && Number.isInteger(a.stock) && a.stock >= 0
+      && typeof a.accroche === 'string'
+      && typeof a.description === 'string'
+      && a.details && typeof a.details === 'object' && !Array.isArray(a.details)
+      && Object.keys(a.details).every(function (cle) { return typeof a.details[cle] === 'string'; });
+  }
+
+  // Appel REST tolérant : une panne réseau ne doit jamais faire échouer le
+  // démarrage ni polluer la console (on renvoie un statut « 0 »).
+  function appelerSansCrash(methode, chemin, corps) {
+    return window.LumeAPI.appeler(methode, chemin, corps)
+      .catch(function () { return { statut: 0, corps: null }; });
+  }
+
+  async function brancherModeServeur() {
+    // 1) Catalogue : la base SQLite est la source de vérité. En cas
+    //    d'échec ou de réponse incomplète, ARTICLES local reste actif.
+    const ra = await appelerSansCrash('GET', 'api/articles');
+    if (ra.statut === 200 && ra.corps && Array.isArray(ra.corps.donnees)) {
+      const valides = ra.corps.donnees.filter(articleValide);
+      if (valides.length) {
+        ARTICLES = valides;
+        construireIndex();
+      }
+    }
+
+    // 2) Avis, panier et favoris : peuplés en localStorage AVANT
+    //    l'adaptateur, pour ne pas rejouer d'écritures inutiles.
+    const rv = await appelerSansCrash('GET', 'api/avis');
+    if (rv.statut === 200 && rv.corps && rv.corps.donnees && typeof rv.corps.donnees === 'object') {
+      ecrireLocal(CLE_AVIS, rv.corps.donnees);
+    }
+    const rp = await appelerSansCrash('GET', 'api/panier');
+    if (rp.statut === 200 && rp.corps && Array.isArray(rp.corps.donnees)) {
+      ecrireLocal(CLE_PANIER, rp.corps.donnees);
+    }
+    const rf = await appelerSansCrash('GET', 'api/favoris');
+    if (rf.statut === 200 && rf.corps && Array.isArray(rf.corps.donnees)) {
+      ecrireLocal(CLE_FAVORIS, rf.corps.donnees);
+    }
+
+    // 3) Écriture-transit : à chaque modification du panier ou des
+    //    favoris, la collection est remplacée côté serveur (feu-oublie —
+    //    la UI reste correcte même si le PUT échoue).
+    stockage.ecrire = function (cle, valeur) {
+      ecrireLocal(cle, valeur);
+      if (SERVEUR[cle]) {
+        window.LumeAPI.appeler('PUT', SERVEUR[cle], valeur)
+          .catch(function () { /* la UI reste correcte même si le PUT échoue */ });
+      }
+    };
+  }
+
+  /* ------------------------- 12. Démarrage -------------------------- */
 
   function brancherEvenements() {
     // Thème
@@ -1271,7 +1389,12 @@
     });
   }
 
-  function initialiser() {
+  async function initialiser() {
+    // Détection du moteur : serveur Node → mode full-stack (SQLite),
+    // sinon on reste en localStorage (file:// ou serveur statique).
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) await brancherModeServeur();
+
     $('annee').textContent = new Date().getFullYear();
     appliquerTheme(themeInitial(), false);
 

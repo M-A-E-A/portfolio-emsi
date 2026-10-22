@@ -1,6 +1,9 @@
 /* =============================================================
    Carte des points d'intérêt — script unique (aucun module ES,
    aucune requête réseau : fonctionne en file://).
+   Mode full-stack facultatif (voir « Mode full-stack » ci-dessous) :
+   si un serveur Node (node:http + node:sqlite) répond à la sonde de
+   shared/api-client.js, les lieux vivent dans une vraie base SQLite.
    ============================================================= */
 (function () {
   'use strict';
@@ -10,6 +13,53 @@
     lire(cle, defaut) { try { const v = localStorage.getItem(cle); return v === null ? defaut : JSON.parse(v); } catch (e) { return defaut; } },
     ecrire(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) {} }
   };
+
+  /* ---------------------- Mode full-stack (facultatif) ----------------------
+     Quand un serveur Node répond à la sonde, la collection « lieux » passe
+     par l'API REST et chaque écriture est répercutée en HTTP (écriture-transit).
+     Sans serveur — file:// ou hébergement statique — tout reste en
+     localStorage : le mode local n'est jamais dégradé. Le thème
+     (« carte-theme ») reste volontairement local. */
+  const SERVEUR = { lieux: 'api/lieux' };
+
+  /* Cache mémoire : l'application est synchrone, le serveur asynchrone.
+     En mode full-stack, la collection préchargée vit ici ; `stockage.lire`
+     la lira de façon synchrone avant de retomber sur localStorage. */
+  const caches = {};
+
+  /* Préchargement puis branchement de l'écriture-transit (une seule fois,
+     avant le premier affichage). */
+  async function brancherModeServeur() {
+    // 1. Préchargement : la base est la source de vérité. Une réponse autre
+    //    qu'un tableau (serveur statique qui stamp X-Serveur, API absente…)
+    //    signifie qu'aucun backend n'est branché : on reste en localStorage,
+    //    exactement comme en file://.
+    const reponse = await window.LumeAPI.appeler('GET', SERVEUR.lieux);
+    if (reponse.statut !== 200 || !reponse.corps || !Array.isArray(reponse.corps.donnees)) {
+      window.LumeAPI.actif = false;
+      return;
+    }
+    caches.lieux = reponse.corps.donnees;
+
+    // 2. Lecture : le cache d'abord, localStorage ensuite.
+    const lireLocal = stockage.lire;
+    stockage.lire = function (cle, defaut) {
+      if (Object.prototype.hasOwnProperty.call(caches, cle)) return caches[cle];
+      return lireLocal(cle, defaut);
+    };
+
+    // 3. Écriture-transit : localStorage + cache, puis PUT sans attendre
+    //    (l'interface reste juste même si la requête échoue). C'est par
+    //    là que passent l'ajout, le déplacement et l'import de lieux.
+    const ecrireLocal = stockage.ecrire;
+    stockage.ecrire = function (cle, valeur) {
+      ecrireLocal(cle, valeur);              // cache + localStorage (file://)
+      if (!SERVEUR[cle]) return;             // thème : rien à pousser
+      caches[cle] = valeur;
+      window.LumeAPI.appeler('PUT', SERVEUR[cle], valeur)
+        .catch(function () { /* la UI reste correcte même si le PUT échoue */ });
+    };
+  }
 
   /* ---------------------------- Modèle ---------------------------- */
   const CATEGORIES = ['Monuments', 'Jardins', 'Restaurants', 'Shopping'];
@@ -88,7 +138,9 @@
   }
 
   /* ---------------------------- État ---------------------------- */
-  let lieux = validerLieux(stockage.lire('lieux', null)) || LIEUX_DEFAUT.slice();
+  // Les lieux sont lus au démarrage (voir « initialiser »), une fois le
+  // moteur de données tranché : cache du serveur ou localStorage.
+  let lieux = [];
   let recherche = '';
   let categorieActive = 'Toutes';
   let selectionId = null;
@@ -170,6 +222,8 @@
   }
 
   function sauvegarder() {
+    // En mode full-stack, l'écriture-transit pousse aussi le tableau
+    // complet vers la base SQLite (PUT /api/lieux).
     stockage.ecrire('lieux', lieux);
   }
 
@@ -683,7 +737,9 @@
   }
 
   /* ---------------------- Import / export JSON ---------------------- */
-  // Aucune requête réseau : tout passe par Blob, FileReader et des liens locaux.
+  // Export toujours local (Blob + lien de téléchargement). L'import lit le
+  // fichier choisi ; en mode full-stack, la liste importée est en plus
+  // poussée vers le serveur par l'écriture-transit de sauvegarder().
 
   function afficherMessage(texte, type) {
     if (!messageEl) { return; }
@@ -774,7 +830,9 @@
         return;
       }
 
-      // Remplacement complet — les données actuelles ne sont touchées qu'ici.
+      // Remplacement complet — les données actuelles ne sont touchées
+      // qu'ici. En mode full-stack, sauvegarder() remplace aussi la table
+      // SQLite (écriture-transit), l'import est donc servi par le serveur.
       annulerSuppression();
       lieux = propres;
       sauvegarder();
@@ -937,7 +995,8 @@
   });
   boutonEffacerMesure.addEventListener('click', effacerMesure);
 
-  // Import / export des lieux (fichier JSON local, aucune requête réseau)
+  // Import / export des lieux (fichier JSON local ; l'import est aussi
+  // répercuté sur le serveur en mode full-stack)
   boutonExport.addEventListener('click', exporterLieux);
   boutonImport.addEventListener('click', ouvrirSelecteurImport);
   fichierImport.addEventListener('change', importerLieux);
@@ -962,7 +1021,19 @@
   });
 
   /* ------------------------------ Init ------------------------------ */
-  function initialiser() {
+  async function initialiser() {
+    // Détection du moteur : si un serveur Node répond à la sonde, les lieux
+    // viennent de SQLite ; sinon on reste en localStorage (file:// ou
+    // hébergement statique). Le branchement inclut le préchargement.
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI.actif) {
+      try { await brancherModeServeur(); }
+      catch (e) { window.LumeAPI.actif = false; }  // serveur injoignable : mode local
+    }
+
+    // Les lieux ne sont lus qu'une fois le mode tranché (cache ou localStorage).
+    lieux = validerLieux(stockage.lire('lieux', null)) || LIEUX_DEFAUT.slice();
+
     // Thème : choix mémorisé, sinon préférence système
     const memorise = stockage.lire('carte-theme', null);
     const sombre = memorise === null ? !!(mediaSombre && mediaSombre.matches) : memorise === 'sombre';

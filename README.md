@@ -14,26 +14,28 @@
 
 ```
 portfolio/           → site portfolio (20 projets détaillés, fond animé, thème)
-shared/              → theme.css + theme.js + themes.css (fond animé, thème, 17 palettes)
+shared/              → theme.css + theme.js + themes.css + api-client.js (fond animé, thème, 17 palettes, détection serveur)
+serveur/             → bibliothèque serveur commune (commun.js) + spécification (MODELE.md) + serveur statique de test
 python-analyse/      → CLI Python : analyse CSV (stats par colonne)
-api-express/         → API REST Express.js (routes, validation, codes HTTP)
+api-express/         → API REST Express.js (routes, validation, codes HTTP, SQLite)
 tailwind-demo/       → page marketing construite avec Tailwind CSS
 wp-theme-portfolio/  → thème WordPress minimal (index, single, archive, 404)
-api-contacts/        → API REST simulée (recherche, tri, pagination)
+api-contacts/        → API REST (recherche, tri, pagination) — full-stack Node + SQLite
 bootstrap-demo/      → tableau de bord Bootstrap 5 (grille, cartes, formulaire)
-boutique-souk/       → boutique artisanale (fiches, avis, panier, favoris)
+boutique-souk/       → boutique artisanale (fiches, avis, panier, favoris) — full-stack
 duel-tri/            → duel de 6 algorithmes de tri (comparaisons comptées)
-messagerie-temps-reel/ → messagerie instantanée entre onglets (réactions, réponses)
-mini-sgbd/           → moteur SQL en JS (SELECT, JOIN, GROUP BY, INSERT)
-quiz-culture-generale/ → quiz chronométré (12 questions, explications, score)
-suivi-depenses/      → suivi des dépenses (catégories, graphique, filtre)
+messagerie-temps-reel/ → messagerie instantanée (réactions, réponses) — full-stack + SSE
+mini-sgbd/           → moteur SQL en JS (SELECT, JOIN, GROUP BY, INSERT) — persistance SQLite
+quiz-culture-generale/ → quiz chronométré (12 questions, explications, score) — full-stack
+suivi-depenses/      → suivi des dépenses (catégories, graphique, filtre) — full-stack
 tri-visualiseur/     → visualiseur de 5 algorithmes de tri (pas à pas)
 raytracer/           → moteur de rendu 3D logiciel (ray tracing, Fresnel, Snell)
 lang/                → interpréteur de langage + débogueur visuel (pas à pas)
-chain/               → blockchain (proof-of-work, Merkle, ECDSA, explorateur)
+chain/               → blockchain (proof-of-work, Merkle, ECDSA, explorateur) — persistance SQLite
 p2p/                 → messagerie pair à pair chiffrée (WebRTC + WebCrypto)
-whiteboard/          → tableau blanc collaboratif (CRDT OR-Set, undo/redo)
+whiteboard/          → tableau blanc collaboratif (CRDT OR-Set, undo/redo) — full-stack + SSE
 nn/                  → réseau de neurones (backpropagation, Adam, CNN)
+carte-points-interet/ → carte SVG de Marrakech (drag, import/export) — full-stack
 ```
 
 ---
@@ -131,6 +133,31 @@ python -m http.server 8000
 
 Les pages fonctionnent aussi ouvertes directement en `file://` (stockage protégé par `try/catch`).
 
+### 🗄 Mode full-stack (10 applications, SQLite réelle)
+
+Dix applications ont une version full-stack : API en **Node.js natif**
+(`node:http`) et base **SQLite** (`node:sqlite`), **zéro dépendance npm**,
+un `server.js` par application :
+
+```bash
+cd api-contacts
+node server.js        # → http://localhost:3101
+```
+
+| Application | Port | Application | Port |
+|---|---|---|---|
+| `api-contacts` | 3101 | `carte-points-interet` | 3105 |
+| `suivi-depenses` | 3102 | `quiz-culture-generale` | 3106 |
+| `boutique-souk` | 3103 | `mini-sgbd` | 3107 |
+| `messagerie-temps-reel` | 3104 | `chain` | 3108 |
+| `whiteboard` | 3109 | `api-express` | 3000 |
+
+**Mode double obligatoire** : sans serveur (`file://` ou hébergement
+statique), chaque application le détecte (en-tête `X-Serveur`) et repasse sur
+`localStorage` — mêmes écrans, mêmes fonctionnalités, zéro erreur console dans
+les deux modes. Les bases `donnees*` sont ignorées par Git et jamais servies
+en statique. Spécification : `serveur/MODELE.md`.
+
 ### Les trois projets qui ne sont pas des pages web
 
 `api-express/`, `python-analyse/` et `wp-theme-portfolio/` sont un serveur Node, un script
@@ -148,6 +175,7 @@ comportement réel :
 ## 📊 Technologies principales
 
 - **HTML5 / CSS3 / JavaScript vanilla**
+- **Node.js + SQLite full-stack** (`node:http`, `node:sqlite` — zéro dépendance npm, 10 `server.js`)
 - **Python 3** (analyse CSV — `analyse.py`)
 - **Tailwind CSS** (build réel : `npm run build` → `css/output.css`, `npm run watch` en continu)
 - **PHP / WordPress** (`index.php`, `functions.php`, `style.css`)

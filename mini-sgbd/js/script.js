@@ -3,19 +3,77 @@
    ----------------------------------------------------------------------
    Un (petit) moteur de base de données écrit à la main, en trois étages :
    analyse lexicale, analyse syntaxique descendante récursive, exécution.
-   Rien ne quitte le navigateur : les tables vivent dans localStorage.
+   Le moteur reste dans le navigateur ; son état (base + historique)
+   vit dans localStorage — ou dans une base SQLite via le serveur
+   fourni (mode full-stack), sans jamais changer le moteur.
    ====================================================================== */
 (function () {
   'use strict';
 
-  /* ----------------------------- Stockage ----------------------------- */
-  const stockage = {
-    lire(cle, defaut) { try { const v = localStorage.getItem(cle); return v === null ? defaut : JSON.parse(v); } catch (e) { return defaut; } },
-    ecrire(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) {} }
-  };
+  /* ----------------------------- Stockage -----------------------------
+     Le moteur SQL lui-même reste côté navigateur : c'est la démonstration.
+     On ne persiste que son état. En mode full-stack (serveur Node +
+     SQLite), cet état vit dans la base distante ; en mode local, tout
+     reste dans localStorage, comme toujours. */
   const CLE_THEME = 'sgbd-theme';
   const CLE_BASE = 'sgbd-base';
   const CLE_HISTORIQUE = 'sgbd-historique';
+
+  /* Correspondance clé localStorage → route REST. Seules les clés
+     listées ici partent vers le serveur : le thème (sgbd-theme)
+     reste strictement local. */
+  const SERVEUR = {
+    'sgbd-base': 'api/base',
+    'sgbd-historique': 'api/historique'
+  };
+
+  /* Cache mémoire : en mode full-stack, il reçoit le préchargement
+     (§ adaptateur dual) puis chaque écriture ; stockage.lire() le
+     consulte en premier, ce qui garde la couche de lecture synchrone.
+     serveurActif ne passe à true que si le préchargement a réellement
+     réussi : un serveur statique (ex. serveur de test 8913) stamppe
+     aussi un en-tête X-Serveur, mais ne répond pas aux routes /api. */
+  const cache = {};
+  let serveurActif = false;
+
+  const stockage = {
+    lire(cle, defaut) {
+      if (Object.prototype.hasOwnProperty.call(cache, cle)) { return cache[cle]; }
+      try { const v = localStorage.getItem(cle); return v === null ? defaut : JSON.parse(v); } catch (e) { return defaut; }
+    },
+    ecrire(cle, valeur) { try { localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) {} }
+  };
+
+  /* Écriture-transit (*write-through*) : la valeur part d'abord dans
+     localStorage (mode file:// toujours garanti), puis, si un serveur
+     Node répond à la sonde, vers la route REST correspondante. Le PUT
+     est en feu-oublie : l'interface reste correcte même s'il échoue. */
+  const ecrireLocal = stockage.ecrire;
+  stockage.ecrire = function (cle, valeur) {
+    ecrireLocal(cle, valeur);
+    cache[cle] = valeur;
+    if (serveurActif && SERVEUR[cle]) {
+      window.LumeAPI.appeler('PUT', SERVEUR[cle], valeur)
+        .catch(function () { /* la UI reste correcte même si le PUT échoue */ });
+    }
+  };
+
+  /* Préchargement : la base SQLite est la source de vérité. On récupère
+     base + historique en une passe, avant le premier affichage, et on
+     remplit le cache que stockage.lire() lira de façon synchrone.
+     Si le serveur ne répond pas (200), on reste entièrement local. */
+  async function brancherModeServeur() {
+    const reponses = await Promise.all([
+      window.LumeAPI.appeler('GET', SERVEUR['sgbd-base']),
+      window.LumeAPI.appeler('GET', SERVEUR['sgbd-historique'])
+    ]);
+    const rBase = reponses[0];
+    const rHist = reponses[1];
+    if (rBase.statut !== 200 || rHist.statut !== 200) { return; }  // ex. hébergement statique
+    if (rBase.corps && rBase.corps.tables) { cache[CLE_BASE] = rBase.corps; }
+    if (Array.isArray(rHist.corps)) { cache[CLE_HISTORIQUE] = rHist.corps; }
+    serveurActif = true;
+  }
 
   const $ = function (sel) { return document.querySelector(sel); };
 
@@ -1896,7 +1954,15 @@
   });
 
   /* ------------------------------ Démarrage ------------------------------ */
-  function initialiser() {
+  async function initialiser() {
+    /* Détection du moteur : si un serveur Node répond à la sonde, on
+       précharge l'état depuis SQLite ; sinon on reste en localStorage
+       (mode file:// garanti — la sonde refuse d'ailleurs tout appel). */
+    try { await window.LumeAPI.detecter(); } catch (e) { /* mode local */ }
+    if (window.LumeAPI && window.LumeAPI.actif) {
+      try { await brancherModeServeur(); } catch (e) { /* on reste en local */ }
+    }
+
     const memorise = stockage.lire(CLE_THEME, null);
     const sombre = memorise === null
       ? !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
