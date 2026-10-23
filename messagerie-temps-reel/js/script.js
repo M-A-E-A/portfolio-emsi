@@ -809,7 +809,7 @@
       bouton.textContent = emoji;
       bouton.setAttribute('aria-pressed', actif ? 'true' : 'false');
       bouton.setAttribute('aria-label', 'Réagir ' + emoji + ' à ce message');
-      bouton.addEventListener('click', function () { basculerReaction(message.id, cle); });
+      bouton.addEventListener('click', function () { basculerReaction(message.id, emoji); });
       boite.appendChild(bouton);
     });
 
